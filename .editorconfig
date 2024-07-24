@@ -1,0 +1,18 @@
+root = true
+
+[*.cpp]
+indent_style = space
+indent_size = 2
+
+[*.h]
+indent_style = space
+indent_size = 2
+
+[*.cmake]
+indent_style = space
+indent_size = 2
+
+[CMakeLists.txt]
+intent_style = space
+indent_size = 2
+
