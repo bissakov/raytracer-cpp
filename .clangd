@@ -1,2 +1,2 @@
 CompileFlags:
-  Add: [-std=c++17, -Wunused-variable]
+  Add: [-std=c++17, -W4, -Wunused-variable, -I., -Isrc]
