@@ -1,106 +1,126 @@
 #include <src/main.h>
+#include <src/point_vector.h>
+#include <src/test_suite.h>
 
-#include <cassert>
-#include <cstdio>
+#include <cmath>
 
-Point Point::operator+(const Vector &other) const {
-  return {x + other.x, y + other.y, z + other.z};
-}
+int main(int argc, char* argv[]) {
+  TestFramework framework;
 
-Point Point::operator-(const Vector &other) const {
-  return {x - other.x, y - other.y, z - other.z};
-}
+  framework.AddTest("Point + vector", []() -> bool {
+    Point left = {3.0f, -2.0f, 5.0f};
+    Vector right = {-2.0f, 3.0f, 1.0f};
+    Point expected = {1.0f, 1.0f, 6.0f};
+    return AssertEq(left + right, expected);
+  });
 
-Vector Point::operator-(const Point &other) const {
-  return {x - other.x, y - other.y, z - other.z};
-}
+  framework.AddTest("Point + vector", []() -> bool {
+    Point left = {3.0f, -2.0f, 5.0f};
+    Vector right = {-2.0f, 3.0f, 1.0f};
+    Point expected = {1.0f, 1.0f, 6.0f};
+    return AssertEq(left + right, expected);
+  });
 
-bool Point::operator==(const Point &other) const {
-  return (x == other.x && y == other.y && z == other.z);
-}
+  framework.AddTest("Point - point", []() -> bool {
+    Point left = {3.0f, 2.0f, 1.0f};
+    Point right = {-2.0f, 3.0f, 1.0f};
+    Vector expected = {5.0f, -1.0f, 0.0f};
+    return AssertEq(left - right, expected);
+  });
 
-bool Point::operator!=(const Point &p) const {
-  return (x != p.x && y != p.y && z != p.z);
-}
+  framework.AddTest("Point - vector", []() -> bool {
+    Point left = {3.0f, 2.0f, 1.0f};
+    Vector right = {5.0f, 6.0f, 7.0f};
+    Point expected = {-2.0f, -4.0f, -6.0f};
+    return AssertEq(left - right, expected);
+  });
 
-Vector Vector::operator+(const Vector &other) const {
-  return {x + other.x, y + other.y, z + other.z};
-}
+  framework.AddTest("Vector - vector", []() -> bool {
+    Vector left = {3.0f, 2.0f, 1.0f};
+    Vector right = {5.0f, 6.0f, 7.0f};
+    Vector expected = {-2.0f, -4.0f, -6.0f};
+    return AssertEq(left - right, expected);
+  });
 
-Vector Vector::operator-(const Vector &other) const {
-  return {x - other.x, y - other.y, z - other.z};
-}
+  framework.AddTest("Negate vector", []() -> bool {
+    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector expected = {-1.0f, 2.0f, -3.0f};
+    return AssertEq(-v, expected);
+  });
 
-bool Vector::operator==(const Vector &other) const {
-  return (x == other.x && y == other.y && z == other.z);
-}
+  framework.AddTest("Multiply vector", []() -> bool {
+    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector expected = {3.5f, -7.0f, 10.5f};
+    return AssertEq(v * 3.5f, expected);
+  });
 
-bool Vector::operator!=(const Vector &other) const {
-  return (x != other.x && y != other.y && z != other.z);
-}
+  framework.AddTest("Divide vector by multiplying", []() -> bool {
+    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector expected = {0.5f, -1.0f, 1.5f};
+    return AssertEq(v * 0.5f, expected);
+  });
 
-Vector Vector::operator-() const {
-  return {-x, -y, -z};
-}
+  framework.AddTest("Divide vector", []() -> bool {
+    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector expected = {0.5f, -1.0f, 1.5f};
+    return AssertEq(v / 2.0f, expected);
+  });
 
-static inline void TestTupleAdd(float x1, float y1, float z1, float x2,
-                                float y2, float z2) {
-  Point left = {};
-  left.x = x1;
-  left.y = y1;
-  left.z = z1;
+  framework.AddTest("The magnitude of a vector 1", []() -> bool {
+    Vector v = {1.0f, 0.0f, 0.0f};
+    float expected = 1.0f;
+    return AssertFloatEq(v.Magnitude(), expected);
+  });
 
-  Vector right = {};
-  right.x = x2;
-  right.y = y2;
-  right.z = z2;
+  framework.AddTest("The magnitude of a vector 2", []() -> bool {
+    Vector v = {0.0f, 1.0f, 0.0f};
+    float expected = 1.0f;
+    return AssertFloatEq(v.Magnitude(), expected);
+  });
 
-  Point result = {};
-  result = left + right;
+  framework.AddTest("The magnitude of a vector 3", []() -> bool {
+    Vector v = {0.0f, 0.0f, 1.0f};
+    float expected = 1.0f;
+    return AssertFloatEq(v.Magnitude(), expected);
+  });
 
-  Point check = {};
-  check.x = x1 + x2;
-  check.y = y1 + y2;
-  check.z = z1 + z2;
+  framework.AddTest("The magnitude of a vector 4", []() -> bool {
+    Vector v = {1.0f, 2.0f, 3.0f};
+    float expected = sqrt(14.0f);
+    return AssertFloatEq(v.Magnitude(), expected);
+  });
 
-  assert(result == check);
-  printf("Left: %.02f %.02f %.02f\n", left.x, left.y, left.z);
-  printf("Right: %.02f %.02f %.02f\n", right.x, right.y, right.z);
-  printf("TestTupleAdd: %.02f %.02f %.02f\n", result.x, result.y, result.z);
-  printf("====================================\n\n");
-}
+  framework.AddTest("The magnitude of a vector 5", []() -> bool {
+    Vector v = {-1.0f, -2.0f, -3.0f};
+    float expected = sqrt(14.0f);
+    return AssertFloatEq(v.Magnitude(), expected);
+  });
 
-static inline void TestTupleSubtract(float x1, float y1, float z1, float x2,
-                                     float y2, float z2) {
-  Point left = {};
-  left.x = x1;
-  left.y = y1;
-  left.z = z1;
+  framework.AddTest("Normalize vector 1", []() -> bool {
+    Vector v = {4.0f, 0.0f, 0.0f};
+    Vector expected = {1.0f, 0.0f, 0.0f};
+    return AssertEq(v.Normalize(), expected);
+  });
 
-  Vector right = {};
-  right.x = x2;
-  right.y = y2;
-  right.z = z2;
+  framework.AddTest("Normalize vector 2", []() -> bool {
+    Vector v = {1.0f, 2.0f, 3.0f};
+    Vector expected = {1.0f / sqrt(14.0f), 2.0f / sqrt(14.0f),
+                       3.0f / sqrt(14.0f)};
+    return AssertEq(v.Normalize(), expected);
+  });
 
-  Point result = {};
-  result = left - right;
+  framework.AddTest("The magnitude of a normalized vector", []() -> bool {
+    Vector v = {1.0f, 2.0f, 3.0f};
 
-  Point check = {};
-  check.x = x1 - x2;
-  check.y = y1 - y2;
-  check.z = z1 - z2;
+    Vector nv = v.Normalize();
+    float mn = nv.Magnitude();
 
-  assert(result == check);
-  printf("Left: %.02f %.02f %.02f\n", left.x, left.y, left.z);
-  printf("Right: %.02f %.02f %.02f\n", right.x, right.y, right.z);
-  printf("TestTupleSubtract: %.02f %.02f %.02f\n", result.x, result.y,
-         result.z);
-  printf("====================================\n\n");
-}
+    float expected = 1.0f;
 
-int main(int argc, char *argv[]) {
-  TestTupleAdd(3.0f, -2.0f, 5.0f, -2.0f, 3.0f, 1.0f);
-  TestTupleSubtract(3.0f, 2.0f, 1.0f, -2.0f, 3.0f, 1.0f);
+    return AssertFloatEq(mn, expected);
+  });
+
+  framework.RunTest();
 
   return 0;
 }
