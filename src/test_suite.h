@@ -29,6 +29,7 @@ constexpr bool AssertEq(T a, T b) {
   return true;
 }
 
+bool IsEqualFloat(float a, float b);
 bool AssertFloatEq(float a, float b);
 
 #endif  // SRC_TEST_SUITE_H_

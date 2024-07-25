@@ -27,10 +27,12 @@ void TestFramework::RunTest() {
   printf("\nTest summary: %d/%d tests passed.\n", passed_tests, total_tests);
 }
 
+bool IsEqualFloat(const float a, const float b) {
+  return a == b || std::abs(a - b) <= FLT_EPSILON;
+}
+
 bool AssertFloatEq(float a, float b) {
-  bool is_equal = a == b;
-  bool is_equal_eps = std::abs(a - b) <= FLT_EPSILON;
-  if (!(is_equal || is_equal_eps)) {
+  if (!IsEqualFloat(a, b)) {
     printf(" Error: Assertion failed");
     fflush(stdout);
     return false;

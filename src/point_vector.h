@@ -12,6 +12,7 @@ struct Point {
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;
   Vector operator-(const Point& other) const;
+
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
@@ -25,16 +26,24 @@ struct Vector {
 
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;
-  Vector operator-() const;
-  Vector operator*(const float scalar) const;
-  Vector operator/(const float scalar) const;
+
   bool operator==(const Vector& other) const;
   bool operator!=(const Vector& other) const;
+
+  Vector operator*(const float scalar) const;
+  Vector operator/(const float scalar) const;
+
+  Vector operator-() const;
 
   const char* ToString() const;
 
   float Magnitude() const;
   Vector Normalize() const;
+  float DotProduct(const Vector& other) const;
+  Vector CrossProduct(const Vector& other) const;
 };
+
+float DotProduct(const Vector& left, const Vector& right);
+Vector CrossProduct(const Vector& left, const Vector& right);
 
 #endif  // SRC_POINT_VECTOR_H_

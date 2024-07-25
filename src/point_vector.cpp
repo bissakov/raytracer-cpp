@@ -1,4 +1,5 @@
 #include <src/point_vector.h>
+#include <src/test_suite.h>
 
 #include <cmath>
 
@@ -45,11 +46,13 @@ Vector Vector::operator/(const float scalar) const {
 }
 
 bool Vector::operator==(const Vector &other) const {
-  return (x == other.x && y == other.y && z == other.z);
+  return IsEqualFloat(x, other.x) && IsEqualFloat(y, other.y) &&
+         IsEqualFloat(z, other.z);
 }
 
 bool Vector::operator!=(const Vector &other) const {
-  return (x != other.x && y != other.y && z != other.z);
+  return !IsEqualFloat(x, other.x) || !IsEqualFloat(y, other.y) ||
+         !IsEqualFloat(z, other.z);
 }
 
 Vector Vector::operator-() const {
@@ -63,4 +66,23 @@ float Vector::Magnitude() const {
 Vector Vector::Normalize() const {
   float magnitude = Magnitude();
   return {x / magnitude, y / magnitude, z / magnitude};
+}
+
+float Vector::DotProduct(const Vector &other) const {
+  return x * other.x + y * other.y + z * other.z;
+}
+
+Vector Vector::CrossProduct(const Vector &other) const {
+  return {y * other.z - z * other.y, z * other.x - x * other.z,
+          x * other.y - y * other.x};
+}
+
+float DotProduct(const Vector &left, const Vector &right) {
+  return left.x * right.x + left.y * right.y + left.z * right.z;
+}
+
+Vector CrossProduct(const Vector &left, const Vector &right) {
+  return {left.y * right.z - left.z * right.y,
+          left.z * right.x - left.x * right.z,
+          left.x * right.y - left.y * right.x};
 }
