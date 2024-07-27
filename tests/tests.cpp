@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-int main(int argc, char* argv[]) {
+int RunTests() {
   TestFramework framework;
 
   framework.AddTest("Adding point to vector", []() -> bool {
