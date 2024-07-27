@@ -9,8 +9,11 @@ git clone https://github.com/bissakov/raytracer-cpp.git
 cd raytracer-cpp
 
 # Build (modify the batch script if you want to target x86)
-.\build.bat
+./build.bat
 
 # Run
-.\build\raytracer.exe
+./build/raytracer.exe
+
+# Run tests
+./build/raytracer.exe --test
 ```
