@@ -5,6 +5,7 @@
 #include <src/test_suite.h>
 #include <tests/test_canvas.h>
 #include <tests/test_color.h>
+#include <tests/test_matrix.h>
 #include <tests/test_point_vector.h>
 #include <tests/tests.h>
 
@@ -17,6 +18,7 @@ void RunTests(std::string root_folder_path) {
   TestPointVector(&framework);
   TestColor(&framework);
   TestCanvas(&framework);
+  TestMatrix(&framework);
 
   framework.RunTest();
 }
