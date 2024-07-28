@@ -8,14 +8,15 @@
 #include <tests/test_point_vector.h>
 #include <tests/tests.h>
 
-int RunTests() {
+#include <string>
+
+void RunTests(std::string root_folder_path) {
   TestFramework framework;
+  framework.root_folder_path = root_folder_path;
 
   TestPointVector(&framework);
   TestColor(&framework);
   TestCanvas(&framework);
 
   framework.RunTest();
-
-  return 0;
 }
