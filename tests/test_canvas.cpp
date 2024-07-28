@@ -1,8 +1,11 @@
 #include <src/canvas.h>
 #include <src/file_io.h>
+#include <src/point_vector.h>
 #include <src/test_suite.h>
+#include <src/utils.h>
 #include <tests/test_canvas.h>
 
+#include <cmath>
 #include <string>
 
 void TestCanvas(TestFramework *framework) {
@@ -77,5 +80,40 @@ void TestCanvas(TestFramework *framework) {
     bool are_files_same = CompareFiles(input_file_path, output_file_path);
 
     return AssertEq(are_files_same, res1 == res2);
+  });
+
+  framework->AddTest("Map the trajectory of projectile", [framework]() -> bool {
+    Canvas canvas = {900, 550};
+
+    Projectile proj;
+    // proj.position = {0.1f, static_cast<float>(canvas.height), 0};
+    proj.position = {0.0f, 1.0f, 0.0f};
+    proj.velocity = {1.0f, 1.8f, 0.0f};
+    proj.velocity = proj.velocity.Normalize() * 11.25f;
+
+    Environment env;
+    env.gravity = {0.0f, -0.1f, 0.0f};
+    env.wind = {-0.01f, 0.0f, 0.0f};
+
+    Color red = {1.0f, 0.0f, 0.0f};
+
+    while (proj.position.y > 0.0f) {
+      int pos_x = static_cast<int>(floor(proj.position.x));
+      int pos_y = static_cast<int>(floor(proj.position.y));
+      pos_y = static_cast<int>(abs(canvas.height - floor(proj.position.y)));
+
+      if (canvas.IsPixelInRange(pos_x, pos_y)) {
+        canvas.WritePixelColor(pos_x, pos_y, red);
+      }
+
+      proj.position = proj.position + proj.velocity;
+      proj.velocity = proj.velocity + env.gravity + env.wind;
+    }
+
+    std::string output_file_path =
+        framework->root_folder_path + "\\data\\projectile.ppm";
+    bool res = canvas.SaveToPPM(output_file_path);
+
+    return AssertEq(res, true);
   });
 }
