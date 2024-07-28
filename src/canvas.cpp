@@ -1,6 +1,7 @@
 #include "src/canvas.h"
 
 #include <src/file_io.h>
+#include <src/utils.h>
 #include <windows.h>
 
 #include <cassert>
@@ -102,9 +103,10 @@ bool Canvas::SaveToPPM(std::string file_path) {
   for (int j = 0; j < height; ++j) {
     for (int i = 0; i < width; ++i) {
       Color* color = &pixels[j][i].color;
-      int red = static_cast<int>(color->r * 255.0f);
-      int green = static_cast<int>(color->g * 255.0f);
-      int blue = static_cast<int>(color->b * 255.0f);
+      int red = Clamp(static_cast<int>(color->r * 255.0f), 0, 255);
+      int green = Clamp(static_cast<int>(color->g * 255.0f), 0, 255);
+      int blue = Clamp(static_cast<int>(color->b * 255.0f), 0, 255);
+
       canvas_buffer += std::to_string(red) + " " + std::to_string(green) + " " +
                        std::to_string(blue);
       if (i < width - 1) {
