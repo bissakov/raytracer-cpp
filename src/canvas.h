@@ -14,7 +14,7 @@ struct Canvas {
   Canvas(const int _width, const int _height);
   ~Canvas();
 
-  bool IsPixelOutOfBounds(const int pos_x, const int pos_y) const;
+  bool IsPixelInRange(const int pos_x, const int pos_y) const;
   Pixel PixelAt(const int pos_x, const int pos_y) const;
   void WritePixelColor(const int pos_x, const int pos_y,
                        const Color &color) const;
