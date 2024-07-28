@@ -42,19 +42,19 @@ Canvas::~Canvas() {
   delete[] pixels;
 }
 
-bool Canvas::IsPixelOutOfBounds(const int pos_x, const int pos_y) const {
+bool Canvas::IsPixelInRange(const int pos_x, const int pos_y) const {
   return (pos_x >= 0 && pos_x < width) && (pos_y >= 0 && pos_y < height);
 }
 
 Pixel Canvas::PixelAt(const int pos_x, const int pos_y) const {
-  assert(IsPixelOutOfBounds(pos_x, pos_y) && "Pixel out of bounds.");
+  assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
   Pixel pixel = pixels[pos_y][pos_x];
   return pixel;
 }
 
 void Canvas::WritePixelColor(const int pos_x, const int pos_y,
                              const Color& color) const {
-  assert(IsPixelOutOfBounds(pos_x, pos_y) && "Pixel out of bounds.");
+  assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
   Pixel* pixel = &pixels[pos_y][pos_x];
   pixel->color = color;
 }
