@@ -22,6 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{71342B71-A6E8-4A4F-93DD-0667413EEBBA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -174,21 +175,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\canvas.cpp" />
+    <ClCompile Include="src\file_io.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\pixel.cpp" />
     <ClCompile Include="src\point_vector.cpp" />
     <ClCompile Include="src\test_suite.cpp" />
     <ClCompile Include="tests\tests.cpp" />
+    <ClCompile Include="tests\test_canvas.cpp" />
+    <ClCompile Include="tests\test_color.cpp" />
+    <ClCompile Include="tests\test_point_vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\raylib\raylib.h" />
     <ClInclude Include="include\raylib\raymath.h" />
     <ClInclude Include="include\raylib\rlgl.h" />
     <ClInclude Include="src\canvas.h" />
+    <ClInclude Include="src\file_io.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\pixel.h" />
     <ClInclude Include="src\point_vector.h" />
     <ClInclude Include="src\test_suite.h" />
+    <ClInclude Include="tests\tests.h" />
+    <ClInclude Include="tests\test_canvas.h" />
+    <ClInclude Include="tests\test_color.h" />
+    <ClInclude Include="tests\test_point_vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
