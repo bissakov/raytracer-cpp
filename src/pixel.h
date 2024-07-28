@@ -33,4 +33,10 @@ struct Pixel {
   std::string ToString() const;
 };
 
+struct ColorRGB {
+  int r = -1;
+  int g = -1;
+  int b = -1;
+};
+
 #endif  // SRC_PIXEL_H_
