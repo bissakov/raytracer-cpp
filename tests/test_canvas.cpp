@@ -45,9 +45,15 @@ void TestCanvas(TestFramework *framework) {
     Color blue = {0, 0.34f, 0.72f};
     Color yellow = {1, 0.85f, 0};
 
+    int stripe_thickness = 20;
+
     for (int j = 0; j < canvas.height; ++j) {
       for (int i = 0; i < canvas.width; ++i) {
-        canvas.WritePixelColor(i, j, j < canvas.height / 2 ? blue : yellow);
+        if ((i / stripe_thickness + j / stripe_thickness) % 2 == 0) {
+          canvas.WritePixelColor(i, j, blue);
+        } else {
+          canvas.WritePixelColor(i, j, yellow);
+        }
       }
     }
 
