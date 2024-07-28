@@ -12,10 +12,11 @@ struct FileResult {
   BYTE *content;
 };
 
-void FreeMemory(void **memory);
+static void ErrorExit(LPCTSTR lpszFunction);
+void FreeMemory(BYTE *memory);
 FileResult ReadEntireFile(std::string file_path);
+bool WriteEntireFile(const char *file_path, uint32_t memory_size, BYTE *memory);
 bool WriteFileText(std::string file_path, std::string text);
-bool WriteEntireFile(const char *file_path, uint32_t memory_size, void *memory);
 bool CompareFiles(const std::string &filePath1, const std::string &filePath2);
 
 #endif  // SRC_FILE_IO_H_

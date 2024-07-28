@@ -6,6 +6,30 @@
 #include <cassert>
 #include <string>
 
+static void ErrorExit(LPCTSTR lpszFunction) {
+  LPVOID lpMsgBuf;
+  LPVOID lpDisplayBuf;
+  DWORD dw = GetLastError();
+
+  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                    FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL, dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR)&lpMsgBuf, 0, NULL);
+
+  lpDisplayBuf = (LPVOID)LocalAlloc(
+      LMEM_ZEROINIT,
+      (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)lpszFunction) + 40) *
+          sizeof(TCHAR));
+  StringCchPrintf((LPTSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+                  TEXT("%s failed with error %d: %s"), lpszFunction, dw,
+                  lpMsgBuf);
+  MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
+
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+  ExitProcess(dw);
+}
+
 // TODO(bissakov): Implement platform-independent file IO.
 void FreeMemory(BYTE* memory) {
   if (memory == nullptr) {
@@ -64,7 +88,7 @@ FileResult ReadEntireFile(std::string file_path) {
 }
 
 bool WriteEntireFile(const char* file_path, uint32_t memory_size,
-                     void* memory) {
+                     BYTE* memory) {
   HANDLE file_handle =
       CreateFile(file_path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
@@ -81,6 +105,30 @@ bool WriteEntireFile(const char* file_path, uint32_t memory_size,
   CloseHandle(file_handle);
 
   bool res = bytes_written == memory_size;
+  return res;
+}
+
+bool WriteFileText(std::string file_path, std::string text) {
+  HANDLE file_handle =
+      CreateFile(file_path.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+  if (file_handle == INVALID_HANDLE_VALUE) {
+    CloseHandle(file_handle);
+    return false;
+  }
+
+  DWORD bytes_to_write = (DWORD)text.size();
+  DWORD bytes_written = 0;
+
+  if (!WriteFile(file_handle, text.c_str(), bytes_to_write, &bytes_written,
+                 0)) {
+    CloseHandle(file_handle);
+    ErrorExit(TEXT("WriteFile"));
+    return false;
+  }
+
+  CloseHandle(file_handle);
+
+  bool res = bytes_written == bytes_to_write;
   return res;
 }
 
