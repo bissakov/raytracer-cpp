@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <functional>
+#include <string>
 
 struct CustomTest {
   const char* name;
@@ -14,6 +15,7 @@ struct TestFramework {
   int passed_tests = 0;
   int total_tests = 0;
   int current_test_idx = 0;
+  std::string root_folder_path;
 
   void AddTest(const char* name, std::function<bool()> test_function);
   void RunTest();
