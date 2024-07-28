@@ -24,6 +24,10 @@ bool Point::operator!=(const Point &p) const {
   return (x != p.x && y != p.y && z != p.z);
 }
 
+Point::operator const char *() const {
+  return ToString();
+}
+
 const char *Point::ToString() const {
   return "Point{x=%.02f, y=%.02.f, z=%.02.f}";
 }
@@ -85,4 +89,12 @@ Vector CrossProduct(const Vector &left, const Vector &right) {
   return {left.y * right.z - left.z * right.y,
           left.z * right.x - left.x * right.z,
           left.x * right.y - left.y * right.x};
+}
+
+const char *Vector::ToString() const {
+  return "Vector{x=%.02f, y=%.02.f, z=%.02.f}";
+}
+
+Vector::operator const char *() const {
+  return ToString();
 }

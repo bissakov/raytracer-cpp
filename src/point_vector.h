@@ -16,6 +16,8 @@ struct Point {
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
+  operator const char*() const;
+
   const char* ToString() const;
 };
 
@@ -35,12 +37,13 @@ struct Vector {
 
   Vector operator-() const;
 
-  const char* ToString() const;
-
   float Magnitude() const;
   Vector Normalize() const;
   float DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
+
+  operator const char*() const;
+  const char* ToString() const;
 };
 
 float DotProduct(const Vector& left, const Vector& right);
