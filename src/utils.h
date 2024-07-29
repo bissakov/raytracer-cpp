@@ -3,17 +3,17 @@
 
 #include <windows.h>
 
-void ErrorExit(LPCTSTR function);
+void ErrorExit(const LPCTSTR function);
 
-constexpr int Min(int a, int b) {
+constexpr int Min(const int a, const int b) {
   return (a < b) ? a : b;
 }
 
-constexpr int Max(int a, int b) {
+constexpr int Max(const int a, const int b) {
   return (a > b) ? a : b;
 }
 
-constexpr int Clamp(int value, int min_value, int max_value) {
+constexpr int Clamp(const int value, const int min_value, const int max_value) {
   return Max(min_value, Min(value, max_value));
 }
 

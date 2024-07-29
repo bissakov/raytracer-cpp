@@ -6,13 +6,16 @@
 struct Matrix {
   int rows;
   int cols;
-  float **values;
+  float** values;
 
   Matrix(const int rows_, const int cols_);
   ~Matrix();
 
+  bool operator==(const Matrix& other) const;
+  bool operator!=(const Matrix& other) const;
+
   template <typename... T>
-  void Populate(T... floats) const {
+  void Populate(T... floats) {
     float values_[] = {floats...};
     assert(sizeof(values_) == rows * cols * sizeof(float) &&
            "Invalid number of values");
@@ -26,5 +29,7 @@ struct Matrix {
   float At(const int row, const int col) const;
   bool IsValueInRange(const int row, const int col) const;
 };
+
+static inline bool IsEqual(const Matrix* matrix1, const Matrix* matrix2);
 
 #endif  // SRC_MATRIX_H_

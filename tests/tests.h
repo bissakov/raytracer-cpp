@@ -15,6 +15,6 @@ struct Environment {
   Vector wind;
 };
 
-void RunTests(std::string root_folder_path);
+void RunTests(const std::string root_folder_path);
 
 #endif  // TESTS_TESTS_H_

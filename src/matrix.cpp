@@ -1,6 +1,34 @@
 #include <src/matrix.h>
+#include <src/test_suite.h>
 
 #include <cassert>
+
+static inline bool IsEqual(const Matrix* matrix1, const Matrix* matrix2) {
+  if (matrix1->rows != matrix2->rows || matrix1->cols != matrix2->cols) {
+    return false;
+  }
+
+  bool is_equal = true;
+  for (int row = 0; row < matrix1->rows; ++row) {
+    for (int col = 0; col < matrix1->cols; ++col) {
+      is_equal =
+          AssertFloatEq(matrix1->values[row][col], matrix2->values[row][col]);
+      if (!is_equal) {
+        return false;
+      }
+    }
+  }
+
+  return is_equal;
+}
+
+bool Matrix::operator==(const Matrix& other) const {
+  return IsEqual(this, &other);
+}
+
+bool Matrix::operator!=(const Matrix& other) const {
+  return !IsEqual(this, &other);
+}
 
 Matrix::Matrix(const int rows_, const int cols_) {
   rows = rows_;
@@ -13,11 +41,11 @@ Matrix::Matrix(const int rows_, const int cols_) {
     return;
   }
 
-  values = new float *[rows];
+  values = new float*[rows];
   for (int row = 0; row < rows; ++row) {
     values[row] = new float[cols];
     for (int col = 0; col < cols; ++col) {
-      float *value = &values[row][col];
+      float* value = &values[row][col];
       *value = 0.0f;
     }
   }
@@ -29,9 +57,7 @@ Matrix::~Matrix() {
   }
 
   for (int row = 0; row < rows; ++row) {
-    if (values[row] == nullptr) {
-      delete[] values[row];
-    }
+    delete[] values[row];
   }
   delete[] values;
 }
