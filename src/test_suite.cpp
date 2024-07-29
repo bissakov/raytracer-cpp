@@ -31,9 +31,84 @@ bool IsEqualFloat(const float a, const float b) {
   return a == b || std::abs(a - b) <= FLT_EPSILON;
 }
 
-bool AssertFloatEq(const float a, const float b) {
-  if (!IsEqualFloat(a, b)) {
-    printf(" Error: Assertion failed");
+bool AssertEqInts(const int& actual, const int& expected,
+                  const char* actual_name, const char* expected_name,
+                  const char* file, int line) {
+  if (!(actual == expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %d\n", actual);
+    printf("Expected: %d\n", expected);
+    fflush(stdout);
+    return false;
+  }
+  return true;
+}
+
+bool AssertEqFloats(const float& actual, const float& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line) {
+  if (!IsEqualFloat(actual, expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %f\n", actual);
+    printf("Expected: %f\n", expected);
+    fflush(stdout);
+    return false;
+  }
+  return true;
+}
+
+bool AssertEqBools(const bool& actual, const bool& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line) {
+  if (!(actual == expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %d\n", actual);
+    printf("Expected: %d\n", expected);
+    fflush(stdout);
+    return false;
+  }
+  return true;
+}
+
+bool AssertEqPoints(const Point& actual, const Point& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line) {
+  if (!(actual == expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %s\n", actual.ToString().c_str());
+    printf("Expected: %s\n", expected.ToString().c_str());
+    fflush(stdout);
+    return false;
+  }
+  return true;
+}
+
+bool AssertEqVectors(const Vector& actual, const Vector& expected,
+                     const char* actual_name, const char* expected_name,
+                     const char* file, int line) {
+  if (!(actual == expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %s\n", actual.ToString().c_str());
+    printf("Expected: %s\n", expected.ToString().c_str());
+    fflush(stdout);
+    return false;
+  }
+  return true;
+}
+
+bool AssertEqColors(const Color& actual, const Color& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line) {
+  if (!(actual == expected)) {
+    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
+           actual_name, expected_name);
+    printf("Actual: %s\n", actual.ToString().c_str());
+    printf("Expected: %s\n", expected.ToString().c_str());
     fflush(stdout);
     return false;
   }

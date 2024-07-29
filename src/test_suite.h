@@ -1,7 +1,9 @@
 #ifndef SRC_TEST_SUITE_H_
 #define SRC_TEST_SUITE_H_
 
-#include <cstdio>
+#include <src/pixel.h>
+#include <src/point_vector.h>
+
 #include <functional>
 #include <string>
 
@@ -11,7 +13,7 @@ struct CustomTest {
 };
 
 struct TestFramework {
-  CustomTest tests[100];
+  CustomTest tests[200];
   int passed_tests = 0;
   int total_tests = 0;
   int current_test_idx = 0;
@@ -21,17 +23,49 @@ struct TestFramework {
   void RunTest();
 };
 
-template <typename T>
-constexpr bool AssertEq(const T& a, const T& b) {
-  if (!(a == b)) {
-    printf("Error: Assertion failed\n");
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
 bool IsEqualFloat(const float a, const float b);
 bool AssertFloatEq(const float a, const float b);
+
+bool AssertEqInts(const int& actual, const int& expected,
+                  const char* actual_name, const char* expected_name,
+                  const char* file, int line);
+
+bool AssertEqFloats(const float& actual, const float& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line);
+
+bool AssertEqBools(const bool& actual, const bool& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line);
+
+bool AssertEqPoints(const Point& actual, const Point& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line);
+
+bool AssertEqVectors(const Vector& actual, const Vector& expected,
+                     const char* actual_name, const char* expected_name,
+                     const char* file, int line);
+
+bool AssertEqColors(const Color& actual, const Color& expected,
+                    const char* actual_name, const char* expected_name,
+                    const char* file, int line);
+
+#define ASSERT_EQUAL_INTS(actual, expected) \
+  AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_FLOATS(actual, expected) \
+  AssertEqFloats(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_BOOLS(actual, expected) \
+  AssertEqBools(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_POINTS(actual, expected) \
+  AssertEqPoints(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_VECTORS(actual, expected) \
+  AssertEqVectors(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_COLORS(actual, expected) \
+  AssertEqColors(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #endif  // SRC_TEST_SUITE_H_
