@@ -1,6 +1,10 @@
 #ifndef SRC_UTILS_H_
 #define SRC_UTILS_H_
 
+#include <windows.h>
+
+void ErrorExit(LPCTSTR function);
+
 constexpr int Min(int a, int b) {
   return (a < b) ? a : b;
 }

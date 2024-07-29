@@ -12,7 +12,6 @@ struct FileResult {
   BYTE *content;
 };
 
-static void ErrorExit(LPCTSTR lpszFunction);
 void FreeMemory(BYTE *memory);
 FileResult ReadEntireFile(std::string file_path);
 bool WriteEntireFile(const char *file_path, uint32_t memory_size, BYTE *memory);
