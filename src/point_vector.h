@@ -1,6 +1,8 @@
 #ifndef SRC_POINT_VECTOR_H_
 #define SRC_POINT_VECTOR_H_
 
+#include <string>
+
 typedef struct Point Point;
 typedef struct Vector Vector;
 
@@ -16,9 +18,7 @@ struct Point {
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
-  operator const char*() const;
-
-  const char* ToString() const;
+  const std::string ToString() const;
 };
 
 struct Vector {
@@ -43,8 +43,7 @@ struct Vector {
   float DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
 
-  operator const char*() const;
-  const char* ToString() const;
+  const std::string ToString() const;
 };
 
 float DotProduct(const Vector& left, const Vector& right);
