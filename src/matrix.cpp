@@ -12,7 +12,7 @@ static inline bool IsEqual(const Matrix* matrix1, const Matrix* matrix2) {
   for (int row = 0; row < matrix1->rows; ++row) {
     for (int col = 0; col < matrix1->cols; ++col) {
       is_equal =
-          AssertFloatEq(matrix1->values[row][col], matrix2->values[row][col]);
+          IsEqualFloat(matrix1->values[row][col], matrix2->values[row][col]);
       if (!is_equal) {
         return false;
       }
