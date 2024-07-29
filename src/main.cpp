@@ -1,10 +1,8 @@
-// #include <raylib/raylib.h>
 #include <src/main.h>
 #include <tests/tests.h>
 #include <windows.h>
 
 #include <cstdio>
-#include <cstdlib>
 #include <string>
 
 int main(int argc, char *argv[]) {
@@ -24,24 +22,6 @@ int main(int argc, char *argv[]) {
     RunTests(root_folder_path);
     return EXIT_SUCCESS;
   }
-
-  // const int width = 200;
-  // const int height = 200;
-  //
-  // const int target_fps = 60;
-  //
-  // InitWindow(width, height, "Ray tracer");
-  //
-  // SetTargetFPS(target_fps);
-  //
-  // while (!WindowShouldClose()) {
-  //   BeginDrawing();
-  //   ClearBackground(RAYWHITE);
-  //   DrawText("hello world!", 200, 200, 16, LIGHTGRAY);
-  //   EndDrawing();
-  // }
-  //
-  // CloseWindow();
 
   return EXIT_SUCCESS;
 }
