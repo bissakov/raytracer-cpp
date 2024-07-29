@@ -22,16 +22,16 @@ struct TestFramework {
 };
 
 template <typename T>
-constexpr bool AssertEq(T a, T b) {
-  if (a != b) {
-    printf(" Error: Assertion failed");
+constexpr bool AssertEq(const T& a, const T& b) {
+  if (!(a == b)) {
+    printf("Error: Assertion failed\n");
     fflush(stdout);
     return false;
   }
   return true;
 }
 
-bool IsEqualFloat(float a, float b);
-bool AssertFloatEq(float a, float b);
+bool IsEqualFloat(const float a, const float b);
+bool AssertFloatEq(const float a, const float b);
 
 #endif  // SRC_TEST_SUITE_H_

@@ -8,7 +8,7 @@
 #include <string>
 
 // TODO(bissakov): Implement platform-independent file IO.
-void FreeMemory(BYTE* memory) {
+void FreeMemory(const BYTE* memory) {
   if (memory == nullptr) {
     return;
   }
@@ -19,7 +19,7 @@ void FreeMemory(BYTE* memory) {
   assert(!memory);
 }
 
-FileResult ReadEntireFile(std::string file_path) {
+FileResult ReadEntireFile(const std::string file_path) {
   FileResult result = {};
 
   HANDLE file_handle = CreateFile(file_path.c_str(), GENERIC_READ,
@@ -64,8 +64,8 @@ FileResult ReadEntireFile(std::string file_path) {
   return result;
 }
 
-bool WriteEntireFile(const char* file_path, uint32_t memory_size,
-                     BYTE* memory) {
+bool WriteEntireFile(const char* file_path, const uint32_t memory_size,
+                     const BYTE* memory) {
   HANDLE file_handle =
       CreateFile(file_path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
@@ -85,7 +85,7 @@ bool WriteEntireFile(const char* file_path, uint32_t memory_size,
   return res;
 }
 
-bool WriteFileText(std::string file_path, std::string text) {
+bool WriteFileText(const std::string file_path, const std::string text) {
   HANDLE file_handle =
       CreateFile(file_path.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {

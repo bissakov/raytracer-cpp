@@ -31,7 +31,7 @@ bool IsEqualFloat(const float a, const float b) {
   return a == b || std::abs(a - b) <= FLT_EPSILON;
 }
 
-bool AssertFloatEq(float a, float b) {
+bool AssertFloatEq(const float a, const float b) {
   if (!IsEqualFloat(a, b)) {
     printf(" Error: Assertion failed");
     fflush(stdout);

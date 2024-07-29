@@ -3,7 +3,7 @@
 
 #include <cstdio>
 
-void ErrorExit(LPCTSTR function) {
+void ErrorExit(const LPCTSTR function) {
   LPVOID message_buffer;
   DWORD last_error_code = GetLastError();
 

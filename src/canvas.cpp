@@ -7,7 +7,7 @@
 #include <cassert>
 #include <string>
 
-Canvas::Canvas(int width_, int height_) {
+Canvas::Canvas(const int width_, const int height_) {
   width = width_;
   height = height_;
 
@@ -95,7 +95,7 @@ void Canvas::WritePixelColor(const int pos_x, const int pos_y,
 //   return canvas_str;
 // }
 
-bool Canvas::SaveToPPM(std::string file_path) {
+bool Canvas::SaveToPPM(const std::string file_path) {
   std::string canvas_buffer = "";
   canvas_buffer +=
       "P3\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n";
@@ -128,7 +128,7 @@ static inline void AdvanceUntil(char* file_content, uint32_t* idx,
   (*idx)++;
 }
 
-static inline int StringToInt(char* start, int length) {
+static inline int StringToInt(char* start, const int length) {
   std::string str = "";
   for (int i = 0; i < length; ++i) {
     str += *GetElement<char>(start, length, i);
@@ -137,11 +137,11 @@ static inline int StringToInt(char* start, int length) {
   return res;
 }
 
-static inline bool IsDigit(char c) {
+static inline bool IsDigit(const char c) {
   return c >= '0' && c <= '9';
 }
 
-bool Canvas::LoadFromPPM(std::string file_path) {
+bool Canvas::LoadFromPPM(const std::string file_path) {
   if (GetFileAttributesA(file_path.c_str()) == INVALID_FILE_ATTRIBUTES) {
     return false;
   }
