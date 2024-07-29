@@ -10,13 +10,12 @@ call vcvarsall.bat x64 > nul 2>&1
 mkdir .\build\batch\debug > nul 2>&1
 pushd .\build\batch\debug 
 
-set src_files=%src_dir%\main.cpp %src_dir%\point_vector.cpp %src_dir%\pixel.cpp %src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\file_io.cpp %src_dir%\test_suite.cpp
+set src_files=%src_dir%\main.cpp %src_dir%\point_vector.cpp %src_dir%\pixel.cpp %src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\file_io.cpp %src_dir%\test_suite.cpp %src_dir%\utils.cpp
 set test_files=%tests_dir%\tests.cpp
-set libs=%lib_dir%\raylib.lib user32.lib gdi32.lib msvcrt.lib shell32.lib winmm.lib
 set ignore_warnings=-wd4201 -wd4127 -wd4100
 set exe_name=raytracer.exe
 
-cl -Fe: %exe_name% -nologo -Oi -GR- -EHa- -MT -Gm- -Od -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref /NODEFAULTLIB:libcmt | gnomon
+cl -Fe: %exe_name% -nologo -Oi -GR- -EHa- -MT -MP -Gm- -Od -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref | gnomon
 
 popd
 
