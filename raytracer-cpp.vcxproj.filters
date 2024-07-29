@@ -15,7 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="tests\tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\canvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\point_vector.cpp">
@@ -24,42 +39,24 @@
     <ClCompile Include="src\test_suite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\canvas.cpp">
+    <ClCompile Include="src\utils.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pixel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\tests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\file_io.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\test_canvas.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\test_color.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tests\test_point_vector.cpp">
-      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\raylib\raylib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\raylib\raymath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\raylib\rlgl.h">
+    <ClInclude Include="tests\tests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\file_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\pixel.h">
@@ -71,19 +68,7 @@
     <ClInclude Include="src\test_suite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\file_io.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tests\test_canvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tests\test_color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tests\test_point_vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tests\tests.h">
+    <ClInclude Include="src\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
