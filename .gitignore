@@ -1,6 +1,7 @@
 .vs/
 build/
 .cache/
+x64/
 
 # temp
 include/
