@@ -1,6 +1,7 @@
 #ifndef SRC_POINT_VECTOR_H_
 #define SRC_POINT_VECTOR_H_
 
+#include <cassert>
 #include <string>
 
 typedef struct Point Point;
@@ -10,6 +11,35 @@ struct Point {
   float x;
   float y;
   float z;
+  float w = 1.0f;
+
+  float& operator[](int index) {
+    assert(index >= 0 && index <= 3);
+    switch (index) {
+      case 0:
+        return x;
+      case 1:
+        return y;
+      case 2:
+        return z;
+      default:
+        return w;
+    }
+  }
+
+  const float& operator[](int index) const {
+    assert(index >= 0 && index <= 3);
+    switch (index) {
+      case 0:
+        return x;
+      case 1:
+        return y;
+      case 2:
+        return z;
+      default:
+        return w;
+    }
+  }
 
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;
@@ -25,6 +55,35 @@ struct Vector {
   float x;
   float y;
   float z;
+  float w = 0.0f;
+
+  float& operator[](int index) {
+    assert(index >= 0 && index <= 3);
+    switch (index) {
+      case 0:
+        return x;
+      case 1:
+        return y;
+      case 2:
+        return z;
+      default:
+        return w;
+    }
+  }
+
+  const float& operator[](int index) const {
+    assert(index >= 0 && index <= 3);
+    switch (index) {
+      case 0:
+        return x;
+      case 1:
+        return y;
+      case 2:
+        return z;
+      default:
+        return w;
+    }
+  }
 
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;

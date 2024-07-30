@@ -1,6 +1,8 @@
 #ifndef SRC_MATRIX_H_
 #define SRC_MATRIX_H_
 
+#include <src/point_vector.h>
+
 #include <cassert>
 #include <string>
 
@@ -15,6 +17,7 @@ struct Matrix {
 
   Matrix& operator=(const Matrix& other);
   Matrix operator*(const Matrix& other);
+  Vector operator*(const Vector& vector);
   bool operator==(const Matrix& other);
   bool operator!=(const Matrix& other);
 

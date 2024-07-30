@@ -46,6 +46,19 @@ Matrix Matrix::operator*(const Matrix& other) {
   return Multiply(*this, other);
 }
 
+Vector Matrix::operator*(const Vector& vector) {
+  assert(rows == 4 && cols == 4);
+  Vector res = {0.0f, 0.0f, 0.0f, 0.0f};
+
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      res[i] += At(i, j) * vector[j];
+    }
+  }
+
+  return res;
+}
+
 bool Matrix::operator==(const Matrix& other) {
   return IsEqual(*this, other);
 }

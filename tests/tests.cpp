@@ -480,5 +480,39 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(&actual, &expected);
   });
 
+  framework.AddTest("Multiply a 4x4 matrix by a vector", []() -> bool {
+    Matrix matrix = {4, 4};
+    int element_count1 = matrix.rows * matrix.cols;
+    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 2.0f, 4.0f, 4.0f, 2.0f,
+                         8.0f, 6.0f, 4.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    matrix.Populate(elements1, element_count1);
+
+    Vector vector = {1.0f, 2.0f, 3.0f, 1.0f};
+
+    Vector actual = matrix * vector;
+
+    Vector expected = {18.0f, 24.0f, 33.0f, 1.0f};
+
+    return ASSERT_EQUAL_VECTORS(actual, expected);
+  });
+
+  framework.AddTest("Multiply a matrix by an identity matrix", []() -> bool {
+    Matrix matrix = {4, 4};
+    int element_count1 = matrix.rows * matrix.cols;
+    float elements1[] = {0.0f, 1.0f, 2.0f, 4.0f,  1.0f, 2.0f, 4.0f,  8.0f,
+                         2.0f, 4.0f, 8.0f, 16.0f, 4.0f, 8.0f, 16.0f, 32.0f};
+    matrix.Populate(elements1, element_count1);
+
+    Matrix identity_matrix = {4, 4};
+    int element_count2 = identity_matrix.rows * identity_matrix.cols;
+    float elements2[] = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    identity_matrix.Populate(elements2, element_count2);
+
+    Matrix actual = matrix * identity_matrix;
+
+    return ASSERT_EQUAL_MATRICES(&actual, &matrix);
+  });
+
   framework.RunTest();
 }

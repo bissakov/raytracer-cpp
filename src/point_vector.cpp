@@ -2,6 +2,7 @@
 #include <src/test_suite.h>
 
 #include <cmath>
+#include <string>
 
 // NOTE: Point methods definitions
 Point Point::operator+(const Vector &other) const {
@@ -93,6 +94,6 @@ Vector CrossProduct(const Vector &left, const Vector &right) {
 const std::string Vector::ToString() const {
   std::string result = "Vector{x=" + std::to_string(x) +
                        ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
-                       "}";
+                       ", w=" + std::to_string(w) + "}";
   return result;
 }
