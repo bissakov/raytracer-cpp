@@ -1,6 +1,7 @@
 #ifndef SRC_TEST_SUITE_H_
 #define SRC_TEST_SUITE_H_
 
+#include <src/matrix.h>
 #include <src/pixel.h>
 #include <src/point_vector.h>
 
@@ -50,6 +51,9 @@ bool AssertEqColors(const Color& actual, const Color& expected,
                     const char* actual_name, const char* expected_name,
                     const char* file, int line);
 
+bool AssertEqMatrices(Matrix* actual, Matrix* expected, const char* actual_name,
+                      const char* expected_name, const char* file, int line);
+
 #define ASSERT_EQUAL_INTS(actual, expected) \
   AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
@@ -67,5 +71,8 @@ bool AssertEqColors(const Color& actual, const Color& expected,
 
 #define ASSERT_EQUAL_COLORS(actual, expected) \
   AssertEqColors(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_MATRICES(actual, expected) \
+  AssertEqMatrices(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #endif  // SRC_TEST_SUITE_H_

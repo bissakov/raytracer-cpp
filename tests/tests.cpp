@@ -361,9 +361,10 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Check 4x4 matrix values", []() -> bool {
     Matrix matrix = {4, 4};
-
-    matrix.Populate(1.0f, 2.0f, 3.0f, 4.0f, 5.5f, 6.5f, 7.5f, 8.5f, 9.0f, 10.0f,
-                    11.0f, 12.0f, 13.5f, 14.5f, 15.5f, 16.5f);
+    int element_count = matrix.rows * matrix.cols;
+    float elements[] = {1.0f, 2.0f,  3.0f,  4.0f,  5.5f,  6.5f,  7.5f,  8.5f,
+                        9.0f, 10.0f, 11.0f, 12.0f, 13.5f, 14.5f, 15.5f, 16.5f};
+    matrix.Populate(elements, element_count);
 
     bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), 1.0f) &&
                ASSERT_EQUAL_FLOATS(matrix.At(0, 3), 4.0f) &&
@@ -378,8 +379,10 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Check 3x3 matrix values", []() -> bool {
     Matrix matrix = {3, 3};
-
-    matrix.Populate(-3.0f, 5.0f, 0.0f, 1.0f, -2.0f, -7.0f, 0.0f, 1.0f, 1.0f);
+    int element_count = matrix.rows * matrix.cols;
+    float elements[] = {-3.0f, 5.0f, 0.0f, 1.0f, -2.0f,
+                        -7.0f, 0.0f, 1.0f, 1.0f};
+    matrix.Populate(elements, element_count);
 
     bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3.0f) &&
                ASSERT_EQUAL_FLOATS(matrix.At(1, 1), -2.0f) &&
@@ -390,8 +393,9 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Check 2x2 matrix values", []() -> bool {
     Matrix matrix = {2, 2};
-
-    matrix.Populate(-3.0f, 5.0f, 1.0f, -2.0f);
+    int element_count = matrix.rows * matrix.cols;
+    float elements[] = {-3.0f, 5.0f, 1.0f, -2.0f};
+    matrix.Populate(elements, element_count);
 
     bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3.0f) &&
                ASSERT_EQUAL_FLOATS(matrix.At(0, 1), 5.0f) &&
@@ -403,11 +407,16 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two equal 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
-    matrix1.Populate(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 8.0f,
-                     7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f);
+    int element_count1 = matrix1.rows * matrix1.cols;
+    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix1.Populate(elements1, element_count1);
+
     Matrix matrix2 = {4, 4};
-    matrix2.Populate(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 8.0f,
-                     7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f);
+    int element_count2 = matrix2.rows * matrix2.cols;
+    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 == matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
@@ -415,11 +424,16 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two different 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
-    matrix1.Populate(1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 8.0f,
-                     7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f);
+    int element_count1 = matrix1.rows * matrix1.cols;
+    float elements1[] = {1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix1.Populate(elements1, element_count1);
+
     Matrix matrix2 = {4, 4};
-    matrix2.Populate(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f, 9.0f, 8.0f,
-                     7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f);
+    int element_count2 = matrix2.rows * matrix2.cols;
+    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 != matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
@@ -427,13 +441,43 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two differently sized matrices", []() -> bool {
     Matrix matrix1 = {3, 3};
-    matrix1.Populate(1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f);
+    int element_count1 = matrix1.rows * matrix1.cols;
+    float elements1[] = {1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+    matrix1.Populate(elements1, element_count1);
+
     Matrix matrix2 = {4, 4};
-    matrix2.Populate(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f, 9.0f, 8.0f,
-                     7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f);
+    int element_count2 = matrix2.rows * matrix2.cols;
+    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 != matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
+  });
+
+  framework.AddTest("Multiply two 4x4 matrices", []() -> bool {
+    Matrix matrix1 = {4, 4};
+    int element_count1 = matrix1.rows * matrix1.cols;
+    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
+                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    matrix1.Populate(elements1, element_count1);
+
+    Matrix matrix2 = {4, 4};
+    int element_count2 = matrix2.rows * matrix2.cols;
+    float elements2[] = {-2.0f, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f, -1.0f,
+                         4.0f,  3.0f, 6.0f, 5.0f, 1.0f, 2.0f, 7.0f, 8.0f};
+    matrix2.Populate(elements2, element_count2);
+
+    Matrix actual = matrix1 * matrix2;
+
+    Matrix expected = {4, 4};
+    int expected_elements_count = expected.rows * expected.cols;
+    float expected_elements[] = {20.0f,  22.0f,  50.0f, 48.0f, 44.0f,  54.0f,
+                                 114.0f, 108.0f, 40.0f, 58.0f, 110.0f, 102.0f,
+                                 16.0f,  26.0f,  46.0f, 42.0f};
+    expected.Populate(expected_elements, expected_elements_count);
+
+    return ASSERT_EQUAL_MATRICES(&actual, &expected);
   });
 
   framework.RunTest();

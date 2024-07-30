@@ -2,64 +2,64 @@
 #include <src/test_suite.h>
 
 #include <cassert>
-
-static inline bool IsEqual(const Matrix* matrix1, const Matrix* matrix2) {
-  if (matrix1->rows != matrix2->rows || matrix1->cols != matrix2->cols) {
-    return false;
-  }
-
-  bool is_equal = true;
-  for (int row = 0; row < matrix1->rows; ++row) {
-    for (int col = 0; col < matrix1->cols; ++col) {
-      is_equal =
-          IsEqualFloat(matrix1->values[row][col], matrix2->values[row][col]);
-      if (!is_equal) {
-        return false;
-      }
-    }
-  }
-
-  return is_equal;
-}
-
-bool Matrix::operator==(const Matrix& other) const {
-  return IsEqual(this, &other);
-}
-
-bool Matrix::operator!=(const Matrix& other) const {
-  return !IsEqual(this, &other);
-}
+#include <string>
 
 Matrix::Matrix(const int rows_, const int cols_) {
+  assert(rows_ >= 0 && cols_ >= 0 && "Dimensions must be positive or 0.");
+
   rows = rows_;
-  cols = cols_;
+  cols = rows_;
 
-  assert(cols >= 0 && rows >= 0 && "Dimensions must be positive or 0.");
+  values = new float[rows * cols];
 
-  if (rows_ == 0 && cols_ == 0) {
-    values = nullptr;
-    return;
+  for (int i = 0; i < rows * cols; ++i) {
+    values[i] = 0.0f;
   }
+}
 
-  values = new float*[rows];
-  for (int row = 0; row < rows; ++row) {
-    values[row] = new float[cols];
-    for (int col = 0; col < cols; ++col) {
-      float* value = &values[row][col];
-      *value = 0.0f;
-    }
+Matrix::Matrix(const Matrix& other) {
+  rows = other.rows;
+  cols = other.cols;
+  values = new float[rows * cols];
+  for (int i = 0; i < rows * cols; ++i) {
+    values[i] = other.values[i];
   }
 }
 
 Matrix::~Matrix() {
-  if ((rows == 0 && cols == 0) || values == nullptr) {
-    return;
-  }
-
-  for (int row = 0; row < rows; ++row) {
-    delete[] values[row];
-  }
   delete[] values;
+}
+
+Matrix& Matrix::operator=(const Matrix& other) {
+  if (this != &other) {
+    delete[] values;  // Clean up existing values
+
+    values = new float[other.rows * other.cols];
+    for (int i = 0; i < other.rows * other.cols; ++i) {
+      values[i] = other.values[i];
+    }
+  }
+  return *this;
+}
+
+Matrix Matrix::operator*(const Matrix& other) {
+  return Multiply(*this, other);
+}
+
+bool Matrix::operator==(const Matrix& other) {
+  return IsEqual(*this, other);
+}
+
+bool Matrix::operator!=(const Matrix& other) {
+  return !IsEqual(*this, other);
+}
+
+void Matrix::Populate(float* elements, int element_count) {
+  assert(element_count == rows * cols &&
+         "Invalid number of elements to populate matrix");
+  for (int i = 0; i < rows * cols; ++i) {
+    values[i] = elements[i];
+  }
 }
 
 bool Matrix::IsValueInRange(const int row, const int col) const {
@@ -68,7 +68,56 @@ bool Matrix::IsValueInRange(const int row, const int col) const {
 
 float Matrix::At(const int row, const int col) const {
   assert(IsValueInRange(row, col));
-  assert(values != nullptr);
+  return values[row * cols + col];
+}
 
-  return values[row][col];
+std::string Matrix::ToString() const {
+  std::string matrix_str = "Matrix{\n  rows=" + std::to_string(rows) +
+                           ", cols=" + std::to_string(cols) + ",\n  ";
+  for (int row = 0; row < rows; ++row) {
+    for (int col = 0; col < cols; ++col) {
+      matrix_str += std::to_string(values[row * cols + col]);
+
+      if (col != cols - 1) {
+        matrix_str += ", ";
+      }
+    }
+    if (row != rows - 1) {
+      matrix_str += "\n  ";
+    }
+  }
+
+  matrix_str += "\n}";
+
+  return matrix_str;
+}
+
+bool IsEqual(const Matrix& a, const Matrix& b) {
+  if (a.rows != b.rows || a.cols != b.cols) {
+    return false;
+  }
+
+  for (int i = 0; i < a.rows * a.cols; ++i) {
+    if (!IsEqualFloat(a.values[i], b.values[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+Matrix Multiply(const Matrix& a, const Matrix& b) {
+  assert(a.rows == b.rows && a.cols == b.cols);
+
+  Matrix res = {a.rows, b.cols};
+
+  for (int row = 0; row < res.rows; ++row) {
+    for (int col = 0; col < res.cols; ++col) {
+      for (int k = 0; k < b.rows; ++k) {
+        res.values[row * res.cols + col] += a.At(row, k) * b.At(k, col);
+      }
+    }
+  }
+
+  return res;
 }
