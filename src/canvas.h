@@ -9,10 +9,13 @@
 struct Canvas {
   int width;
   int height;
-  Pixel **pixels;
+  Pixel *pixels;
 
   Canvas(const int _width, const int _height);
+  Canvas(const Canvas &other);
   ~Canvas();
+
+  Canvas &operator=(const Canvas &other);
 
   bool IsPixelInRange(const int pos_x, const int pos_y) const;
   Pixel PixelAt(const int pos_x, const int pos_y) const;

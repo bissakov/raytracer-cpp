@@ -18,15 +18,23 @@ Canvas::Canvas(const int width_, const int height_) {
     return;
   }
 
-  pixels = new Pixel*[height];
+  pixels = new Pixel[width * height];
   for (int row = 0; row < height; ++row) {
-    pixels[row] = new Pixel[width];
     for (int col = 0; col < width; ++col) {
-      Pixel* pixel = &pixels[row][col];
+      Pixel* pixel = &pixels[row * width + col];
       pixel->x = col;
       pixel->y = row;
       pixel->color = {};
     }
+  }
+}
+
+Canvas::Canvas(const Canvas& other) {
+  width = other.width;
+  height = other.height;
+  pixels = new Pixel[width * height];
+  for (int i = 0; i < width * height; ++i) {
+    pixels[i] = other.pixels[i];
   }
 }
 
@@ -35,12 +43,19 @@ Canvas::~Canvas() {
     return;
   }
 
-  for (int row = 0; row < height; ++row) {
-    if (pixels[row] == nullptr) {
-      delete[] pixels[row];
+  delete[] pixels;
+}
+
+Canvas& Canvas::operator=(const Canvas& other) {
+  if (this != &other) {
+    delete[] pixels;  // Clean up existing values
+
+    pixels = new Pixel[other.width * other.height];
+    for (int i = 0; i < other.width * other.height; ++i) {
+      pixels[i] = other.pixels[i];
     }
   }
-  delete[] pixels;
+  return *this;
 }
 
 bool Canvas::IsPixelInRange(const int pos_x, const int pos_y) const {
@@ -49,14 +64,14 @@ bool Canvas::IsPixelInRange(const int pos_x, const int pos_y) const {
 
 Pixel Canvas::PixelAt(const int pos_x, const int pos_y) const {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  Pixel pixel = pixels[pos_y][pos_x];
+  Pixel pixel = pixels[pos_y * width + pos_x];
   return pixel;
 }
 
 void Canvas::WritePixelColor(const int pos_x, const int pos_y,
                              const Color& color) const {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  Pixel* pixel = &pixels[pos_y][pos_x];
+  Pixel* pixel = &pixels[pos_y * width + pos_x];
   pixel->color = color;
 }
 
@@ -100,16 +115,16 @@ bool Canvas::SaveToPPM(const std::string file_path) {
   canvas_buffer +=
       "P3\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n";
 
-  for (int j = 0; j < height; ++j) {
-    for (int i = 0; i < width; ++i) {
-      Color* color = &pixels[j][i].color;
+  for (int row = 0; row < height; ++row) {
+    for (int col = 0; col < width; ++col) {
+      Color* color = &pixels[row * width + col].color;
       int red = Clamp(static_cast<int>(color->r * 255.0f), 0, 255);
       int green = Clamp(static_cast<int>(color->g * 255.0f), 0, 255);
       int blue = Clamp(static_cast<int>(color->b * 255.0f), 0, 255);
 
       canvas_buffer += std::to_string(red) + " " + std::to_string(green) + " " +
                        std::to_string(blue);
-      if (i < width - 1) {
+      if (row < width - 1) {
         canvas_buffer += " ";
       }
     }
@@ -181,10 +196,8 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
     delete[] pixels;
   }
 
-  pixels = new Pixel*[height];
+  pixels = new Pixel[width * height];
   for (int row = 0; row < height; ++row) {
-    pixels[row] = new Pixel[width];
-
     int col = 0;
     ColorRGB rgb_color = {};
 
@@ -208,7 +221,7 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
         rgb_color.b = StringToInt(source + start, current - start);
         start = current;
 
-        Pixel* current_pixel = &pixels[row][col];
+        Pixel* current_pixel = &pixels[row * width + col];
         current_pixel->x = col;
         current_pixel->y = row;
 
