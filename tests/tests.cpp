@@ -491,12 +491,12 @@ void RunTests(const std::string root_folder_path) {
     float elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
     matrix.Populate(elements1, element_count1);
 
-    Matrix identity_matrix = {4, 4};
-    IDENTITY_MATRIX(identity_matrix)
-
+    Matrix identity_matrix = IdentityMatrix();
     Matrix actual = matrix * identity_matrix;
 
-    return ASSERT_EQUAL_MATRICES(&actual, &matrix);
+    return ASSERT_EQUAL_MATRICES(actual, matrix);
+  });
+
   });
 
   framework.RunTest();

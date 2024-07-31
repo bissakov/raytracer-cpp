@@ -132,3 +132,11 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
 
   return res;
 }
+
+Matrix IdentityMatrix() {
+  Matrix identity_matrix = {4, 4};
+  float elements[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+  identity_matrix.Populate(elements,
+                           identity_matrix.rows * identity_matrix.cols);
+  return identity_matrix;
+}
