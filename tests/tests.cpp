@@ -16,170 +16,169 @@ void RunTests(const std::string root_folder_path) {
   framework.root_folder_path = root_folder_path;
 
   framework.AddTest("Adding point to vector", []() -> bool {
-    Point left = {3.0f, -2.0f, 5.0f};
-    Vector right = {-2.0f, 3.0f, 1.0f};
+    Point left = {3, -2, 5};
+    Vector right = {-2, 3, 1};
     Point actual = left + right;
-    Point expected = {1.0f, 1.0f, 6.0f};
+    Point expected = {1, 1, 6};
     return ASSERT_EQUAL_POINTS(actual, expected);
   });
 
   framework.AddTest("Subtracting point from point", []() -> bool {
-    Point left = {3.0f, 2.0f, 1.0f};
-    Point right = {-2.0f, 3.0f, 1.0f};
+    Point left = {3, 2, 1};
+    Point right = {-2, 3, 1};
     Vector actual = left - right;
-    Vector expected = {5.0f, -1.0f, 0.0f};
+    Vector expected = {5, -1, 0};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Subtracting vector from point", []() -> bool {
-    Point left = {3.0f, 2.0f, 1.0f};
-    Vector right = {5.0f, 6.0f, 7.0f};
+    Point left = {3, 2, 1};
+    Vector right = {5, 6, 7};
     Point actual = left - right;
-    Point expected = {-2.0f, -4.0f, -6.0f};
+    Point expected = {-2, -4, -6};
     return ASSERT_EQUAL_POINTS(actual, expected);
   });
 
   framework.AddTest("Subtracting vector from vector", []() -> bool {
-    Vector left = {3.0f, 2.0f, 1.0f};
-    Vector right = {5.0f, 6.0f, 7.0f};
+    Vector left = {3, 2, 1};
+    Vector right = {5, 6, 7};
     Vector actual = left - right;
-    Vector expected = {-2.0f, -4.0f, -6.0f};
+    Vector expected = {-2, -4, -6};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Negate vector", []() -> bool {
-    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector v = {1, -2, 3};
     Vector actual = -v;
-    Vector expected = {-1.0f, 2.0f, -3.0f};
+    Vector expected = {-1, 2, -3};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Multiply vector by scalar", []() -> bool {
-    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector v = {1, -2, 3};
     Vector actual = v * 3.5f;
-    Vector expected = {3.5f, -7.0f, 10.5f};
+    Vector expected = {3.5f, -7, 10.5f};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Divide vector by multiplying by scalar", []() -> bool {
-    Vector v = {1.0f, -2.0f, 3.0f};
+    Vector v = {1, -2, 3};
     Vector actual = v * 0.5f;
-    Vector expected = {0.5f, -1.0f, 1.5f};
+    Vector expected = {0.5f, -1, 1.5f};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Divide vector by scalar", []() -> bool {
-    Vector v = {1.0f, -2.0f, 3.0f};
-    Vector actual = v / 2.0f;
-    Vector expected = {0.5f, -1.0f, 1.5f};
+    Vector v = {1, -2, 3};
+    Vector actual = v / 2;
+    Vector expected = {0.5f, -1, 1.5f};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a vector 1", []() -> bool {
-    Vector v = {1.0f, 0.0f, 0.0f};
+    Vector v = {1, 0, 0};
     float actual = v.Magnitude();
-    float expected = 1.0f;
+    float expected = 1;
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a vector 2", []() -> bool {
-    Vector v = {0.0f, 1.0f, 0.0f};
+    Vector v = {0, 1, 0};
     float actual = v.Magnitude();
-    float expected = 1.0f;
+    float expected = 1;
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a vector 3", []() -> bool {
-    Vector v = {0.0f, 0.0f, 1.0f};
+    Vector v = {0, 0, 1};
     float actual = v.Magnitude();
-    float expected = 1.0f;
+    float expected = 1;
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a vector 4", []() -> bool {
-    Vector v = {1.0f, 2.0f, 3.0f};
+    Vector v = {1, 2, 3};
     float actual = v.Magnitude();
     float expected = sqrt(14.0f);
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a vector 5", []() -> bool {
-    Vector v = {-1.0f, -2.0f, -3.0f};
+    Vector v = {-1, -2, -3};
     float actual = v.Magnitude();
     float expected = sqrt(14.0f);
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("Normalize vector 1", []() -> bool {
-    Vector v = {4.0f, 0.0f, 0.0f};
+    Vector v = {4, 0, 0};
     Vector actual = v.Normalize();
-    Vector expected = {1.0f, 0.0f, 0.0f};
+    Vector expected = {1, 0, 0};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("Normalize vector 2", []() -> bool {
-    Vector v = {1.0f, 2.0f, 3.0f};
+    Vector v = {1, 2, 3};
     Vector actual = v.Normalize();
-    Vector expected = {1.0f / sqrt(14.0f), 2.0f / sqrt(14.0f),
-                       3.0f / sqrt(14.0f)};
+    Vector expected = {1 / sqrt(14.0f), 2 / sqrt(14.0f), 3 / sqrt(14.0f)};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("The magnitude of a normalized vector", []() -> bool {
-    Vector v = {1.0f, 2.0f, 3.0f};
+    Vector v = {1, 2, 3};
     Vector nv = v.Normalize();
     float actual = nv.Magnitude();
-    float expected = 1.0f;
+    float expected = 1;
     return ASSERT_EQUAL_FLOATS(actual, expected);
   });
 
   framework.AddTest("The dot product (self)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     float result = v1.DotProduct(v2);
-    float expected = 20.0f;
+    float expected = 20;
 
     return ASSERT_EQUAL_FLOATS(result, expected);
   });
 
   framework.AddTest("The dot product (separate)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     float result = DotProduct(v1, v2);
-    float expected = 20.0f;
+    float expected = 20;
 
     return ASSERT_EQUAL_FLOATS(result, expected);
   });
 
   framework.AddTest("The cross product (self)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     Vector actual = v1.CrossProduct(v2);
-    Vector expected = {-1.0f, 2.0f, -1.0f};
+    Vector expected = {-1, 2, -1};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("The cross product (self, reversed)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     Vector actual = v2.CrossProduct(v1);
-    Vector expected = {1.0f, -2.0f, 1.0f};
+    Vector expected = {1, -2, 1};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("The cross product (separate)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v1, v2);
-    Vector expected = {-1.0f, 2.0f, -1.0f};
+    Vector expected = {-1, 2, -1};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
   framework.AddTest("The cross product (separate, reversed)", []() -> bool {
-    Vector v1 = {1.0f, 2.0f, 3.0f};
-    Vector v2 = {2.0f, 3.0f, 4.0f};
+    Vector v1 = {1, 2, 3};
+    Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v2, v1);
-    Vector expected = {1.0f, -2.0f, 1.0f};
+    Vector expected = {1, -2, 1};
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
@@ -187,7 +186,7 @@ void RunTests(const std::string root_folder_path) {
     Color left = {0.9f, 0.6f, 0.75f};
     Color right = {0.7f, 0.1f, 0.25f};
     Color actual = left + right;
-    Color expected = {1.6f, 0.7f, 1.0f};
+    Color expected = {1.6f, 0.7f, 1};
     return ASSERT_EQUAL_COLORS(actual, expected);
   });
 
@@ -201,7 +200,7 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Multiply color by scalar", []() -> bool {
     Color c = {0.2f, 0.3f, 0.4f};
-    Color actual = c * 2.0f;
+    Color actual = c * 2;
     Color expected = {0.4f, 0.6f, 0.8f};
     return ASSERT_EQUAL_COLORS(actual, expected);
   });
@@ -215,14 +214,14 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Divide color by scalar", []() -> bool {
     Color c = {0.2f, 0.3f, 0.4f};
-    Color actual = c / 2.0f;
+    Color actual = c / 2;
     Color expected = {0.1f, 0.15f, 0.2f};
     return ASSERT_EQUAL_COLORS(actual, expected);
   });
 
   framework.AddTest("Multiply colors", []() -> bool {
-    Color left = {1.0f, 0.2f, 0.4f};
-    Color right = {0.9f, 1.0f, 0.1f};
+    Color left = {1, 0.2f, 0.4f};
+    Color right = {0.9f, 1, 0.1f};
     Color actual = left * right;
     Color expected = {0.9f, 0.2f, 0.04f};
     return ASSERT_EQUAL_COLORS(actual, expected);
@@ -311,17 +310,17 @@ void RunTests(const std::string root_folder_path) {
     Canvas canvas = {900, 550};
 
     Projectile proj;
-    proj.position = {0.0f, 1.0f, 0.0f};
-    proj.velocity = {1.0f, 1.8f, 0.0f};
+    proj.position = {0, 1, 0};
+    proj.velocity = {1, 1.8f, 0};
     proj.velocity = proj.velocity.Normalize() * 11.25f;
 
     Environment env;
-    env.gravity = {0.0f, -0.1f, 0.0f};
-    env.wind = {-0.01f, 0.0f, 0.0f};
+    env.gravity = {0, -0.1f, 0};
+    env.wind = {-0.01f, 0, 0};
 
-    Color red = {1.0f, 0.0f, 0.0f};
+    Color red = {1, 0, 0};
 
-    while (proj.position.y > 0.0f) {
+    while (proj.position.y > 0) {
       int pos_x = static_cast<int>(floor(proj.position.x));
       int pos_y = static_cast<int>(floor(proj.position.y));
       pos_y = static_cast<int>(abs(canvas.height - floor(proj.position.y)));
@@ -362,15 +361,15 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Check 4x4 matrix values", []() -> bool {
     Matrix matrix = {4, 4};
     int element_count = matrix.rows * matrix.cols;
-    float elements[] = {1.0f, 2.0f,  3.0f,  4.0f,  5.5f,  6.5f,  7.5f,  8.5f,
-                        9.0f, 10.0f, 11.0f, 12.0f, 13.5f, 14.5f, 15.5f, 16.5f};
+    float elements[] = {1, 2,  3,  4,  5.5f,  6.5f,  7.5f,  8.5f,
+                        9, 10, 11, 12, 13.5f, 14.5f, 15.5f, 16.5f};
     matrix.Populate(elements, element_count);
 
-    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), 1.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(0, 3), 4.0f) &&
+    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), 1) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(0, 3), 4) &&
                ASSERT_EQUAL_FLOATS(matrix.At(1, 0), 5.5f) &&
                ASSERT_EQUAL_FLOATS(matrix.At(1, 2), 7.5f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(2, 2), 11.0f) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(2, 2), 11) &&
                ASSERT_EQUAL_FLOATS(matrix.At(3, 0), 13.5f) &&
                ASSERT_EQUAL_FLOATS(matrix.At(3, 2), 15.5f);
 
@@ -380,13 +379,12 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Check 3x3 matrix values", []() -> bool {
     Matrix matrix = {3, 3};
     int element_count = matrix.rows * matrix.cols;
-    float elements[] = {-3.0f, 5.0f, 0.0f, 1.0f, -2.0f,
-                        -7.0f, 0.0f, 1.0f, 1.0f};
+    float elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
     matrix.Populate(elements, element_count);
 
-    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(1, 1), -2.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(2, 2), 1.0f);
+    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(1, 1), -2) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(2, 2), 1);
 
     return res;
   });
@@ -394,13 +392,13 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Check 2x2 matrix values", []() -> bool {
     Matrix matrix = {2, 2};
     int element_count = matrix.rows * matrix.cols;
-    float elements[] = {-3.0f, 5.0f, 1.0f, -2.0f};
+    float elements[] = {-3, 5, 1, -2};
     matrix.Populate(elements, element_count);
 
-    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(0, 1), 5.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(1, 0), 1.0f) &&
-               ASSERT_EQUAL_FLOATS(matrix.At(1, 1), -2.0f);
+    bool res = ASSERT_EQUAL_FLOATS(matrix.At(0, 0), -3) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(0, 1), 5) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(1, 0), 1) &&
+               ASSERT_EQUAL_FLOATS(matrix.At(1, 1), -2);
 
     return res;
   });
@@ -408,14 +406,12 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Compare two equal 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
     int element_count1 = matrix1.rows * matrix1.cols;
-    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, element_count1);
 
     Matrix matrix2 = {4, 4};
     int element_count2 = matrix2.rows * matrix2.cols;
-    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 == matrix2;
@@ -425,14 +421,12 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Compare two different 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
     int element_count1 = matrix1.rows * matrix1.cols;
-    float elements1[] = {1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, element_count1);
 
     Matrix matrix2 = {4, 4};
     int element_count2 = matrix2.rows * matrix2.cols;
-    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 != matrix2;
@@ -442,13 +436,12 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Compare two differently sized matrices", []() -> bool {
     Matrix matrix1 = {3, 3};
     int element_count1 = matrix1.rows * matrix1.cols;
-    float elements1[] = {1.0f, 2.0f, 3.0f, 2.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
+    float elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9};
     matrix1.Populate(elements1, element_count1);
 
     Matrix matrix2 = {4, 4};
     int element_count2 = matrix2.rows * matrix2.cols;
-    float elements2[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 9.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, element_count2);
 
     bool res = matrix1 != matrix2;
@@ -458,40 +451,36 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Multiply two 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
     int element_count1 = matrix1.rows * matrix1.cols;
-    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f,
-                         9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f};
+    float elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, element_count1);
 
     Matrix matrix2 = {4, 4};
     int element_count2 = matrix2.rows * matrix2.cols;
-    float elements2[] = {-2.0f, 1.0f, 2.0f, 3.0f, 3.0f, 2.0f, 1.0f, -1.0f,
-                         4.0f,  3.0f, 6.0f, 5.0f, 1.0f, 2.0f, 7.0f, 8.0f};
+    float elements2[] = {-2, 1, 2, 3, 3, 2, 1, -1, 4, 3, 6, 5, 1, 2, 7, 8};
     matrix2.Populate(elements2, element_count2);
 
     Matrix actual = matrix1 * matrix2;
 
     Matrix expected = {4, 4};
     int expected_elements_count = expected.rows * expected.cols;
-    float expected_elements[] = {20.0f,  22.0f,  50.0f, 48.0f, 44.0f,  54.0f,
-                                 114.0f, 108.0f, 40.0f, 58.0f, 110.0f, 102.0f,
-                                 16.0f,  26.0f,  46.0f, 42.0f};
+    float expected_elements[] = {20, 22, 50,  48,  44, 54, 114, 108,
+                                 40, 58, 110, 102, 16, 26, 46,  42};
     expected.Populate(expected_elements, expected_elements_count);
 
-    return ASSERT_EQUAL_MATRICES(&actual, &expected);
+    return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
   framework.AddTest("Multiply a 4x4 matrix by a vector", []() -> bool {
     Matrix matrix = {4, 4};
     int element_count1 = matrix.rows * matrix.cols;
-    float elements1[] = {1.0f, 2.0f, 3.0f, 4.0f, 2.0f, 4.0f, 4.0f, 2.0f,
-                         8.0f, 6.0f, 4.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    float elements1[] = {1, 2, 3, 4, 2, 4, 4, 2, 8, 6, 4, 1, 0, 0, 0, 1};
     matrix.Populate(elements1, element_count1);
 
-    Vector vector = {1.0f, 2.0f, 3.0f, 1.0f};
+    Vector vector = {1, 2, 3, 1};
 
     Vector actual = matrix * vector;
 
-    Vector expected = {18.0f, 24.0f, 33.0f, 1.0f};
+    Vector expected = {18, 24, 33, 1};
 
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
@@ -499,8 +488,7 @@ void RunTests(const std::string root_folder_path) {
   framework.AddTest("Multiply a matrix by an identity matrix", []() -> bool {
     Matrix matrix = {4, 4};
     int element_count1 = matrix.rows * matrix.cols;
-    float elements1[] = {0.0f, 1.0f, 2.0f, 4.0f,  1.0f, 2.0f, 4.0f,  8.0f,
-                         2.0f, 4.0f, 8.0f, 16.0f, 4.0f, 8.0f, 16.0f, 32.0f};
+    float elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
     matrix.Populate(elements1, element_count1);
 
     Matrix identity_matrix = {4, 4};
