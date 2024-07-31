@@ -4,7 +4,7 @@
 #include <cassert>
 #include <string>
 
-Matrix::Matrix(const int rows_, const int cols_) {
+Matrix::Matrix(const int rows_, const int cols_) noexcept {
   assert(rows_ >= 0 && cols_ >= 0 && "Dimensions must be positive or 0.");
 
   rows = rows_;
@@ -17,7 +17,7 @@ Matrix::Matrix(const int rows_, const int cols_) {
   }
 }
 
-Matrix::Matrix(const Matrix& other) {
+Matrix::Matrix(const Matrix& other) noexcept {
   rows = other.rows;
   cols = other.cols;
   values = new float[rows * cols];
@@ -26,13 +26,18 @@ Matrix::Matrix(const Matrix& other) {
   }
 }
 
-Matrix::~Matrix() {
+Matrix::~Matrix() noexcept {
   delete[] values;
 }
 
-Matrix& Matrix::operator=(const Matrix& other) {
+inline float Matrix::At(const int row, const int col) const noexcept {
+  assert(IsValueInRange(row, col));
+  return values[Index(row, col)];
+}
+
+Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
-    delete[] values;  // Clean up existing values
+    delete[] values;
 
     values = new float[other.rows * other.cols];
     for (int i = 0; i < other.rows * other.cols; ++i) {
@@ -42,11 +47,11 @@ Matrix& Matrix::operator=(const Matrix& other) {
   return *this;
 }
 
-Matrix Matrix::operator*(const Matrix& other) {
+Matrix Matrix::operator*(const Matrix& other) noexcept {
   return Multiply(*this, other);
 }
 
-Vector Matrix::operator*(const Vector& vector) {
+Vector Matrix::operator*(const Vector& vector) noexcept {
   assert(rows == 4 && cols == 4);
   Vector res = {0.0f, 0.0f, 0.0f, 0.0f};
 
@@ -59,15 +64,15 @@ Vector Matrix::operator*(const Vector& vector) {
   return res;
 }
 
-bool Matrix::operator==(const Matrix& other) {
+bool Matrix::operator==(const Matrix& other) noexcept {
   return IsEqual(*this, other);
 }
 
-bool Matrix::operator!=(const Matrix& other) {
+bool Matrix::operator!=(const Matrix& other) noexcept {
   return !IsEqual(*this, other);
 }
 
-void Matrix::Populate(float* elements, int element_count) {
+void Matrix::Populate(float* elements, int element_count) noexcept {
   assert(element_count == rows * cols &&
          "Invalid number of elements to populate matrix");
   for (int i = 0; i < rows * cols; ++i) {
@@ -75,21 +80,16 @@ void Matrix::Populate(float* elements, int element_count) {
   }
 }
 
-bool Matrix::IsValueInRange(const int row, const int col) const {
+bool Matrix::IsValueInRange(const int row, const int col) const noexcept {
   return (row >= 0 && row < rows) && (col >= 0 && col < cols);
 }
 
-float Matrix::At(const int row, const int col) const {
-  assert(IsValueInRange(row, col));
-  return values[row * cols + col];
-}
-
-std::string Matrix::ToString() const {
+std::string Matrix::ToString() const noexcept {
   std::string matrix_str = "Matrix{\n  rows=" + std::to_string(rows) +
                            ", cols=" + std::to_string(cols) + ",\n  ";
   for (int row = 0; row < rows; ++row) {
     for (int col = 0; col < cols; ++col) {
-      matrix_str += std::to_string(values[row * cols + col]);
+      matrix_str += std::to_string(At(row, col));
 
       if (col != cols - 1) {
         matrix_str += ", ";
@@ -105,7 +105,7 @@ std::string Matrix::ToString() const {
   return matrix_str;
 }
 
-bool IsEqual(const Matrix& a, const Matrix& b) {
+bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
   if (a.rows != b.rows || a.cols != b.cols) {
     return false;
   }
@@ -119,15 +119,13 @@ bool IsEqual(const Matrix& a, const Matrix& b) {
   return true;
 }
 
-Matrix Multiply(const Matrix& a, const Matrix& b) {
-  assert(a.rows == b.rows && a.cols == b.cols);
-
+Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   Matrix res = {a.rows, b.cols};
 
   for (int row = 0; row < res.rows; ++row) {
     for (int col = 0; col < res.cols; ++col) {
       for (int k = 0; k < b.rows; ++k) {
-        res.values[row * res.cols + col] += a.At(row, k) * b.At(k, col);
+        res.values[res.Index(row, col)] += a.At(row, k) * b.At(k, col);
       }
     }
   }

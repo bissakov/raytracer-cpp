@@ -11,24 +11,34 @@ struct Matrix {
   int cols;
   float* values;
 
-  Matrix(const int rows_, const int cols_);
-  Matrix(const Matrix& other);
-  ~Matrix();
+  Matrix(const int rows_, const int cols_) noexcept;
+  Matrix(const Matrix& other) noexcept;
+  ~Matrix() noexcept;
 
-  Matrix& operator=(const Matrix& other);
-  Matrix operator*(const Matrix& other);
-  Vector operator*(const Vector& vector);
-  bool operator==(const Matrix& other);
-  bool operator!=(const Matrix& other);
+  Matrix& operator=(const Matrix& other) noexcept;
+  Matrix operator*(const Matrix& other) noexcept;
+  Vector operator*(const Vector& vector) noexcept;
+  bool operator==(const Matrix& other) noexcept;
+  bool operator!=(const Matrix& other) noexcept;
 
-  void Populate(float* elements, int element_count);
-  bool IsValueInRange(const int row, const int col) const;
-  float At(const int row, const int col) const;
+  void Populate(float* elements, int element_count) noexcept;
+  bool IsValueInRange(const int row, const int col) const noexcept;
 
-  std::string ToString() const;
+  constexpr inline int Index(const int row, const int col) const noexcept;
+  inline float At(const int row, const int col) const noexcept;
+
+  std::string ToString() const noexcept;
 };
 
-bool IsEqual(const Matrix& a, const Matrix& b);
-Matrix Multiply(const Matrix& a, const Matrix& b);
+bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
+Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
+
+constexpr inline int Matrix::Index(const int row,
+                                   const int col) const noexcept {
+  return row * cols + col;
+}
+
+#define INDEX(row, col, matrix) ((row * (matrix).cols) + col)
+#define AT(row, col, matrix) ((matrix).values[INDEX(row, col, (matrix))])
 
 #endif  // SRC_MATRIX_H_
