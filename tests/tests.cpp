@@ -564,5 +564,84 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
+  framework.AddTest("Minor of a 3x3 matrix", []() -> bool {
+    Matrix matrix = {3, 3};
+    float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Minor(1, 0);
+    float expected = 25.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Cofactor of a 3x3 matrix 1", []() -> bool {
+    Matrix matrix = {3, 3};
+    float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Cofactor(0, 0);
+    float expected = -12.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Cofactor of a 3x3 matrix 2", []() -> bool {
+    Matrix matrix = {3, 3};
+    float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Cofactor(1, 0);
+    float expected = -25.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Determinant of a 3x3 matrix", []() -> bool {
+    Matrix matrix = {3, 3};
+    float elements[] = {1, 2, 6, -5, 8, -4, 2, 6, 4};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Determinant();
+    float expected = -196.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Determinant of a 4x4 matrix", []() -> bool {
+    Matrix matrix = {4, 4};
+    float elements[] = {-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Determinant();
+    float expected = -4071.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Testing a matrix for invertibility 1", []() -> bool {
+    Matrix matrix = {4, 4};
+    float elements[] = {6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Determinant();
+    float expected = -2120.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected) &&
+           ASSERT_EQUAL_BOOLS(IsEqualFloat(actual, 0.0f), false);
+  });
+
+  framework.AddTest("Testing a matrix for invertibility 2", []() -> bool {
+    Matrix matrix = {4, 4};
+    float elements[] = {-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Determinant();
+    float expected = 0;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected) &&
+           ASSERT_EQUAL_BOOLS(IsEqualFloat(actual, 0.0f), true);
+  });
+
   framework.RunTest();
 }

@@ -27,6 +27,8 @@ struct Matrix {
   Matrix Transpose() noexcept;
   float Determinant() noexcept;
   Matrix SubMatrix(int excluded_row, int excluded_col) noexcept;
+  float Minor(int row, int col) noexcept;
+  float Cofactor(int row, int col) noexcept;
 
   constexpr int Index(const int row, const int col) const noexcept;
   float At(const int row, const int col) const noexcept;

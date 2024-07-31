@@ -107,9 +107,11 @@ float Matrix::Determinant() noexcept {
     return At(0, 0) * At(1, 1) - At(0, 1) * At(1, 0);
   }
 
-  assert(true && "Matrix must be 2x2");
-
-  return 0.0f;
+  float determinant = 0.0f;
+  for (int col = 0; col < cols; ++col) {
+    determinant += At(0, col) * Cofactor(0, col);
+  }
+  return determinant;
 }
 
 Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
@@ -133,6 +135,18 @@ Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
   }
 
   return submatrix;
+}
+
+float Matrix::Minor(int row, int col) noexcept {
+  Matrix submatrix = SubMatrix(row, col);
+  float determinant = submatrix.Determinant();
+  return determinant;
+}
+
+float Matrix::Cofactor(int row, int col) noexcept {
+  float minor = Minor(row, col);
+  float cofactor = (Index(row, col) % 2 == 0) ? minor : -minor;
+  return cofactor;
 }
 
 std::string Matrix::ToString() const noexcept {
