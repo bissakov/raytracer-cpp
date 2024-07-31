@@ -116,13 +116,14 @@ bool AssertEqColors(const Color& actual, const Color& expected,
   return true;
 }
 
-bool AssertEqMatrices(Matrix* actual, Matrix* expected, const char* actual_name,
-                      const char* expected_name, const char* file, int line) {
-  if (!(*actual == *expected)) {
+bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
+                      const char* actual_name, const char* expected_name,
+                      const char* file, int line) {
+  if (!(actual == expected)) {
     printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
            actual_name, expected_name);
-    printf("Actual: %s\n", actual->ToString().c_str());
-    printf("Expected: %s\n", expected->ToString().c_str());
+    printf("Actual: %s\n", actual.ToString().c_str());
+    printf("Expected: %s\n", expected.ToString().c_str());
     fflush(stdout);
     return false;
   }

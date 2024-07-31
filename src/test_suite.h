@@ -51,8 +51,9 @@ bool AssertEqColors(const Color& actual, const Color& expected,
                     const char* actual_name, const char* expected_name,
                     const char* file, int line);
 
-bool AssertEqMatrices(Matrix* actual, Matrix* expected, const char* actual_name,
-                      const char* expected_name, const char* file, int line);
+bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
+                      const char* actual_name, const char* expected_name,
+                      const char* file, int line);
 
 #define ASSERT_EQUAL_INTS(actual, expected) \
   AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
