@@ -24,8 +24,8 @@ struct Matrix {
   void Populate(float* elements, int element_count) noexcept;
   bool IsValueInRange(const int row, const int col) const noexcept;
 
-  constexpr inline int Index(const int row, const int col) const noexcept;
-  inline float At(const int row, const int col) const noexcept;
+  constexpr int Index(const int row, const int col) const noexcept;
+  float At(const int row, const int col) const noexcept;
 
   std::string ToString() const noexcept;
 };
@@ -33,8 +33,7 @@ struct Matrix {
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
-constexpr inline int Matrix::Index(const int row,
-                                   const int col) const noexcept {
+constexpr int Matrix::Index(const int row, const int col) const noexcept {
   return row * cols + col;
 }
 

@@ -30,7 +30,7 @@ Matrix::~Matrix() noexcept {
   delete[] values;
 }
 
-inline float Matrix::At(const int row, const int col) const noexcept {
+float Matrix::At(const int row, const int col) const noexcept {
   assert(IsValueInRange(row, col));
   return values[Index(row, col)];
 }
