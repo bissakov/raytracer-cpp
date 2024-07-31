@@ -25,7 +25,10 @@ void TestFramework::RunTest() {
       printf(" %sFAILED%s\n", RED, NORMAL);
     }
   }
-  printf("\nTest summary: %d/%d tests passed.\n", passed_tests, total_tests);
+
+  printf("\nTest summary: %s%d/%d%s tests passed.\n",
+         (passed_tests == total_tests) ? GREEN : RED, passed_tests, total_tests,
+         NORMAL);
 }
 
 bool IsEqualFloat(const float a, const float b) {
