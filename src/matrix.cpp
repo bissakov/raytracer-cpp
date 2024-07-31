@@ -4,6 +4,12 @@
 #include <cassert>
 #include <string>
 
+Matrix::Matrix() noexcept {
+  rows = 0;
+  cols = 0;
+  values = nullptr;
+}
+
 Matrix::Matrix(const int rows_, const int cols_) noexcept {
   assert(rows_ >= 0 && cols_ >= 0 && "Dimensions must be positive or 0.");
 
@@ -64,11 +70,11 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   return res;
 }
 
-bool Matrix::operator==(const Matrix& other) noexcept {
+bool Matrix::operator==(const Matrix& other) const noexcept {
   return IsEqual(*this, other);
 }
 
-bool Matrix::operator!=(const Matrix& other) noexcept {
+bool Matrix::operator!=(const Matrix& other) const noexcept {
   return !IsEqual(*this, other);
 }
 
@@ -82,6 +88,38 @@ void Matrix::Populate(float* elements, int element_count) noexcept {
 
 bool Matrix::IsValueInRange(const int row, const int col) const noexcept {
   return (row >= 0 && row < rows) && (col >= 0 && col < cols);
+}
+
+Matrix Matrix::Transpose() noexcept {
+  Matrix matrix = {rows, cols};
+
+  for (int row = 0; row < rows; ++row) {
+    for (int col = 0; col < cols; ++col) {
+      matrix.values[matrix.Index(row, col)] = At(col, row);
+    }
+  }
+
+  return matrix;
+}
+
+float Matrix::Determinant() noexcept {
+  if (rows == 2 && cols == 2) {
+    return At(0, 0) * At(1, 1) - At(0, 1) * At(1, 0);
+  }
+
+  assert(true && "Matrix must be 2x2");
+
+  return 0.0f;
+}
+
+Matrix Matrix::SubMatrix() noexcept {
+  Matrix submatrix = {rows - 1, cols - 1};
+  for (int row = 1; row < rows; ++row) {
+    for (int col = 0; col < cols - 1; ++col) {
+      submatrix.values[submatrix.Index(row - 1, col)] = At(row, col);
+    }
+  }
+  return submatrix;
 }
 
 std::string Matrix::ToString() const noexcept {

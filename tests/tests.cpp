@@ -497,6 +497,57 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, matrix);
   });
 
+  framework.AddTest("Transpose a 4x4 matrix", []() -> bool {
+    Matrix matrix = {4, 4};
+    int element_count1 = matrix.rows * matrix.cols;
+    float elements1[] = {0, 9, 3, 0, 9, 8, 0, 8, 1, 8, 5, 3, 0, 0, 5, 8};
+    matrix.Populate(elements1, element_count1);
+
+    Matrix transposed_matrix = matrix.Transpose();
+
+    Matrix expected = {4, 4};
+    int element_count2 = matrix.rows * matrix.cols;
+    float elements2[] = {0, 9, 1, 0, 9, 8, 8, 0, 3, 0, 5, 5, 0, 8, 3, 8};
+    matrix.Populate(elements2, element_count2);
+
+    return ASSERT_EQUAL_MATRICES(transposed_matrix, matrix);
+  });
+
+  framework.AddTest("Transpose an identity matrix", []() -> bool {
+    Matrix identity_matrix = IdentityMatrix();
+    Matrix actual = identity_matrix.Transpose();
+
+    Matrix expected = {4, 4};
+    float expected_elements[] = {1, 0, 0, 0, 0, 1, 0, 0,
+                                 0, 0, 1, 0, 0, 0, 0, 1};
+    expected.Populate(expected_elements, expected.rows * expected.cols);
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
+  });
+
+  framework.AddTest("Determinant of a 2x2 matrix", []() -> bool {
+    Matrix matrix = {2, 2};
+    float elements[] = {1, 5, -3, 2};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    float actual = matrix.Determinant();
+    float expected = 17.0f;
+
+    return ASSERT_EQUAL_FLOATS(actual, expected);
+  });
+
+  framework.AddTest("Submatrix of a 3x3 matrix", []() -> bool {
+    Matrix matrix = {3, 3};
+    float elements[] = {1, 5, 0, -3, 2, 7, 0, 6, -3};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    Matrix actual = matrix.SubMatrix();
+
+    Matrix expected = {2, 2};
+    float expected_elements[] = {-3, 2, 0, 6};
+    expected.Populate(expected_elements, expected.rows * expected.cols);
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
   framework.RunTest();

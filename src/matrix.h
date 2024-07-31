@@ -11,6 +11,7 @@ struct Matrix {
   int cols;
   float* values;
 
+  Matrix() noexcept;
   Matrix(const int rows_, const int cols_) noexcept;
   Matrix(const Matrix& other) noexcept;
   ~Matrix() noexcept;
@@ -18,11 +19,14 @@ struct Matrix {
   Matrix& operator=(const Matrix& other) noexcept;
   Matrix operator*(const Matrix& other) noexcept;
   Vector operator*(const Vector& vector) noexcept;
-  bool operator==(const Matrix& other) noexcept;
-  bool operator!=(const Matrix& other) noexcept;
+  bool operator==(const Matrix& other) const noexcept;
+  bool operator!=(const Matrix& other) const noexcept;
 
   void Populate(float* elements, int element_count) noexcept;
   bool IsValueInRange(const int row, const int col) const noexcept;
+  Matrix Transpose() noexcept;
+  float Determinant() noexcept;
+  Matrix SubMatrix() noexcept;
 
   constexpr int Index(const int row, const int col) const noexcept;
   float At(const int row, const int col) const noexcept;
