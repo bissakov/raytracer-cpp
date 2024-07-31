@@ -112,13 +112,26 @@ float Matrix::Determinant() noexcept {
   return 0.0f;
 }
 
-Matrix Matrix::SubMatrix() noexcept {
+Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
+  assert(excluded_row >= 0 && excluded_row <= rows && excluded_col >= 0 &&
+         excluded_col <= cols);
+
   Matrix submatrix = {rows - 1, cols - 1};
-  for (int row = 1; row < rows; ++row) {
-    for (int col = 0; col < cols - 1; ++col) {
-      submatrix.values[submatrix.Index(row - 1, col)] = At(row, col);
+  int current_row = 0;
+  int current_col = 0;
+
+  for (int row = 0; row < rows; ++row) {
+    if (row == excluded_row) continue;
+    for (int col = 0; col < cols; ++col) {
+      if (col == excluded_col) continue;
+
+      int index = submatrix.Index(current_row, current_col);
+      submatrix.values[index] = At(row, col);
+      current_col = (current_col + 1) % submatrix.cols;
     }
+    current_row = (current_row + 1) % submatrix.rows;
   }
+
   return submatrix;
 }
 

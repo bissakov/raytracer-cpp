@@ -541,10 +541,24 @@ void RunTests(const std::string root_folder_path) {
     float elements[] = {1, 5, 0, -3, 2, 7, 0, 6, -3};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    Matrix actual = matrix.SubMatrix();
+    Matrix actual = matrix.SubMatrix(0, 2);
 
     Matrix expected = {2, 2};
     float expected_elements[] = {-3, 2, 0, 6};
+    expected.Populate(expected_elements, expected.rows * expected.cols);
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
+  });
+
+  framework.AddTest("Submatrix of a 4x4 matrix", []() -> bool {
+    Matrix matrix = {4, 4};
+    float elements[] = {-6, 1, 1, 6, -8, 5, 8, 6, -1, 0, 8, 2, -7, 1, -1, 1};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    Matrix actual = matrix.SubMatrix(2, 1);
+
+    Matrix expected = {3, 3};
+    float expected_elements[] = {-6, 1, 6, -8, 8, 6, -7, -1, 1};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
     return ASSERT_EQUAL_MATRICES(actual, expected);

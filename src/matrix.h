@@ -26,7 +26,7 @@ struct Matrix {
   bool IsValueInRange(const int row, const int col) const noexcept;
   Matrix Transpose() noexcept;
   float Determinant() noexcept;
-  Matrix SubMatrix() noexcept;
+  Matrix SubMatrix(int excluded_row, int excluded_col) noexcept;
 
   constexpr int Index(const int row, const int col) const noexcept;
   float At(const int row, const int col) const noexcept;
