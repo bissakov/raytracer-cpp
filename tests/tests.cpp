@@ -504,10 +504,7 @@ void RunTests(const std::string root_folder_path) {
     matrix.Populate(elements1, element_count1);
 
     Matrix identity_matrix = {4, 4};
-    int element_count2 = identity_matrix.rows * identity_matrix.cols;
-    float elements2[] = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                         0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-    identity_matrix.Populate(elements2, element_count2);
+    IDENTITY_MATRIX(identity_matrix)
 
     Matrix actual = matrix * identity_matrix;
 

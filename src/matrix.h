@@ -40,4 +40,10 @@ constexpr int Matrix::Index(const int row, const int col) const noexcept {
 #define INDEX(row, col, matrix) ((row * (matrix).cols) + col)
 #define AT(row, col, matrix) ((matrix).values[INDEX(row, col, (matrix))])
 
+#define IDENTITY_MATRIX(identity_matrix)                                \
+  int element_count2 = identity_matrix.rows * identity_matrix.cols;     \
+  float elements2[] = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  \
+                       0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f}; \
+  identity_matrix.Populate(elements2, element_count2);
+
 #endif  // SRC_MATRIX_H_
