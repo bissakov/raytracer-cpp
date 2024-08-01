@@ -41,38 +41,38 @@ Vector Vector::operator-(const Vector &other) const {
   return {x - other.x, y - other.y, z - other.z};
 }
 
-Vector Vector::operator*(const float scalar) const {
+Vector Vector::operator*(const double scalar) const {
   return {x * scalar, y * scalar, z * scalar};
 }
 
-Vector Vector::operator/(const float scalar) const {
+Vector Vector::operator/(const double scalar) const {
   return {x / scalar, y / scalar, z / scalar};
 }
 
 bool Vector::operator==(const Vector &other) const {
-  return IsEqualFloat(x, other.x) && IsEqualFloat(y, other.y) &&
-         IsEqualFloat(z, other.z);
+  return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
+         IsEqualDouble(z, other.z);
 }
 
 bool Vector::operator!=(const Vector &other) const {
-  return !IsEqualFloat(x, other.x) || !IsEqualFloat(y, other.y) ||
-         !IsEqualFloat(z, other.z);
+  return !IsEqualDouble(x, other.x) || !IsEqualDouble(y, other.y) ||
+         !IsEqualDouble(z, other.z);
 }
 
 Vector Vector::operator-() const {
   return {-x, -y, -z};
 }
 
-float Vector::Magnitude() const {
+double Vector::Magnitude() const {
   return sqrt(x * x + y * y + z * z);
 }
 
 Vector Vector::Normalize() const {
-  float magnitude = Magnitude();
+  double magnitude = Magnitude();
   return {x / magnitude, y / magnitude, z / magnitude};
 }
 
-float Vector::DotProduct(const Vector &other) const {
+double Vector::DotProduct(const Vector &other) const {
   return x * other.x + y * other.y + z * other.z;
 }
 
@@ -81,7 +81,7 @@ Vector Vector::CrossProduct(const Vector &other) const {
           x * other.y - y * other.x};
 }
 
-float DotProduct(const Vector &left, const Vector &right) {
+double DotProduct(const Vector &left, const Vector &right) {
   return left.x * right.x + left.y * right.y + left.z * right.z;
 }
 

@@ -4,9 +4,9 @@
 #include <string>
 
 struct Color {
-  float r;
-  float g;
-  float b;
+  double r;
+  double g;
+  double b;
 
   Color operator+(const Color& other) const;
   Color operator-(const Color& other) const;
@@ -15,8 +15,8 @@ struct Color {
   bool operator==(const Color& other) const;
   bool operator!=(const Color& other) const;
 
-  Color operator*(const float scalar) const;
-  Color operator/(const float scalar) const;
+  Color operator*(const double scalar) const;
+  Color operator/(const double scalar) const;
 
   bool IsColorInRange() const;
   std::string ToHex() const;

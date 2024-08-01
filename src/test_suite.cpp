@@ -1,6 +1,7 @@
 #include <src/matrix.h>
 #include <src/test_suite.h>
 
+#include <cmath>
 #include <functional>
 
 const char* NORMAL = "\033[0m";
@@ -31,8 +32,8 @@ void TestFramework::RunTest() {
          NORMAL);
 }
 
-bool IsEqualFloat(const float a, const float b) {
-  return a == b || std::abs(a - b) <= FLT_EPSILON;
+bool IsEqualDouble(const double a, const double b) {
+  return a == b || std::fabs(a - b) < DBL_EPSILON;
 }
 
 bool AssertEqInts(const int& actual, const int& expected,
@@ -49,10 +50,10 @@ bool AssertEqInts(const int& actual, const int& expected,
   return true;
 }
 
-bool AssertEqFloats(const float& actual, const float& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line) {
-  if (!IsEqualFloat(actual, expected)) {
+bool AssertEqDoubles(const double& actual, const double& expected,
+                     const char* actual_name, const char* expected_name,
+                     const char* file, int line) {
+  if (!IsEqualDouble(actual, expected)) {
     printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
            actual_name, expected_name);
     printf("Actual: %f\n", actual);

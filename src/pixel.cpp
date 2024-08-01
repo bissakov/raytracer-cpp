@@ -19,20 +19,20 @@ Color Color::operator*(const Color& other) const {
 }
 
 bool Color::operator==(const Color& other) const {
-  return IsEqualFloat(r, other.r) && IsEqualFloat(g, other.g) &&
-         IsEqualFloat(b, other.b);
+  return IsEqualDouble(r, other.r) && IsEqualDouble(g, other.g) &&
+         IsEqualDouble(b, other.b);
 }
 
 bool Color::operator!=(const Color& other) const {
-  return !IsEqualFloat(r, other.r) || !IsEqualFloat(g, other.g) ||
-         !IsEqualFloat(b, other.b);
+  return !IsEqualDouble(r, other.r) || !IsEqualDouble(g, other.g) ||
+         !IsEqualDouble(b, other.b);
 }
 
-Color Color::operator*(const float scalar) const {
+Color Color::operator*(const double scalar) const {
   return {r * scalar, g * scalar, b * scalar};
 }
 
-Color Color::operator/(const float scalar) const {
+Color Color::operator/(const double scalar) const {
   return {r / scalar, g / scalar, b / scalar};
 }
 
@@ -70,14 +70,14 @@ std::string Color::ToString() const {
 }
 
 bool Pixel::operator==(const Pixel& other) const {
-  return IsEqualFloat(color.r, other.color.r) &&
-         IsEqualFloat(color.g, other.color.g) &&
-         IsEqualFloat(color.b, other.color.b);
+  return IsEqualDouble(color.r, other.color.r) &&
+         IsEqualDouble(color.g, other.color.g) &&
+         IsEqualDouble(color.b, other.color.b);
 }
 bool Pixel::operator!=(const Pixel& other) const {
-  return !IsEqualFloat(color.r, other.color.r) ||
-         !IsEqualFloat(color.g, other.color.g) ||
-         !IsEqualFloat(color.b, other.color.b);
+  return !IsEqualDouble(color.r, other.color.r) ||
+         !IsEqualDouble(color.g, other.color.g) ||
+         !IsEqualDouble(color.b, other.color.b);
 }
 
 std::string Pixel::ToString() const {

@@ -24,16 +24,15 @@ struct TestFramework {
   void RunTest();
 };
 
-bool IsEqualFloat(const float a, const float b);
-bool AssertFloatEq(const float a, const float b);
+bool IsEqualDouble(const double a, const double b);
 
 bool AssertEqInts(const int& actual, const int& expected,
                   const char* actual_name, const char* expected_name,
                   const char* file, int line);
 
-bool AssertEqFloats(const float& actual, const float& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line);
+bool AssertEqDoubles(const double& actual, const double& expected,
+                     const char* actual_name, const char* expected_name,
+                     const char* file, int line);
 
 bool AssertEqBools(const bool& actual, const bool& expected,
                    const char* actual_name, const char* expected_name,
@@ -58,8 +57,8 @@ bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
 #define ASSERT_EQUAL_INTS(actual, expected) \
   AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
-#define ASSERT_EQUAL_FLOATS(actual, expected) \
-  AssertEqFloats(actual, expected, #actual, #expected, __FILE__, __LINE__)
+#define ASSERT_EQUAL_DOUBLES(actual, expected) \
+  AssertEqDoubles(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #define ASSERT_EQUAL_BOOLS(actual, expected) \
   AssertEqBools(actual, expected, #actual, #expected, __FILE__, __LINE__)

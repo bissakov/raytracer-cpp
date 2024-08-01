@@ -118,9 +118,9 @@ bool Canvas::SaveToPPM(const std::string file_path) {
   for (int row = 0; row < height; ++row) {
     for (int col = 0; col < width; ++col) {
       Color* color = &pixels[row * width + col].color;
-      int red = Clamp(static_cast<int>(color->r * 255.0f), 0, 255);
-      int green = Clamp(static_cast<int>(color->g * 255.0f), 0, 255);
-      int blue = Clamp(static_cast<int>(color->b * 255.0f), 0, 255);
+      int red = Clamp(static_cast<int>(color->r * 255.0), 0, 255);
+      int green = Clamp(static_cast<int>(color->g * 255.0), 0, 255);
+      int blue = Clamp(static_cast<int>(color->b * 255.0), 0, 255);
 
       canvas_buffer += std::to_string(red) + " " + std::to_string(green) + " " +
                        std::to_string(blue);

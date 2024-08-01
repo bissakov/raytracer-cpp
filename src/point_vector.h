@@ -8,12 +8,12 @@ typedef struct Point Point;
 typedef struct Vector Vector;
 
 struct Point {
-  float x;
-  float y;
-  float z;
-  float w = 1.0f;
+  double x;
+  double y;
+  double z;
+  double w = 1.0;
 
-  float& operator[](int index) {
+  double& operator[](int index) {
     assert(index >= 0 && index <= 3);
     switch (index) {
       case 0:
@@ -27,7 +27,7 @@ struct Point {
     }
   }
 
-  const float& operator[](int index) const {
+  const double& operator[](int index) const {
     assert(index >= 0 && index <= 3);
     switch (index) {
       case 0:
@@ -52,12 +52,12 @@ struct Point {
 };
 
 struct Vector {
-  float x;
-  float y;
-  float z;
-  float w = 0.0f;
+  double x;
+  double y;
+  double z;
+  double w = 0.0;
 
-  float& operator[](int index) {
+  double& operator[](int index) {
     assert(index >= 0 && index <= 3);
     switch (index) {
       case 0:
@@ -71,7 +71,7 @@ struct Vector {
     }
   }
 
-  const float& operator[](int index) const {
+  const double& operator[](int index) const {
     assert(index >= 0 && index <= 3);
     switch (index) {
       case 0:
@@ -92,20 +92,20 @@ struct Vector {
   bool operator==(const Vector& other) const;
   bool operator!=(const Vector& other) const;
 
-  Vector operator*(const float scalar) const;
-  Vector operator/(const float scalar) const;
+  Vector operator*(const double scalar) const;
+  Vector operator/(const double scalar) const;
 
   Vector operator-() const;
 
-  float Magnitude() const;
+  double Magnitude() const;
   Vector Normalize() const;
-  float DotProduct(const Vector& other) const;
+  double DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
 
   const std::string ToString() const;
 };
 
-float DotProduct(const Vector& left, const Vector& right);
+double DotProduct(const Vector& left, const Vector& right);
 Vector CrossProduct(const Vector& left, const Vector& right);
 
 #endif  // SRC_POINT_VECTOR_H_

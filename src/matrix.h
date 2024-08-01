@@ -9,7 +9,7 @@
 struct Matrix {
   int rows;
   int cols;
-  float* values;
+  double* values;
 
   Matrix() noexcept;
   Matrix(const int rows_, const int cols_) noexcept;
@@ -19,19 +19,21 @@ struct Matrix {
   Matrix& operator=(const Matrix& other) noexcept;
   Matrix operator*(const Matrix& other) noexcept;
   Vector operator*(const Vector& vector) noexcept;
+  Matrix operator/(const double scalar) noexcept;
   bool operator==(const Matrix& other) const noexcept;
   bool operator!=(const Matrix& other) const noexcept;
 
-  void Populate(float* elements, int element_count) noexcept;
+  void Populate(double* elements, int element_count) noexcept;
   bool IsValueInRange(const int row, const int col) const noexcept;
   Matrix Transpose() noexcept;
-  float Determinant() noexcept;
+  double Determinant() noexcept;
   Matrix SubMatrix(int excluded_row, int excluded_col) noexcept;
-  float Minor(int row, int col) noexcept;
-  float Cofactor(int row, int col) noexcept;
+  double Minor(int row, int col) noexcept;
+  double Cofactor(int row, int col) noexcept;
+  Matrix Inverse() noexcept;
 
   constexpr int Index(const int row, const int col) const noexcept;
-  float At(const int row, const int col) const noexcept;
+  double At(const int row, const int col) const noexcept;
 
   std::string ToString() const noexcept;
 };

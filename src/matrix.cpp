@@ -16,7 +16,7 @@ Matrix::Matrix(const int rows_, const int cols_) noexcept {
   rows = rows_;
   cols = rows_;
 
-  values = new float[rows * cols];
+  values = new double[rows * cols];
 
   for (int i = 0; i < rows * cols; ++i) {
     values[i] = 0.0f;
@@ -26,7 +26,7 @@ Matrix::Matrix(const int rows_, const int cols_) noexcept {
 Matrix::Matrix(const Matrix& other) noexcept {
   rows = other.rows;
   cols = other.cols;
-  values = new float[rows * cols];
+  values = new double[rows * cols];
   for (int i = 0; i < rows * cols; ++i) {
     values[i] = other.values[i];
   }
@@ -36,7 +36,7 @@ Matrix::~Matrix() noexcept {
   delete[] values;
 }
 
-float Matrix::At(const int row, const int col) const noexcept {
+double Matrix::At(const int row, const int col) const noexcept {
   assert(IsValueInRange(row, col));
   return values[Index(row, col)];
 }
@@ -45,7 +45,7 @@ Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
     delete[] values;
 
-    values = new float[other.rows * other.cols];
+    values = new double[other.rows * other.cols];
     for (int i = 0; i < other.rows * other.cols; ++i) {
       values[i] = other.values[i];
     }
@@ -70,6 +70,14 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   return res;
 }
 
+Matrix Matrix::operator/(const double scalar) noexcept {
+  Matrix res = {rows, cols};
+  for (int i = 0; i < rows * cols; ++i) {
+    res.values[i] /= scalar;
+  }
+  return res;
+}
+
 bool Matrix::operator==(const Matrix& other) const noexcept {
   return IsEqual(*this, other);
 }
@@ -78,7 +86,7 @@ bool Matrix::operator!=(const Matrix& other) const noexcept {
   return !IsEqual(*this, other);
 }
 
-void Matrix::Populate(float* elements, int element_count) noexcept {
+void Matrix::Populate(double* elements, int element_count) noexcept {
   assert(element_count == rows * cols &&
          "Invalid number of elements to populate matrix");
   for (int i = 0; i < rows * cols; ++i) {
@@ -102,12 +110,12 @@ Matrix Matrix::Transpose() noexcept {
   return matrix;
 }
 
-float Matrix::Determinant() noexcept {
+double Matrix::Determinant() noexcept {
   if (rows == 2 && cols == 2) {
     return At(0, 0) * At(1, 1) - At(0, 1) * At(1, 0);
   }
 
-  float determinant = 0.0f;
+  double determinant = 0.0;
   for (int col = 0; col < cols; ++col) {
     determinant += At(0, col) * Cofactor(0, col);
   }
@@ -137,16 +145,33 @@ Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
   return submatrix;
 }
 
-float Matrix::Minor(int row, int col) noexcept {
+double Matrix::Minor(int row, int col) noexcept {
   Matrix submatrix = SubMatrix(row, col);
-  float determinant = submatrix.Determinant();
+  double determinant = submatrix.Determinant();
   return determinant;
 }
 
-float Matrix::Cofactor(int row, int col) noexcept {
-  float minor = Minor(row, col);
-  float cofactor = (Index(row, col) % 2 == 0) ? minor : -minor;
+double Matrix::Cofactor(int row, int col) noexcept {
+  double minor = Minor(row, col);
+  double cofactor = ((row + col) % 2 == 0) ? minor : -minor;
   return cofactor;
+}
+
+Matrix Matrix::Inverse() noexcept {
+  double determinant = Determinant();
+
+  assert(!IsEqualDouble(determinant, 0.0));
+
+  Matrix inversed_matrix = {rows, cols};
+
+  for (int row = 0; row < rows; ++row) {
+    for (int col = 0; col < cols; ++col) {
+      inversed_matrix.values[Index(col, row)] =
+          Cofactor(row, col) / determinant;
+    }
+  }
+
+  return inversed_matrix;
 }
 
 std::string Matrix::ToString() const noexcept {
@@ -176,7 +201,7 @@ bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
   }
 
   for (int i = 0; i < a.rows * a.cols; ++i) {
-    if (!IsEqualFloat(a.values[i], b.values[i])) {
+    if (!IsEqualDouble(a.values[i], b.values[i])) {
       return false;
     }
   }
@@ -200,7 +225,7 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
 
 Matrix IdentityMatrix() {
   Matrix identity_matrix = {4, 4};
-  float elements[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+  double elements[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
   identity_matrix.Populate(elements,
                            identity_matrix.rows * identity_matrix.cols);
   return identity_matrix;
