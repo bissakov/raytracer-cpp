@@ -7,19 +7,19 @@
 #include <string>
 
 struct Canvas {
-  int width;
-  int height;
+  size_t width;
+  size_t height;
   Pixel *pixels;
 
-  Canvas(const int _width, const int _height);
+  Canvas(const size_t _width, const size_t _height);
   Canvas(const Canvas &other);
   ~Canvas();
 
   Canvas &operator=(const Canvas &other);
 
-  bool IsPixelInRange(const int pos_x, const int pos_y) const;
-  Pixel PixelAt(const int pos_x, const int pos_y) const;
-  void WritePixelColor(const int pos_x, const int pos_y,
+  bool IsPixelInRange(const size_t pos_x, const size_t pos_y) const;
+  Pixel PixelAt(const size_t pos_x, const size_t pos_y) const;
+  void WritePixelColor(const size_t pos_x, const size_t pos_y,
                        const Color &color) const;
   std::string ToString() const;
   bool SaveToPPM(const std::string file_path);
@@ -28,11 +28,12 @@ struct Canvas {
 
 static inline void AdvanceUntil(char *file_content, uint32_t *idx,
                                 const char terminator);
-static inline int StringToInt(char *start, const int length);
+static inline size_t StringToInt(char *start, const size_t length);
 static inline bool IsDigit(const char c);
 
 template <typename T>
-static inline T *GetElement(T *elements, const int length, const int idx) {
+static inline T *GetElement(T *elements, const size_t length,
+                            const size_t idx) {
   assert(idx >= 0);
   assert(idx < length);
   T *element = &elements[idx];

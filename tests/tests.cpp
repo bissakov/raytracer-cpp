@@ -228,12 +228,12 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Create canvas", []() -> bool {
     Canvas canvas = {10, 20};
-    int actual_width = canvas.width;
-    int actual_height = canvas.height;
-    int expected_width = 10;
-    int expected_height = 20;
-    return ASSERT_EQUAL_INTS(actual_width, expected_width) &&
-           ASSERT_EQUAL_INTS(actual_height, expected_height);
+    size_t actual_width = canvas.width;
+    size_t actual_height = canvas.height;
+    size_t expected_width = 10;
+    size_t expected_height = 20;
+    return ASSERT_EQUAL_SIZE_T(actual_width, expected_width) &&
+           ASSERT_EQUAL_SIZE_T(actual_height, expected_height);
   });
 
   framework.AddTest("Check all default canvas colors (black)", []() -> bool {
@@ -241,8 +241,8 @@ void RunTests(const std::string root_folder_path) {
     Color black = {0, 0, 0};
 
     bool res = true;
-    for (int i = 0; i < canvas.height; ++i) {
-      for (int j = 0; j < canvas.width; ++j) {
+    for (size_t i = 0; i < canvas.height; ++i) {
+      for (size_t j = 0; j < canvas.width; ++j) {
         Pixel current_pixel = canvas.PixelAt(j, i);
         res = res && (current_pixel.color == black);
       }
@@ -255,14 +255,14 @@ void RunTests(const std::string root_folder_path) {
     Canvas canvas = {5, 10};
     Color red = {1, 0, 0};
 
-    int x = 2;
-    int y = 3;
+    size_t x = 2;
+    size_t y = 3;
     canvas.WritePixelColor(x, y, red);
     Pixel pixel = canvas.PixelAt(x, y);
     Color actual_color = pixel.color;
 
     return ASSERT_EQUAL_COLORS(actual_color, red) &&
-           ASSERT_EQUAL_INTS(pixel.x, x) && ASSERT_EQUAL_INTS(pixel.y, y);
+           ASSERT_EQUAL_SIZE_T(pixel.x, x) && ASSERT_EQUAL_SIZE_T(pixel.y, y);
   });
 
   framework.AddTest("Save canvas to PPM", [framework]() -> bool {
@@ -271,10 +271,10 @@ void RunTests(const std::string root_folder_path) {
     Color blue = {0, 0.34, 0.72f};
     Color yellow = {1, 0.85, 0};
 
-    int stripe_thickness = 20;
+    size_t stripe_thickness = 20;
 
-    for (int j = 0; j < canvas.height; ++j) {
-      for (int i = 0; i < canvas.width; ++i) {
+    for (size_t j = 0; j < canvas.height; ++j) {
+      for (size_t i = 0; i < canvas.width; ++i) {
         if ((i / stripe_thickness + j / stripe_thickness) % 2 == 0) {
           canvas.WritePixelColor(i, j, blue);
         } else {
@@ -320,9 +320,10 @@ void RunTests(const std::string root_folder_path) {
     Color red = {1, 0, 0};
 
     while (proj.position.y > 0) {
-      int pos_x = static_cast<int>(floor(proj.position.x));
-      int pos_y = static_cast<int>(floor(proj.position.y));
-      pos_y = static_cast<int>(abs(canvas.height - floor(proj.position.y)));
+      size_t pos_x = static_cast<size_t>(floor(proj.position.x));
+      size_t pos_y = static_cast<size_t>(floor(proj.position.y));
+      pos_y = static_cast<size_t>(
+          abs(static_cast<double>(canvas.height) - floor(proj.position.y)));
 
       if (canvas.IsPixelInRange(pos_x, pos_y)) {
         canvas.WritePixelColor(pos_x, pos_y, red);
@@ -341,28 +342,27 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Initialize 4x4 matrix", []() -> bool {
     Matrix matrix = {4, 4};
-    return ASSERT_EQUAL_INTS(matrix.rows, 4) &&
-           ASSERT_EQUAL_INTS(matrix.cols, 4);
+    return ASSERT_EQUAL_SIZE_T(matrix.rows, 4) &&
+           ASSERT_EQUAL_SIZE_T(matrix.cols, 4);
   });
 
   framework.AddTest("Initialize 3x3 matrix", []() -> bool {
     Matrix matrix = {3, 3};
-    return ASSERT_EQUAL_INTS(matrix.rows, 3) &&
-           ASSERT_EQUAL_INTS(matrix.cols, 3);
+    return ASSERT_EQUAL_SIZE_T(matrix.rows, 3) &&
+           ASSERT_EQUAL_SIZE_T(matrix.cols, 3);
   });
 
   framework.AddTest("Initialize 2x2 matrix", []() -> bool {
     Matrix matrix = {2, 2};
-    return ASSERT_EQUAL_INTS(matrix.rows, 2) &&
-           ASSERT_EQUAL_INTS(matrix.cols, 2);
+    return ASSERT_EQUAL_SIZE_T(matrix.rows, 2) &&
+           ASSERT_EQUAL_SIZE_T(matrix.cols, 2);
   });
 
   framework.AddTest("Check 4x4 matrix values", []() -> bool {
     Matrix matrix = {4, 4};
-    int element_count = matrix.rows * matrix.cols;
     double elements[] = {1, 2,  3,  4,  5.5,  6.5f,  7.5f,  8.5f,
                          9, 10, 11, 12, 13.5, 14.5f, 15.5f, 16.5f};
-    matrix.Populate(elements, element_count);
+    matrix.Populate(elements, matrix.rows * matrix.cols);
 
     bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), 1) &&
                ASSERT_EQUAL_DOUBLES(matrix.At(0, 3), 4) &&
@@ -377,9 +377,8 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Check 3x3 matrix values", []() -> bool {
     Matrix matrix = {3, 3};
-    int element_count = matrix.rows * matrix.cols;
     double elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
-    matrix.Populate(elements, element_count);
+    matrix.Populate(elements, matrix.rows * matrix.cols);
 
     bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), -3) &&
                ASSERT_EQUAL_DOUBLES(matrix.At(1, 1), -2) &&
@@ -390,9 +389,8 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Check 2x2 matrix values", []() -> bool {
     Matrix matrix = {2, 2};
-    int element_count = matrix.rows * matrix.cols;
     double elements[] = {-3, 5, 1, -2};
-    matrix.Populate(elements, element_count);
+    matrix.Populate(elements, matrix.rows * matrix.cols);
 
     bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), -3) &&
                ASSERT_EQUAL_DOUBLES(matrix.At(0, 1), 5) &&
@@ -404,14 +402,12 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two equal 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
-    int element_count1 = matrix1.rows * matrix1.cols;
     double elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix1.Populate(elements1, element_count1);
+    matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
 
     Matrix matrix2 = {4, 4};
-    int element_count2 = matrix2.rows * matrix2.cols;
     double elements2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix2.Populate(elements2, element_count2);
+    matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 == matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
@@ -419,14 +415,12 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two different 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
-    int element_count1 = matrix1.rows * matrix1.cols;
     double elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix1.Populate(elements1, element_count1);
+    matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
 
     Matrix matrix2 = {4, 4};
-    int element_count2 = matrix2.rows * matrix2.cols;
     double elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix2.Populate(elements2, element_count2);
+    matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 != matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
@@ -434,14 +428,12 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Compare two differently sized matrices", []() -> bool {
     Matrix matrix1 = {3, 3};
-    int element_count1 = matrix1.rows * matrix1.cols;
     double elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9};
-    matrix1.Populate(elements1, element_count1);
+    matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
 
     Matrix matrix2 = {4, 4};
-    int element_count2 = matrix2.rows * matrix2.cols;
     double elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix2.Populate(elements2, element_count2);
+    matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 != matrix2;
     return ASSERT_EQUAL_BOOLS(res, true);
@@ -449,36 +441,31 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Multiply two 4x4 matrices", []() -> bool {
     Matrix matrix1 = {4, 4};
-    int element_count1 = matrix1.rows * matrix1.cols;
     double elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
-    matrix1.Populate(elements1, element_count1);
+    matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
 
     Matrix matrix2 = {4, 4};
-    int element_count2 = matrix2.rows * matrix2.cols;
     double elements2[] = {-2, 1, 2, 3, 3, 2, 1, -1, 4, 3, 6, 5, 1, 2, 7, 8};
-    matrix2.Populate(elements2, element_count2);
+    matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     Matrix actual = matrix1 * matrix2;
 
     Matrix expected = {4, 4};
-    int expected_elements_count = expected.rows * expected.cols;
     double expected_elements[] = {20, 22, 50,  48,  44, 54, 114, 108,
                                   40, 58, 110, 102, 16, 26, 46,  42};
-    expected.Populate(expected_elements, expected_elements_count);
+    expected.Populate(expected_elements, expected.rows * expected.cols);
 
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
   framework.AddTest("Multiply a 4x4 matrix by a vector", []() -> bool {
     Matrix matrix = {4, 4};
-    int element_count1 = matrix.rows * matrix.cols;
     double elements1[] = {1, 2, 3, 4, 2, 4, 4, 2, 8, 6, 4, 1, 0, 0, 0, 1};
-    matrix.Populate(elements1, element_count1);
+    matrix.Populate(elements1, matrix.rows * matrix.cols);
 
     Vector vector = {1, 2, 3, 1};
 
     Vector actual = matrix * vector;
-
     Vector expected = {18, 24, 33, 1};
 
     return ASSERT_EQUAL_VECTORS(actual, expected);
@@ -486,9 +473,8 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Multiply a matrix by an identity matrix", []() -> bool {
     Matrix matrix = {4, 4};
-    int element_count1 = matrix.rows * matrix.cols;
     double elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
-    matrix.Populate(elements1, element_count1);
+    matrix.Populate(elements1, matrix.rows * matrix.cols);
 
     Matrix identity_matrix = IdentityMatrix();
     Matrix actual = matrix * identity_matrix;
@@ -498,16 +484,14 @@ void RunTests(const std::string root_folder_path) {
 
   framework.AddTest("Transpose a 4x4 matrix", []() -> bool {
     Matrix matrix = {4, 4};
-    int element_count1 = matrix.rows * matrix.cols;
     double elements1[] = {0, 9, 3, 0, 9, 8, 0, 8, 1, 8, 5, 3, 0, 0, 5, 8};
-    matrix.Populate(elements1, element_count1);
+    matrix.Populate(elements1, matrix.rows * matrix.cols);
 
     Matrix transposed_matrix = matrix.Transpose();
 
     Matrix expected = {4, 4};
-    int element_count2 = matrix.rows * matrix.cols;
     double elements2[] = {0, 9, 1, 0, 9, 8, 8, 0, 3, 0, 5, 5, 0, 8, 3, 8};
-    matrix.Populate(elements2, element_count2);
+    matrix.Populate(elements2, matrix.rows * matrix.cols);
 
     return ASSERT_EQUAL_MATRICES(transposed_matrix, matrix);
   });
@@ -642,7 +626,7 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL_BOOLS(IsEqualDouble(actual, 0.0), true);
   });
 
-  framework.AddTest("Inversing a 4x4 matrix", []() -> bool {
+  framework.AddTest("Inversing a 4x4 matrix 1", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);

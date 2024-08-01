@@ -10,15 +10,13 @@ Matrix::Matrix() noexcept {
   values = nullptr;
 }
 
-Matrix::Matrix(const int rows_, const int cols_) noexcept {
-  assert(rows_ >= 0 && cols_ >= 0 && "Dimensions must be positive or 0.");
-
+Matrix::Matrix(const size_t rows_, const size_t cols_) noexcept {
   rows = rows_;
   cols = rows_;
 
   values = new double[rows * cols];
 
-  for (int i = 0; i < rows * cols; ++i) {
+  for (size_t i = 0; i < rows * cols; ++i) {
     values[i] = 0.0f;
   }
 }
@@ -27,7 +25,7 @@ Matrix::Matrix(const Matrix& other) noexcept {
   rows = other.rows;
   cols = other.cols;
   values = new double[rows * cols];
-  for (int i = 0; i < rows * cols; ++i) {
+  for (size_t i = 0; i < rows * cols; ++i) {
     values[i] = other.values[i];
   }
 }
@@ -36,7 +34,7 @@ Matrix::~Matrix() noexcept {
   delete[] values;
 }
 
-double Matrix::At(const int row, const int col) const noexcept {
+double Matrix::At(const size_t row, const size_t col) const noexcept {
   assert(IsValueInRange(row, col));
   return values[Index(row, col)];
 }
@@ -46,7 +44,7 @@ Matrix& Matrix::operator=(const Matrix& other) noexcept {
     delete[] values;
 
     values = new double[other.rows * other.cols];
-    for (int i = 0; i < other.rows * other.cols; ++i) {
+    for (size_t i = 0; i < other.rows * other.cols; ++i) {
       values[i] = other.values[i];
     }
   }
@@ -61,8 +59,8 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   assert(rows == 4 && cols == 4);
   Vector res = {0.0f, 0.0f, 0.0f, 0.0f};
 
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
+  for (size_t i = 0; i < 4; ++i) {
+    for (size_t j = 0; j < 4; ++j) {
       res[i] += At(i, j) * vector[j];
     }
   }
@@ -72,7 +70,7 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
 
 Matrix Matrix::operator/(const double scalar) noexcept {
   Matrix res = {rows, cols};
-  for (int i = 0; i < rows * cols; ++i) {
+  for (size_t i = 0; i < rows * cols; ++i) {
     res.values[i] /= scalar;
   }
   return res;
@@ -86,23 +84,23 @@ bool Matrix::operator!=(const Matrix& other) const noexcept {
   return !IsEqual(*this, other);
 }
 
-void Matrix::Populate(double* elements, int element_count) noexcept {
+void Matrix::Populate(double* elements, size_t element_count) noexcept {
   assert(element_count == rows * cols &&
          "Invalid number of elements to populate matrix");
-  for (int i = 0; i < rows * cols; ++i) {
+  for (size_t i = 0; i < rows * cols; ++i) {
     values[i] = elements[i];
   }
 }
 
-bool Matrix::IsValueInRange(const int row, const int col) const noexcept {
-  return (row >= 0 && row < rows) && (col >= 0 && col < cols);
+bool Matrix::IsValueInRange(const size_t row, const size_t col) const noexcept {
+  return (row < rows) && (col < cols);
 }
 
 Matrix Matrix::Transpose() noexcept {
   Matrix matrix = {rows, cols};
 
-  for (int row = 0; row < rows; ++row) {
-    for (int col = 0; col < cols; ++col) {
+  for (size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < cols; ++col) {
       matrix.values[matrix.Index(row, col)] = At(col, row);
     }
   }
@@ -116,26 +114,25 @@ double Matrix::Determinant() noexcept {
   }
 
   double determinant = 0.0;
-  for (int col = 0; col < cols; ++col) {
+  for (size_t col = 0; col < cols; ++col) {
     determinant += At(0, col) * Cofactor(0, col);
   }
   return determinant;
 }
 
-Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
-  assert(excluded_row >= 0 && excluded_row <= rows && excluded_col >= 0 &&
-         excluded_col <= cols);
+Matrix Matrix::SubMatrix(size_t excluded_row, size_t excluded_col) noexcept {
+  assert(excluded_row <= rows && excluded_col <= cols);
 
   Matrix submatrix = {rows - 1, cols - 1};
-  int current_row = 0;
-  int current_col = 0;
+  size_t current_row = 0;
+  size_t current_col = 0;
 
-  for (int row = 0; row < rows; ++row) {
+  for (size_t row = 0; row < rows; ++row) {
     if (row == excluded_row) continue;
-    for (int col = 0; col < cols; ++col) {
+    for (size_t col = 0; col < cols; ++col) {
       if (col == excluded_col) continue;
 
-      int index = submatrix.Index(current_row, current_col);
+      size_t index = submatrix.Index(current_row, current_col);
       submatrix.values[index] = At(row, col);
       current_col = (current_col + 1) % submatrix.cols;
     }
@@ -145,13 +142,13 @@ Matrix Matrix::SubMatrix(int excluded_row, int excluded_col) noexcept {
   return submatrix;
 }
 
-double Matrix::Minor(int row, int col) noexcept {
+double Matrix::Minor(size_t row, size_t col) noexcept {
   Matrix submatrix = SubMatrix(row, col);
   double determinant = submatrix.Determinant();
   return determinant;
 }
 
-double Matrix::Cofactor(int row, int col) noexcept {
+double Matrix::Cofactor(size_t row, size_t col) noexcept {
   double minor = Minor(row, col);
   double cofactor = ((row + col) % 2 == 0) ? minor : -minor;
   return cofactor;
@@ -160,12 +157,14 @@ double Matrix::Cofactor(int row, int col) noexcept {
 Matrix Matrix::Inverse() noexcept {
   double determinant = Determinant();
 
+  printf("\ndeterminant: %f\n", determinant);
+
   assert(!IsEqualDouble(determinant, 0.0));
 
   Matrix inversed_matrix = {rows, cols};
 
-  for (int row = 0; row < rows; ++row) {
-    for (int col = 0; col < cols; ++col) {
+  for (size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < cols; ++col) {
       inversed_matrix.values[Index(col, row)] =
           Cofactor(row, col) / determinant;
     }
@@ -177,8 +176,8 @@ Matrix Matrix::Inverse() noexcept {
 std::string Matrix::ToString() const noexcept {
   std::string matrix_str = "Matrix{\n  rows=" + std::to_string(rows) +
                            ", cols=" + std::to_string(cols) + ",\n  ";
-  for (int row = 0; row < rows; ++row) {
-    for (int col = 0; col < cols; ++col) {
+  for (size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < cols; ++col) {
       matrix_str += std::to_string(At(row, col));
 
       if (col != cols - 1) {
@@ -200,7 +199,7 @@ bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
     return false;
   }
 
-  for (int i = 0; i < a.rows * a.cols; ++i) {
+  for (size_t i = 0; i < a.rows * a.cols; ++i) {
     if (!IsEqualDouble(a.values[i], b.values[i])) {
       return false;
     }
@@ -212,9 +211,9 @@ bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   Matrix res = {a.rows, b.cols};
 
-  for (int row = 0; row < res.rows; ++row) {
-    for (int col = 0; col < res.cols; ++col) {
-      for (int k = 0; k < b.rows; ++k) {
+  for (size_t row = 0; row < res.rows; ++row) {
+    for (size_t col = 0; col < res.cols; ++col) {
+      for (size_t k = 0; k < b.rows; ++k) {
         res.values[res.Index(row, col)] += a.At(row, k) * b.At(k, col);
       }
     }

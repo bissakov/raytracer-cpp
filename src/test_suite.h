@@ -9,16 +9,26 @@
 #include <string>
 
 struct CustomTest {
-  const char* name;
   std::function<bool()> test_function;
+  const char* name;
+
+  CustomTest(const char* name_, std::function<bool()> test_function_) {
+    name = name_;
+    test_function = test_function_;
+  }
+
+  CustomTest() {
+    name = "";
+    test_function = []() -> bool { return true; };
+  }
 };
 
 struct TestFramework {
-  CustomTest tests[200];
-  int passed_tests = 0;
-  int total_tests = 0;
-  int current_test_idx = 0;
   std::string root_folder_path;
+  CustomTest tests[200];
+  size_t passed_tests = 0;
+  size_t total_tests = 0;
+  size_t current_test_idx = 0;
 
   void AddTest(const char* name, std::function<bool()> test_function);
   void RunTest();
@@ -29,6 +39,10 @@ bool IsEqualDouble(const double a, const double b);
 bool AssertEqInts(const int& actual, const int& expected,
                   const char* actual_name, const char* expected_name,
                   const char* file, int line);
+
+bool AssertEqSizeT(const size_t& actual, const size_t& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line);
 
 bool AssertEqDoubles(const double& actual, const double& expected,
                      const char* actual_name, const char* expected_name,
@@ -56,6 +70,9 @@ bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
 
 #define ASSERT_EQUAL_INTS(actual, expected) \
   AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_EQUAL_SIZE_T(actual, expected) \
+  AssertEqSizeT(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #define ASSERT_EQUAL_DOUBLES(actual, expected) \
   AssertEqDoubles(actual, expected, #actual, #expected, __FILE__, __LINE__)

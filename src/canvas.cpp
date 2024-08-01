@@ -5,13 +5,12 @@
 #include <windows.h>
 
 #include <cassert>
+#include <cstdint>
 #include <string>
 
-Canvas::Canvas(const int width_, const int height_) {
+Canvas::Canvas(const size_t width_, const size_t height_) {
   width = width_;
   height = height_;
-
-  assert(width >= 0 && height >= 0 && "Dimensions must be positive or 0.");
 
   if (width == 0 && height == 0) {
     pixels = nullptr;
@@ -19,8 +18,8 @@ Canvas::Canvas(const int width_, const int height_) {
   }
 
   pixels = new Pixel[width * height];
-  for (int row = 0; row < height; ++row) {
-    for (int col = 0; col < width; ++col) {
+  for (size_t row = 0; row < height; ++row) {
+    for (size_t col = 0; col < width; ++col) {
       Pixel* pixel = &pixels[row * width + col];
       pixel->x = col;
       pixel->y = row;
@@ -33,7 +32,7 @@ Canvas::Canvas(const Canvas& other) {
   width = other.width;
   height = other.height;
   pixels = new Pixel[width * height];
-  for (int i = 0; i < width * height; ++i) {
+  for (size_t i = 0; i < width * height; ++i) {
     pixels[i] = other.pixels[i];
   }
 }
@@ -51,24 +50,24 @@ Canvas& Canvas::operator=(const Canvas& other) {
     delete[] pixels;  // Clean up existing values
 
     pixels = new Pixel[other.width * other.height];
-    for (int i = 0; i < other.width * other.height; ++i) {
+    for (size_t i = 0; i < other.width * other.height; ++i) {
       pixels[i] = other.pixels[i];
     }
   }
   return *this;
 }
 
-bool Canvas::IsPixelInRange(const int pos_x, const int pos_y) const {
-  return (pos_x >= 0 && pos_x < width) && (pos_y >= 0 && pos_y < height);
+bool Canvas::IsPixelInRange(const size_t pos_x, const size_t pos_y) const {
+  return (pos_x < width) && (pos_y < height);
 }
 
-Pixel Canvas::PixelAt(const int pos_x, const int pos_y) const {
+Pixel Canvas::PixelAt(const size_t pos_x, const size_t pos_y) const {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
   Pixel pixel = pixels[pos_y * width + pos_x];
   return pixel;
 }
 
-void Canvas::WritePixelColor(const int pos_x, const int pos_y,
+void Canvas::WritePixelColor(const size_t pos_x, const size_t pos_y,
                              const Color& color) const {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
   Pixel* pixel = &pixels[pos_y * width + pos_x];
@@ -91,12 +90,12 @@ void Canvas::WritePixelColor(const int pos_x, const int pos_y,
 //
 //   */
 //
-//   const int max_rows = 4;
-//   const int max_cols = 5;
+//   const size_t max_rows = 4;
+//   const size_t max_cols = 5;
 //
 //   char colors[1024];
-//   for (int j = 0; j < height; ++j) {
-//     for (int i = 0; i < width; ++i) {
+//   for (size_t j = 0; j < height; ++j) {
+//     for (size_t i = 0; i < width; ++i) {
 //     }
 //   }
 //
@@ -115,12 +114,12 @@ bool Canvas::SaveToPPM(const std::string file_path) {
   canvas_buffer +=
       "P3\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n";
 
-  for (int row = 0; row < height; ++row) {
-    for (int col = 0; col < width; ++col) {
+  for (size_t row = 0; row < height; ++row) {
+    for (size_t col = 0; col < width; ++col) {
       Color* color = &pixels[row * width + col].color;
-      int red = Clamp(static_cast<int>(color->r * 255.0), 0, 255);
-      int green = Clamp(static_cast<int>(color->g * 255.0), 0, 255);
-      int blue = Clamp(static_cast<int>(color->b * 255.0), 0, 255);
+      size_t red = Clamp(static_cast<size_t>(color->r * 255.0), 0, 255);
+      size_t green = Clamp(static_cast<size_t>(color->g * 255.0), 0, 255);
+      size_t blue = Clamp(static_cast<size_t>(color->b * 255.0), 0, 255);
 
       canvas_buffer += std::to_string(red) + " " + std::to_string(green) + " " +
                        std::to_string(blue);
@@ -143,12 +142,13 @@ static inline void AdvanceUntil(char* file_content, uint32_t* idx,
   (*idx)++;
 }
 
-static inline int StringToInt(char* start, const int length) {
+static inline size_t StringToInt(char* start, const size_t length) {
   std::string str = "";
-  for (int i = 0; i < length; ++i) {
+  for (size_t i = 0; i < length; ++i) {
     str += *GetElement<char>(start, length, i);
   }
-  int res = std::stoi(str);
+  size_t res = static_cast<size_t>(std::stoi(str));
+
   return res;
 }
 
@@ -164,12 +164,12 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
   FileResult result = ReadEntireFile(file_path);
   char* source = reinterpret_cast<char*>(result.content);
 
-  int start = 0;
+  size_t start = 0;
   uint32_t current = 0;
 
   {
-    int row = 0;
-    for (int i = 0; i < 3; ++i) {
+    size_t row = 0;
+    for (size_t i = 0; i < 3; ++i) {
       start = current;
 
       if (row == 1) {
@@ -197,8 +197,8 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
   }
 
   pixels = new Pixel[width * height];
-  for (int row = 0; row < height; ++row) {
-    int col = 0;
+  for (size_t row = 0; row < height; ++row) {
+    size_t col = 0;
     ColorRGB rgb_color = {};
 
     while (col <= width - 1) {
@@ -211,13 +211,13 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
         continue;
       }
 
-      if (rgb_color.r == -1) {
+      if (rgb_color.r == SIZE_MAX) {
         rgb_color.r = StringToInt(source + start, current - start);
         start = current;
-      } else if (rgb_color.g == -1) {
+      } else if (rgb_color.g == SIZE_MAX) {
         rgb_color.g = StringToInt(source + start, current - start);
         start = current;
-      } else if (rgb_color.b == -1) {
+      } else if (rgb_color.b == SIZE_MAX) {
         rgb_color.b = StringToInt(source + start, current - start);
         start = current;
 
@@ -226,9 +226,9 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
         current_pixel->y = row;
 
         current_pixel->color = {};
-        current_pixel->color.r = rgb_color.r / 255.0f;
-        current_pixel->color.g = rgb_color.g / 255.0f;
-        current_pixel->color.b = rgb_color.b / 255.0f;
+        current_pixel->color.r = static_cast<float>(rgb_color.r) / 255.0f;
+        current_pixel->color.g = static_cast<float>(rgb_color.g) / 255.0f;
+        current_pixel->color.b = static_cast<float>(rgb_color.b) / 255.0f;
 
         col++;
         rgb_color = {};

@@ -7,9 +7,9 @@
 #include <string>
 
 struct FileResult {
-  bool file_exists;
-  uint32_t file_size;
   BYTE *content;
+  uint32_t file_size;
+  bool file_exists;
 };
 
 void FreeMemory(const BYTE *memory);

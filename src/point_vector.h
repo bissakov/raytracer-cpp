@@ -13,8 +13,8 @@ struct Point {
   double z;
   double w = 1.0;
 
-  double& operator[](int index) {
-    assert(index >= 0 && index <= 3);
+  double& operator[](size_t index) {
+    assert(index < 4);
     switch (index) {
       case 0:
         return x;
@@ -27,8 +27,8 @@ struct Point {
     }
   }
 
-  const double& operator[](int index) const {
-    assert(index >= 0 && index <= 3);
+  const double& operator[](size_t index) const {
+    assert(index < 4);
     switch (index) {
       case 0:
         return x;
@@ -57,8 +57,8 @@ struct Vector {
   double z;
   double w = 0.0;
 
-  double& operator[](int index) {
-    assert(index >= 0 && index <= 3);
+  double& operator[](size_t index) {
+    assert(index < 4);
     switch (index) {
       case 0:
         return x;
@@ -71,8 +71,8 @@ struct Vector {
     }
   }
 
-  const double& operator[](int index) const {
-    assert(index >= 0 && index <= 3);
+  const double& operator[](size_t index) const {
+    assert(index < 4);
     switch (index) {
       case 0:
         return x;

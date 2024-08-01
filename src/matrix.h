@@ -7,12 +7,12 @@
 #include <string>
 
 struct Matrix {
-  int rows;
-  int cols;
+  size_t rows;
+  size_t cols;
   double* values;
 
   Matrix() noexcept;
-  Matrix(const int rows_, const int cols_) noexcept;
+  Matrix(const size_t rows_, const size_t cols_) noexcept;
   Matrix(const Matrix& other) noexcept;
   ~Matrix() noexcept;
 
@@ -23,17 +23,17 @@ struct Matrix {
   bool operator==(const Matrix& other) const noexcept;
   bool operator!=(const Matrix& other) const noexcept;
 
-  void Populate(double* elements, int element_count) noexcept;
-  bool IsValueInRange(const int row, const int col) const noexcept;
+  void Populate(double* elements, size_t element_count) noexcept;
+  bool IsValueInRange(const size_t row, const size_t col) const noexcept;
   Matrix Transpose() noexcept;
   double Determinant() noexcept;
-  Matrix SubMatrix(int excluded_row, int excluded_col) noexcept;
-  double Minor(int row, int col) noexcept;
-  double Cofactor(int row, int col) noexcept;
+  Matrix SubMatrix(size_t excluded_row, size_t excluded_col) noexcept;
+  double Minor(size_t row, size_t col) noexcept;
+  double Cofactor(size_t row, size_t col) noexcept;
   Matrix Inverse() noexcept;
 
-  constexpr int Index(const int row, const int col) const noexcept;
-  double At(const int row, const int col) const noexcept;
+  constexpr size_t Index(const size_t row, const size_t col) const noexcept;
+  double At(const size_t row, const size_t col) const noexcept;
 
   std::string ToString() const noexcept;
 };
@@ -41,7 +41,8 @@ struct Matrix {
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
-constexpr int Matrix::Index(const int row, const int col) const noexcept {
+constexpr size_t Matrix::Index(const size_t row,
+                               const size_t col) const noexcept {
   return row * cols + col;
 }
 

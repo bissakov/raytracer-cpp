@@ -1,6 +1,7 @@
 #ifndef SRC_PIXEL_H_
 #define SRC_PIXEL_H_
 
+#include <cstdint>
 #include <string>
 
 struct Color {
@@ -24,8 +25,8 @@ struct Color {
 };
 
 struct Pixel {
-  int x;
-  int y;
+  size_t x;
+  size_t y;
   Color color;
 
   bool operator==(const Pixel& other) const;
@@ -34,9 +35,9 @@ struct Pixel {
 };
 
 struct ColorRGB {
-  int r = -1;
-  int g = -1;
-  int b = -1;
+  size_t r = SIZE_MAX;
+  size_t g = SIZE_MAX;
+  size_t b = SIZE_MAX;
 };
 
 #endif  // SRC_PIXEL_H_

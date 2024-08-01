@@ -47,9 +47,9 @@ std::string Color::ToHex() const {
   const char* hex_chars = "0123456789abcdef";
   std::string hex(6, '0');
 
-  int red = Clamp(static_cast<int>(r * 255.0f), 0, 255);
-  int green = Clamp(static_cast<int>(g * 255.0f), 0, 255);
-  int blue = Clamp(static_cast<int>(b * 255.0f), 0, 255);
+  size_t red = Clamp(static_cast<size_t>(r * 255.0f), 0, 255);
+  size_t green = Clamp(static_cast<size_t>(g * 255.0f), 0, 255);
+  size_t blue = Clamp(static_cast<size_t>(b * 255.0f), 0, 255);
 
   hex[0] = hex_chars[static_cast<int>(red / 16)];
   hex[1] = hex_chars[red % 16];
@@ -82,8 +82,8 @@ bool Pixel::operator!=(const Pixel& other) const {
 
 std::string Pixel::ToString() const {
   char color_buffer[100];
-  snprintf(color_buffer, sizeof(color_buffer), "Pixel{x=%d, y=%d, color=%s}", x,
-           y, color.ToString().c_str());
+  snprintf(color_buffer, sizeof(color_buffer), "Pixel{x=%zu, y=%zu, color=%s}",
+           x, y, color.ToString().c_str());
   std::string color_str = color_buffer;
   return color_str;
 }

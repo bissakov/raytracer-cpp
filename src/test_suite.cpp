@@ -15,7 +15,7 @@ void TestFramework::AddTest(const char* name,
 }
 
 void TestFramework::RunTest() {
-  for (int i = 0; i < current_test_idx; ++i) {
+  for (size_t i = 0; i < current_test_idx; ++i) {
     CustomTest* test = &tests[i];
     printf("%s", test->name);
     total_tests++;
@@ -27,28 +27,32 @@ void TestFramework::RunTest() {
     }
   }
 
-  printf("\nTest summary: %s%d/%d%s tests passed.\n",
+  printf("\nTest summary: %s%zu/%zu%s tests passed.\n",
          (passed_tests == total_tests) ? GREEN : RED, passed_tests, total_tests,
          NORMAL);
 }
 
 bool IsEqualDouble(const double a, const double b) {
-  return a == b || std::fabs(a - b) < DBL_EPSILON;
+  return std::fabs(a - b) <= DBL_EPSILON;
 }
 
-bool AssertEqInts(const int& actual, const int& expected,
-                  const char* actual_name, const char* expected_name,
-                  const char* file, int line) {
+bool AssertEqSizeT(const size_t& actual, const size_t& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line) {
   if (!(actual == expected)) {
     printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
            actual_name, expected_name);
-    printf("Actual: %d\n", actual);
-    printf("Expected: %d\n", expected);
+    printf("Actual: %zu\n", actual);
+    printf("Expected: %zu\n", expected);
     fflush(stdout);
     return false;
   }
   return true;
 }
+
+bool AssertEqSizet(const int& actual, const int& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line);
 
 bool AssertEqDoubles(const double& actual, const double& expected,
                      const char* actual_name, const char* expected_name,
