@@ -646,5 +646,45 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
+  framework.AddTest("Inversing a 4x4 matrix 2", []() -> bool {
+    Matrix matrix = {4, 4};
+    double elements[] = {8, -5, 9, 2, 7, 5, 6, 1, -6, 0, 9, 6, -3, 0, -9, -4};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    Matrix actual = matrix.Inverse();
+
+    Matrix expected = {4, 4};
+    double expected_elements[] = {90.0,  90.0,  165.0,  315.0,  45.0,   -72.0,
+                                  -15.0, -18.0, -210.0, -210.0, -255.0, -540.0,
+                                  405.0, 405.0, 450.0,  1125.0};
+    for (int i = 0; i < 16; ++i) {
+      expected_elements[i] /= -585.0;
+    }
+
+    expected.Populate(expected_elements, expected.rows * expected.cols);
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
+  });
+
+  framework.AddTest("Inversing a 4x4 matrix 3", []() -> bool {
+    Matrix matrix = {4, 4};
+    double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
+    matrix.Populate(elements, matrix.rows * matrix.cols);
+
+    Matrix actual = matrix.Inverse();
+
+    Matrix expected = {4, 4};
+    double expected_elements[] = {-66.0, -126.0, 234.0,  -360.0, -126.0, 54.0,
+                                  594.0, -540.0, -47.0,  -237.0, -177.0, 210.0,
+                                  288.0, 108.0,  -432.0, 540.0};
+    for (int i = 0; i < 16; ++i) {
+      expected_elements[i] /= 1620.0;
+    }
+
+    expected.Populate(expected_elements, expected.rows * expected.cols);
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
+  });
+
   framework.RunTest();
 }
