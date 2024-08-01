@@ -7,8 +7,6 @@
 #include <src/test_suite.h>
 #include <tests/tests.h>
 
-#include <cfloat>
-#include <cmath>
 #include <functional>
 #include <string>
 
