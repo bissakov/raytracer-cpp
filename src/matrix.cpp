@@ -157,8 +157,6 @@ double Matrix::Cofactor(size_t row, size_t col) noexcept {
 Matrix Matrix::Inverse() noexcept {
   double determinant = Determinant();
 
-  printf("\ndeterminant: %f\n", determinant);
-
   assert(!IsEqualDouble(determinant, 0.0));
 
   Matrix inversed_matrix = {rows, cols};
