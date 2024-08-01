@@ -163,8 +163,8 @@ Matrix Matrix::Inverse() noexcept {
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      inversed_matrix.values[Index(col, row)] =
-          Cofactor(row, col) / determinant;
+      size_t idx = Index(col, row);
+      inversed_matrix.values[idx] = Cofactor(row, col) / determinant;
     }
   }
 
