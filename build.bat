@@ -15,7 +15,7 @@ set test_files=%tests_dir%\tests.cpp
 set ignore_warnings=-wd4201 -wd4127 -wd4100
 set exe_name=raytracer.exe
 
-cl -Fe: %exe_name% -nologo -Oi -GR- -EHsc -MT -MP -Gm- -Od -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref | gnomon --ignore-blank
+cl -Fe: %exe_name% -nologo -Oi -GR- -EHsc -MT -MP -Gm- -Od -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref
 
 popd
 
