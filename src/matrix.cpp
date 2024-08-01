@@ -183,7 +183,7 @@ std::string Matrix::ToString() const noexcept {
       }
     }
     if (row != rows - 1) {
-      matrix_str += "\n  ";
+      matrix_str += ",\n  ";
     }
   }
 
