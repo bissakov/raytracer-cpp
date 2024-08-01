@@ -1,0 +1,30 @@
+name: Compile
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: run on windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.4.1
+    - name: compile
+      run: | 
+        ./build.bat
+    - name: Zip build artifacts
+      run: |
+        powershell Compress-Archive -Path build\* -DestinationPath build\build.zip
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-zip
+        path: build/build.zip
+    - name: Create GitHub Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/build.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
