@@ -686,5 +686,25 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
+  framework.AddTest("Multiplying a product by its inverse", []() -> bool {
+    Matrix matrix1 = {4, 4};
+    double elements1[] = {3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, -1, 1};
+    matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
+
+    Matrix matrix2 = {4, 4};
+    double elements2[] = {8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5};
+    matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
+
+    Matrix product = matrix1 * matrix2;
+
+    Matrix inverse_product = matrix2.Inverse();
+
+    Matrix actual = product * inverse_product;
+
+    Matrix expected = matrix1;
+
+    return ASSERT_EQUAL_MATRICES(actual, expected);
+  });
+
   framework.RunTest();
 }
