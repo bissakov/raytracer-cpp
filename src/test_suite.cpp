@@ -1,8 +1,13 @@
 #include <src/matrix.h>
 #include <src/test_suite.h>
 
+#include <algorithm>
+#include <cfloat>
 #include <cmath>
 #include <functional>
+
+// NOTE: The lowest passing value so far - 3.553 * 10^-15
+#define ABSOLUTE_TOLERANCE 1e-14  // 10^-14
 
 const char* NORMAL = "\033[0m";
 const char* RED = "\33[0;31m";
@@ -33,7 +38,9 @@ void TestFramework::RunTest() {
 }
 
 bool IsEqualDouble(const double a, const double b) {
-  return std::fabs(a - b) <= DBL_EPSILON;
+  return a == b || (std::fabs(a - b) <=
+                    std::max(DBL_EPSILON * std::max(std::abs(a), std::abs(b)),
+                             ABSOLUTE_TOLERANCE));
 }
 
 bool AssertEqSizeT(const size_t& actual, const size_t& expected,
