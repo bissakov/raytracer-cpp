@@ -13,7 +13,7 @@ void RunTests(const std::string root_folder_path) {
   TestFramework fw;
   fw.root_folder_path = root_folder_path;
 
-  fw.AddTest("Adding point to vector", []() -> bool {
+  fw.AddTest("Add point to vector", []() -> bool {
     Point left = {3, -2, 5};
     Vector right = {-2, 3, 1};
     Point actual = left + right;
@@ -21,7 +21,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_POINTS(actual, expected);
   });
 
-  fw.AddTest("Subtracting point from point", []() -> bool {
+  fw.AddTest("Subtract point from point", []() -> bool {
     Point left = {3, 2, 1};
     Point right = {-2, 3, 1};
     Vector actual = left - right;
@@ -29,7 +29,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
-  fw.AddTest("Subtracting vector from point", []() -> bool {
+  fw.AddTest("Subtract vector from point", []() -> bool {
     Point left = {3, 2, 1};
     Vector right = {5, 6, 7};
     Point actual = left - right;
@@ -37,7 +37,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_POINTS(actual, expected);
   });
 
-  fw.AddTest("Subtracting vector from vector", []() -> bool {
+  fw.AddTest("Subtract vector from vector", []() -> bool {
     Vector left = {3, 2, 1};
     Vector right = {5, 6, 7};
     Vector actual = left - right;
@@ -180,7 +180,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_VECTORS(actual, expected);
   });
 
-  fw.AddTest("Adding color to color", []() -> bool {
+  fw.AddTest("Add color to color", []() -> bool {
     Color left = {0.9, 0.6, 0.75f};
     Color right = {0.7, 0.1, 0.25f};
     Color actual = left + right;
@@ -188,7 +188,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_COLORS(actual, expected);
   });
 
-  fw.AddTest("Subtracting color from color", []() -> bool {
+  fw.AddTest("Subtract color from color", []() -> bool {
     Color left = {0.9, 0.6, 0.75f};
     Color right = {0.7, 0.1, 0.25f};
     Color actual = left - right;
@@ -599,7 +599,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_DOUBLES(actual, expected);
   });
 
-  fw.AddTest("Testing a matrix for invertibility 1", []() -> bool {
+  fw.AddTest("Test a matrix for invertibility 1", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -611,7 +611,7 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL_BOOLS(IsEqualDouble(actual, 0.0), false);
   });
 
-  fw.AddTest("Testing a matrix for invertibility 2", []() -> bool {
+  fw.AddTest("Test a matrix for invertibility 2", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -623,7 +623,7 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL_BOOLS(IsEqualDouble(actual, 0.0), true);
   });
 
-  fw.AddTest("Inversing a 4x4 matrix 1", []() -> bool {
+  fw.AddTest("Inverse a 4x4 matrix 1", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -644,7 +644,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
-  fw.AddTest("Inversing a 4x4 matrix 2", []() -> bool {
+  fw.AddTest("Inverse a 4x4 matrix 2", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {8, -5, 9, 2, 7, 5, 6, 1, -6, 0, 9, 6, -3, 0, -9, -4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -664,7 +664,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(actual, expected);
   });
 
-  fw.AddTest("Inversing a 4x4 matrix 3", []() -> bool {
+  fw.AddTest("Inverse a 4x4 matrix 3", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -690,7 +690,7 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL_MATRICES(identity_matrix, inverted);
   });
 
-  fw.AddTest("Multiplying a matrix by its inverse", []() -> bool {
+  fw.AddTest("Multiply a matrix by its inverse", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);

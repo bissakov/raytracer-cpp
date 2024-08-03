@@ -5,6 +5,34 @@
 #include <string>
 
 // NOTE: Point methods definitions
+double &Point::operator[](size_t index) {
+  assert(index < 4);
+  switch (index) {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    default:
+      return w;
+  }
+}
+
+const double &Point::operator[](size_t index) const {
+  assert(index < 4);
+  switch (index) {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    default:
+      return w;
+  }
+}
+
 Point Point::operator+(const Vector &other) const {
   return {x + other.x, y + other.y, z + other.z};
 }
@@ -22,9 +50,8 @@ bool Point::operator==(const Point &other) const {
 }
 
 bool Point::operator!=(const Point &p) const {
-  return (x != p.x && y != p.y && z != p.z);
+  return !(*this == p);
 }
-
 const std::string Point::ToString() const {
   std::string result = "Point{x=" + std::to_string(x) +
                        ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
@@ -33,6 +60,34 @@ const std::string Point::ToString() const {
 }
 
 // NOTE: Vector methods definitions
+double &Vector::operator[](size_t index) {
+  assert(index < 4);
+  switch (index) {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    default:
+      return w;
+  }
+}
+
+const double &Vector::operator[](size_t index) const {
+  assert(index < 4);
+  switch (index) {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    default:
+      return w;
+  }
+}
+
 Vector Vector::operator+(const Vector &other) const {
   return {x + other.x, y + other.y, z + other.z};
 }
@@ -55,8 +110,7 @@ bool Vector::operator==(const Vector &other) const {
 }
 
 bool Vector::operator!=(const Vector &other) const {
-  return !IsEqualDouble(x, other.x) || !IsEqualDouble(y, other.y) ||
-         !IsEqualDouble(z, other.z);
+  return !(*this == other);
 }
 
 Vector Vector::operator-() const {
@@ -72,23 +126,22 @@ Vector Vector::Normalize() const {
   return {x / magnitude, y / magnitude, z / magnitude};
 }
 
-double Vector::DotProduct(const Vector &other) const {
-  return x * other.x + y * other.y + z * other.z;
-}
-
-Vector Vector::CrossProduct(const Vector &other) const {
-  return {y * other.z - z * other.y, z * other.x - x * other.z,
-          x * other.y - y * other.x};
-}
-
 double DotProduct(const Vector &left, const Vector &right) {
   return left.x * right.x + left.y * right.y + left.z * right.z;
+}
+
+double Vector::DotProduct(const Vector &other) const {
+  return ::DotProduct(*this, other);
 }
 
 Vector CrossProduct(const Vector &left, const Vector &right) {
   return {left.y * right.z - left.z * right.y,
           left.z * right.x - left.x * right.z,
           left.x * right.y - left.y * right.x};
+}
+
+Vector Vector::CrossProduct(const Vector &other) const {
+  return ::CrossProduct(*this, other);
 }
 
 const std::string Vector::ToString() const {

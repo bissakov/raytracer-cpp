@@ -4,36 +4,6 @@
 #include <cassert>
 #include <string>
 
-Matrix::Matrix() noexcept {
-  rows = 0;
-  cols = 0;
-  values = nullptr;
-}
-
-Matrix::Matrix(const size_t rows_, const size_t cols_) noexcept {
-  rows = rows_;
-  cols = rows_;
-
-  values = new double[rows * cols];
-
-  for (size_t i = 0; i < rows * cols; ++i) {
-    values[i] = 0.0f;
-  }
-}
-
-Matrix::Matrix(const Matrix& other) noexcept {
-  rows = other.rows;
-  cols = other.cols;
-  values = new double[rows * cols];
-  for (size_t i = 0; i < rows * cols; ++i) {
-    values[i] = other.values[i];
-  }
-}
-
-Matrix::~Matrix() noexcept {
-  delete[] values;
-}
-
 double Matrix::At(const size_t row, const size_t col) const noexcept {
   assert(IsValueInRange(row, col));
   return values[Index(row, col)];
@@ -55,9 +25,10 @@ Matrix Matrix::operator*(const Matrix& other) noexcept {
   return Multiply(*this, other);
 }
 
+// FIXME: Matrix * Vector = Vector
 Vector Matrix::operator*(const Vector& vector) noexcept {
   assert(rows == 4 && cols == 4);
-  Vector res = {0.0f, 0.0f, 0.0f, 0.0f};
+  Vector res = {0.0f, 0.0f, 0.0f};
 
   for (size_t i = 0; i < 4; ++i) {
     for (size_t j = 0; j < 4; ++j) {
@@ -66,6 +37,11 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   }
 
   return res;
+}
+
+// TODO(bissakov): to complete
+Point Matrix::operator*(const Point& point) noexcept {
+  return point;
 }
 
 Matrix Matrix::operator/(const double scalar) noexcept {
@@ -218,6 +194,12 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   }
 
   return res;
+}
+
+// TODO(bissakov): to complete
+Matrix Translate(int32_t x, int32_t y, int32_t z) {
+  Matrix matrix = {4, 4};
+  return matrix;
 }
 
 Matrix IdentityMatrix() {

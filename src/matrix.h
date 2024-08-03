@@ -3,6 +3,7 @@
 
 #include <src/point_vector.h>
 
+#include <algorithm>
 #include <cassert>
 #include <string>
 
@@ -11,14 +12,29 @@ struct Matrix {
   size_t cols;
   double* values;
 
-  Matrix() noexcept;
-  Matrix(const size_t rows_, const size_t cols_) noexcept;
-  Matrix(const Matrix& other) noexcept;
-  ~Matrix() noexcept;
+  Matrix() noexcept : rows(0), cols(0), values(nullptr) {}
+
+  Matrix(const size_t rows_, const size_t cols_) noexcept
+      : rows(rows_), cols(cols_), values(new double[rows * cols]()) {}
+
+  Matrix(const Matrix& other) noexcept
+      : rows(other.rows),
+        cols(other.cols),
+        values(new double[other.rows * other.cols]) {
+    std::copy(other.values, other.values + rows * cols, values);
+  }
+
+  ~Matrix() noexcept {
+    delete[] values;
+  }
 
   Matrix& operator=(const Matrix& other) noexcept;
   Matrix operator*(const Matrix& other) noexcept;
   Vector operator*(const Vector& vector) noexcept;
+
+  // TODO(bissakov): to complete
+  Point operator*(const Point& point) noexcept;
+
   Matrix operator/(const double scalar) noexcept;
   bool operator==(const Matrix& other) const noexcept;
   bool operator!=(const Matrix& other) const noexcept;
@@ -40,6 +56,9 @@ struct Matrix {
 
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
+
+// TODO(bissakov): to complete
+Matrix Translate(int32_t x, int32_t y, int32_t z);
 
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {

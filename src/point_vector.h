@@ -13,33 +13,14 @@ struct Point {
   double z;
   double w = 1.0;
 
-  double& operator[](size_t index) {
-    assert(index < 4);
-    switch (index) {
-      case 0:
-        return x;
-      case 1:
-        return y;
-      case 2:
-        return z;
-      default:
-        return w;
-    }
-  }
+  Point() noexcept : x(0.0), y(0.0), z(0.0), w(1.0) {}
+  Point(const double x_, const double y_, const double z_) noexcept
+      : x(x_), y(y_), z(z_) {}
+  Point(const Point& other) noexcept
+      : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-  const double& operator[](size_t index) const {
-    assert(index < 4);
-    switch (index) {
-      case 0:
-        return x;
-      case 1:
-        return y;
-      case 2:
-        return z;
-      default:
-        return w;
-    }
-  }
+  double& operator[](size_t index);
+  const double& operator[](size_t index) const;
 
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;
@@ -57,33 +38,14 @@ struct Vector {
   double z;
   double w = 0.0;
 
-  double& operator[](size_t index) {
-    assert(index < 4);
-    switch (index) {
-      case 0:
-        return x;
-      case 1:
-        return y;
-      case 2:
-        return z;
-      default:
-        return w;
-    }
-  }
+  Vector() noexcept : x(0.0), y(0.0), z(0.0) {}
+  Vector(const double x_, const double y_, const double z_) noexcept
+      : x(x_), y(y_), z(z_) {}
+  Vector(const Vector& other) noexcept
+      : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-  const double& operator[](size_t index) const {
-    assert(index < 4);
-    switch (index) {
-      case 0:
-        return x;
-      case 1:
-        return y;
-      case 2:
-        return z;
-      default:
-        return w;
-    }
-  }
+  double& operator[](size_t index);
+  const double& operator[](size_t index) const;
 
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;
