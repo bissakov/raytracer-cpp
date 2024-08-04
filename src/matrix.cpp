@@ -39,7 +39,7 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   return res;
 }
 
-// TODO(bissakov): to complete
+// NOTE: placeholder
 Point Matrix::operator*(const Point& point) noexcept {
   return point;
 }
@@ -196,7 +196,7 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   return res;
 }
 
-// TODO(bissakov): to complete
+// TODO(bissakov): complete
 Matrix Translate(int32_t x, int32_t y, int32_t z) {
   Matrix matrix = {4, 4};
   return matrix;
