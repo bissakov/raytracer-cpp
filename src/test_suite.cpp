@@ -5,24 +5,56 @@
 #include <cfloat>
 #include <cmath>
 #include <functional>
+#include <string>
 
 // NOTE: The lowest passing value so far - 3.553 * 10^-15
 #define ABSOLUTE_TOLERANCE 1e-14  // 10^-14
 
 const char* NORMAL = "\033[0m";
-const char* RED = "\33[0;31m";
-const char* GREEN = "\33[0;32m";
+const char* RED = "\033[0;31m";
+const char* GREEN = "\033[0;32m";
 
-void TestFramework::AddTest(const char* name,
+bool CustomTest::operator==(const CustomTest& other) const noexcept {
+  return tag == other.tag && name == other.name;
+}
+
+bool CustomTest::operator!=(const CustomTest& other) const noexcept {
+  return !(*this == other);
+}
+
+CustomTest& CustomTest::operator=(const CustomTest& other) noexcept {
+  if (this != &other) {
+    name = other.name;
+    tag = other.tag;
+    test_function = other.test_function;
+  }
+  return *this;
+}
+
+void TestFramework::AddTest(const char* name, const char* tag,
                             std::function<bool()> test_function) {
-  tests[current_test_idx] = {name, test_function};
+  tests.Push({name, tag, test_function});
   current_test_idx++;
 }
 
-void TestFramework::RunTest() {
+// FIXME: Wrong value wrapping
+std::string GetColor(size_t idx) {
+  size_t color_idx = (33 + idx) % 36;
+  std::string color = "\033[0;" + std::to_string(color_idx) + "m";
+  return color;
+}
+
+void TestFramework::RunTests() {
+  size_t current_tag_idx = 0;
   for (size_t i = 0; i < current_test_idx; ++i) {
-    CustomTest* test = &tests[i];
-    printf("%s", test->name);
+    CustomTest* test = &(tests.Get(i));
+
+    if (i > 0 && strcmp(test->tag, tests.Get(i - 1).tag) != 0) {
+      current_tag_idx++;
+    }
+
+    printf("%s%s%s %s", GetColor(current_tag_idx).c_str(), test->tag, NORMAL,
+           test->name);
     total_tests++;
     if (test->test_function()) {
       printf(" %sPASSED%s\n", GREEN, NORMAL);

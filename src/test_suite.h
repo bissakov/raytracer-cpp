@@ -1,6 +1,7 @@
 #ifndef SRC_TEST_SUITE_H_
 #define SRC_TEST_SUITE_H_
 
+#include <src/arr.h>
 #include <src/matrix.h>
 #include <src/pixel.h>
 #include <src/point_vector.h>
@@ -10,28 +11,33 @@
 
 struct CustomTest {
   std::function<bool()> test_function;
+  const char* tag;
   const char* name;
 
-  CustomTest(const char* name_, std::function<bool()> test_function_) {
-    name = name_;
-    test_function = test_function_;
-  }
+  CustomTest(const char* name_, const char* tag_,
+             std::function<bool()> test_function_) noexcept
+      : test_function(test_function_), tag(tag_), name(name_) {}
 
-  CustomTest() {
-    name = "";
-    test_function = []() -> bool { return true; };
-  }
+  CustomTest() noexcept
+      : test_function([]() -> bool { return true; }), tag(""), name("") {}
+
+  CustomTest& operator=(const CustomTest& other) noexcept;
+  bool operator==(const CustomTest& other) const noexcept;
+  bool operator!=(const CustomTest& other) const noexcept;
 };
 
 struct TestFramework {
-  std::string root_folder_path;
-  CustomTest tests[200];
+  std::string root;
+  DyArray<CustomTest> tests;
   size_t passed_tests = 0;
   size_t total_tests = 0;
   size_t current_test_idx = 0;
 
-  void AddTest(const char* name, std::function<bool()> test_function);
-  void RunTest();
+  explicit TestFramework(std::string root_) noexcept : root(root_) {}
+
+  void AddTest(const char* name, const char* tag,
+               std::function<bool()> test_function);
+  void RunTests();
 };
 
 bool IsEqualDouble(const double a, const double b);
