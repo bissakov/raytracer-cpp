@@ -33,7 +33,7 @@ CustomTest& CustomTest::operator=(const CustomTest& other) noexcept {
 
 void TestFramework::AddTest(const char* name, const char* tag,
                             std::function<bool()> test_function) {
-  tests.Push({name, tag, test_function});
+  tests.Push({test_function, tag, name});
   current_test_idx++;
 }
 

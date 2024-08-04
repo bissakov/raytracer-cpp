@@ -74,11 +74,11 @@ void RunTests(const std::string root_folder_path) {
 
   fw.AddTest("Push dynamic array into DyArray", "Arrays", []() -> bool {
     size_t size = 5;
-    int* elements = new int[size];
-    for (int i = 0; i < size; ++i) {
+    size_t* elements = new size_t[size];
+    for (size_t i = 0; i < size; ++i) {
       elements[i] = i + 1;
     }
-    DyArray<int> arr = {elements, size};
+    DyArray<size_t> arr = {elements, size};
     bool res = ASSERT_EQUAL_BOOLS(
         arr.length == size && arr.Compare(elements, size), true);
 

@@ -14,8 +14,8 @@ struct CustomTest {
   const char* tag;
   const char* name;
 
-  CustomTest(const char* name_, const char* tag_,
-             std::function<bool()> test_function_) noexcept
+  CustomTest(std::function<bool()> test_function_, const char* tag_,
+             const char* name_) noexcept
       : test_function(test_function_), tag(tag_), name(name_) {}
 
   CustomTest() noexcept

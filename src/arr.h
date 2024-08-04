@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <functional>
 
 template <typename T>
 struct DyArray {
@@ -100,6 +101,18 @@ struct DyArray {
     }
     elements = new_elements;
     elements[length] = element;
+    length++;
+  }
+
+  void Push(std::function<bool()> test_function, const char* tag,
+            const char* name) noexcept {
+    T* new_elements = new T[length + 1];
+    if (elements != nullptr) {
+      std::copy(elements, elements + length, new_elements);
+      delete[] elements;
+    }
+    elements = new_elements;
+    elements[length] = {test_function, tag, name};
     length++;
   }
 
