@@ -45,6 +45,9 @@
     <ClCompile Include="src\str.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\arr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tests\tests.h">
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\str.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\arr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

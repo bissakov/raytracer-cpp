@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\arr.cpp" />
     <ClCompile Include="src\canvas.cpp" />
     <ClCompile Include="src\file_io.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="tests\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\arr.h" />
     <ClInclude Include="src\canvas.h" />
     <ClInclude Include="src\file_io.h" />
     <ClInclude Include="src\main.h" />
