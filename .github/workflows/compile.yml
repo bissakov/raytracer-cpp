@@ -21,10 +21,9 @@ jobs:
       with:
         name: build-zip
         path: build/build.zip
-    - name: Create GitHub Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/build.zip
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v5
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        title: Release
