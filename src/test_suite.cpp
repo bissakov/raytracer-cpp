@@ -37,9 +37,11 @@ void TestFramework::AddTest(const char* name, const char* tag,
   current_test_idx++;
 }
 
-// FIXME: Wrong value wrapping
 std::string GetColor(size_t idx) {
   size_t color_idx = (33 + idx) % 36;
+  if (color_idx < 33) {
+    color_idx += 33;
+  }
   std::string color = "\033[0;" + std::to_string(color_idx) + "m";
   return color;
 }
