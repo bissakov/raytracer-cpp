@@ -25,6 +25,7 @@
     <ClCompile Include="src\matrix.cpp" />
     <ClCompile Include="src\pixel.cpp" />
     <ClCompile Include="src\point_vector.cpp" />
+    <ClCompile Include="src\str.cpp" />
     <ClCompile Include="src\test_suite.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="tests\tests.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="src\matrix.h" />
     <ClInclude Include="src\pixel.h" />
     <ClInclude Include="src\point_vector.h" />
+    <ClInclude Include="src\str.h" />
     <ClInclude Include="src\test_suite.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="tests\tests.h" />

@@ -10,7 +10,7 @@ call vcvarsall.bat x64 > nul 2>&1
 mkdir .\build\batch\debug > nul 2>&1
 pushd .\build\batch\debug 
 
-set src_files=%src_dir%\main.cpp %src_dir%\point_vector.cpp %src_dir%\pixel.cpp %src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\file_io.cpp %src_dir%\test_suite.cpp %src_dir%\utils.cpp
+set src_files=%src_dir%\main.cpp %src_dir%\point_vector.cpp %src_dir%\pixel.cpp %src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\file_io.cpp %src_dir%\str.cpp %src_dir%\arr.cpp %src_dir%\test_suite.cpp %src_dir%\utils.cpp
 set test_files=%tests_dir%\tests.cpp
 set ignore_warnings=-wd4201 -wd4127 -wd4100
 set exe_name=raytracer.exe
