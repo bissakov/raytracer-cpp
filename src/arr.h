@@ -19,14 +19,51 @@ struct DyArray {
     std::copy(other.elements, other.elements + other.length, elements);
   }
 
+  DyArray(T* array, size_t length_) noexcept
+      : length(length_), elements(new T[length]) {
+    std::copy(array, array + length, elements);
+  }
+
   DyArray(DyArray&& other) noexcept
       : length(other.length), elements(other.elements) {
     other.length = 0;
     other.elements = nullptr;
   }
 
+  bool operator==(const DyArray<T>& other) noexcept {
+    if (length != other.length) {
+      return false;
+    }
+
+    for (size_t i = 0; i < length; ++i) {
+      if (elements[i] != other.elements[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool operator!=(const DyArray<T>& other) noexcept {
+    return !(*this == other);
+  }
+
+  bool Compare(T* other_elements, size_t other_length) noexcept {
+    if (length != other_length) {
+      return false;
+    }
+
+    for (size_t i = 0; i < length; ++i) {
+      if (elements[i] != other_elements[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   DyArray<T>& operator=(const DyArray<T>& other) noexcept {
-    if (this != &other) {
+    if (*this != other) {
       delete[] elements;
       length = other.length;
       elements = new T[other.length];
@@ -36,7 +73,7 @@ struct DyArray {
   }
 
   DyArray<T>& operator=(DyArray&& other) noexcept {
-    if (this != &other) {
+    if (*this != other) {
       delete[] elements;
       length = other.length;
       elements = other.elements;
@@ -67,34 +104,33 @@ struct DyArray {
   }
 
   void Pop() noexcept {
-    T* new_elements;
-    if (length - 1 == 0) {
-      new_elements = nullptr;
-    } else {
-      new_elements = new T[length - 1];
-      if (elements != nullptr) {
-        std::copy(elements, elements + length - 1, new_elements);
-        delete[] elements;
-      }
+    assert(length > 0);
+
+    if (length == 1) {
+      delete[] elements;
+      elements = nullptr;
+      length = 0;
+      return;
     }
+
+    T* new_elements = new T[length - 1];
+    std::copy(elements, elements + length - 1, new_elements);
+    delete[] elements;
     elements = new_elements;
     length--;
   }
 
   void Insert(size_t idx, T value) noexcept {
-    assert(length >= 0);
+    assert(idx <= length);
+
     T* new_elements = new T[length + 1];
     if (elements != nullptr) {
-      if (idx == 0) {
-        std::copy(idx + 1, elements + length, new_elements);
-      } else if (idx == length - 1) {
-        std::copy(0, elements + length - 1, new_elements);
-      }
-      std::copy(elements, elements + length, new_elements);
+      std::copy(elements, elements + idx, new_elements);
+      new_elements[idx] = value;
+      std::copy(elements + idx, elements + length, new_elements + idx + 1);
       delete[] elements;
     }
     elements = new_elements;
-    elements[length] = value;
     length++;
   }
 };
