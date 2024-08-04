@@ -813,5 +813,36 @@ void RunTests(const std::string root_folder_path) {
         return ASSERT_EQUAL_MATRICES(inverse_transpose, transpose_inverse);
       });
 
+  // fw.AddTest("Multiply point by a translation matrix", "Matrices", []() ->
+  // bool {
+  //   Matrix transform = Translate(5, -3, 2);
+  //   Point p = {-3, 4, 5};
+  //
+  //   Point actual = transform * p;
+  //   Point expected = {2, 1, 7};
+  //   return ASSERT_EQUAL_POINTS(actual, expected);
+  // });
+  //
+  // fw.AddTest("Multiply point by the inverse of a translation", "Matrices",
+  // []() -> bool {
+  //   Matrix transform = Translate(5, -3, 2);
+  //   Matrix inverse = transform.Inverse();
+  //   Point p = {-3, 4, 5};
+  //
+  //   Point actual = inverse * p;
+  //   Point expected = {-8, 7, 3};
+  //   return ASSERT_EQUAL_POINTS(actual, expected);
+  // });
+  //
+  // fw.AddTest("Multiply vector by a translation matrix", "Matrices", []() ->
+  // bool {
+  //   Matrix transform = Translate(5, -3, 2);
+  //   Vector v = {-3, 4, 5};
+  //
+  //   Vector actual = transform * v;
+  //   Vector expected = v;
+  //   return ASSERT_EQUAL_VECTORS(actual, expected);
+  // });
+
   fw.RunTests();
 }
