@@ -50,6 +50,7 @@ struct Matrix {
 
   constexpr size_t Index(const size_t row, const size_t col) const noexcept;
   double At(const size_t row, const size_t col) const noexcept;
+  void Set(const size_t row, const size_t col, const double value) noexcept;
 
   std::string ToString() const noexcept;
 };
@@ -66,6 +67,7 @@ constexpr size_t Matrix::Index(const size_t row,
 }
 
 Matrix IdentityMatrix();
+Matrix Translate(int32_t x, int32_t y, int32_t z);
 
 #define INDEX(row, col, matrix) ((row * (matrix).cols) + col)
 #define AT(row, col, matrix) ((matrix).values[INDEX(row, col, (matrix))])

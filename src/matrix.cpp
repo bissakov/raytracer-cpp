@@ -9,6 +9,11 @@ double Matrix::At(const size_t row, const size_t col) const noexcept {
   return values[Index(row, col)];
 }
 
+void Matrix::Set(const size_t row, const size_t col,
+                 const double value) noexcept {
+  values[Index(row, col)] = value;
+}
+
 Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
     delete[] values;
@@ -25,23 +30,28 @@ Matrix Matrix::operator*(const Matrix& other) noexcept {
   return Multiply(*this, other);
 }
 
-// FIXME: Matrix * Vector = Vector
 Vector Matrix::operator*(const Vector& vector) noexcept {
   assert(rows == 4 && cols == 4);
-  Vector res = {0.0f, 0.0f, 0.0f};
+  Vector v = {0.0f, 0.0f, 0.0f};
 
   for (size_t i = 0; i < 4; ++i) {
     for (size_t j = 0; j < 4; ++j) {
-      res[i] += At(i, j) * vector[j];
+      v[i] += At(i, j) * vector[j];
     }
   }
 
-  return res;
+  return v;
 }
 
-// NOTE: placeholder
 Point Matrix::operator*(const Point& point) noexcept {
-  return point;
+  assert(rows == 4 && cols == 4);
+  Point p = {0, 0, 0};
+  for (size_t i = 0; i < 4; ++i) {
+    for (size_t j = 0; j < 4; ++j) {
+      p[i] += At(i, j) * point[j];
+    }
+  }
+  return p;
 }
 
 Matrix Matrix::operator/(const double scalar) noexcept {
@@ -77,7 +87,7 @@ Matrix Matrix::Transpose() noexcept {
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      matrix.values[matrix.Index(row, col)] = At(col, row);
+      matrix.Set(row, col, At(col, row));
     }
   }
 
@@ -108,8 +118,7 @@ Matrix Matrix::SubMatrix(size_t excluded_row, size_t excluded_col) noexcept {
     for (size_t col = 0; col < cols; ++col) {
       if (col == excluded_col) continue;
 
-      size_t index = submatrix.Index(current_row, current_col);
-      submatrix.values[index] = At(row, col);
+      submatrix.Set(current_row, current_col, At(row, col));
       current_col = (current_col + 1) % submatrix.cols;
     }
     current_row = (current_row + 1) % submatrix.rows;
@@ -139,8 +148,7 @@ Matrix Matrix::Inverse() noexcept {
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      size_t idx = Index(col, row);
-      inversed_matrix.values[idx] = Cofactor(row, col) / determinant;
+      inversed_matrix.Set(col, row, Cofactor(row, col) / determinant);
     }
   }
 
@@ -188,18 +196,13 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   for (size_t row = 0; row < res.rows; ++row) {
     for (size_t col = 0; col < res.cols; ++col) {
       for (size_t k = 0; k < b.rows; ++k) {
-        res.values[res.Index(row, col)] += a.At(row, k) * b.At(k, col);
+        double product = res.At(row, col) + a.At(row, k) * b.At(k, col);
+        res.Set(row, col, product);
       }
     }
   }
 
   return res;
-}
-
-// TODO(bissakov): complete
-Matrix Translate(int32_t x, int32_t y, int32_t z) {
-  Matrix matrix = {4, 4};
-  return matrix;
 }
 
 Matrix IdentityMatrix() {
@@ -208,4 +211,12 @@ Matrix IdentityMatrix() {
   identity_matrix.Populate(elements,
                            identity_matrix.rows * identity_matrix.cols);
   return identity_matrix;
+}
+
+Matrix Translate(int32_t x, int32_t y, int32_t z) {
+  Matrix matrix = IdentityMatrix();
+  matrix.Set(0, 3, x);
+  matrix.Set(1, 3, y);
+  matrix.Set(2, 3, z);
+  return matrix;
 }
