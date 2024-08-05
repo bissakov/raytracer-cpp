@@ -35,8 +35,8 @@ struct TestFramework {
 
   explicit TestFramework(std::string root_) noexcept : root(root_) {}
 
-  void AddTest(const char* name, const char* tag,
-               std::function<bool()> test_function);
+  void Add(const char* name, const char* tag,
+           std::function<bool()> test_function);
   void RunTests();
 };
 

@@ -33,8 +33,8 @@ CustomTest& CustomTest::operator=(const CustomTest& other) noexcept {
   return *this;
 }
 
-void TestFramework::AddTest(const char* name, const char* tag,
-                            std::function<bool()> test_function) {
+void TestFramework::Add(const char* name, const char* tag,
+                        std::function<bool()> test_function) {
   tests.Push({test_function, tag, name});
   current_test_idx++;
 }
@@ -58,8 +58,8 @@ void TestFramework::RunTests() {
       current_tag_idx++;
     }
 
-    printf("%s%s%s %s", GetColor(current_tag_idx).c_str(), test->tag, NORMAL,
-           test->name);
+    printf("%s%s%s \"%s\"", GetColor(current_tag_idx).c_str(), test->tag,
+           NORMAL, test->name);
     total_tests++;
     if (test->test_function()) {
       printf(" %s%sPASSED%s\n", ITALIC, GREEN, NORMAL);
