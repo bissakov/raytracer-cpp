@@ -52,8 +52,10 @@ struct Matrix {
   double At(const size_t row, const size_t col) const noexcept;
   void Set(const size_t row, const size_t col, const double value) noexcept;
 
-  std::string ToString() const noexcept;
+  operator std::string() const noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const Matrix& m);
 
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;

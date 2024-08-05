@@ -5,6 +5,7 @@
 #include <cfloat>
 #include <cmath>
 #include <functional>
+#include <iostream>
 #include <string>
 
 // NOTE: The lowest passing value so far - 3.553 * 10^-15
@@ -78,106 +79,4 @@ bool IsEqualDouble(const double a, const double b) {
   return a == b || (std::fabs(a - b) <=
                     std::max(DBL_EPSILON * std::max(std::abs(a), std::abs(b)),
                              ABSOLUTE_TOLERANCE));
-}
-
-bool AssertEqSizeT(const size_t& actual, const size_t& expected,
-                   const char* actual_name, const char* expected_name,
-                   const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %zu\n", actual);
-    printf("Expected: %zu\n", expected);
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqSizet(const int& actual, const int& expected,
-                   const char* actual_name, const char* expected_name,
-                   const char* file, int line);
-
-bool AssertEqDoubles(const double& actual, const double& expected,
-                     const char* actual_name, const char* expected_name,
-                     const char* file, int line) {
-  if (!IsEqualDouble(actual, expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %f\n", actual);
-    printf("Expected: %f\n", expected);
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqBools(const bool& actual, const bool& expected,
-                   const char* actual_name, const char* expected_name,
-                   const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %d\n", actual);
-    printf("Expected: %d\n", expected);
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqPoints(const Point& actual, const Point& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %s\n", actual.ToString().c_str());
-    printf("Expected: %s\n", expected.ToString().c_str());
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqVectors(const Vector& actual, const Vector& expected,
-                     const char* actual_name, const char* expected_name,
-                     const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %s\n", actual.ToString().c_str());
-    printf("Expected: %s\n", expected.ToString().c_str());
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqColors(const Color& actual, const Color& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %s\n", actual.ToString().c_str());
-    printf("Expected: %s\n", expected.ToString().c_str());
-    fflush(stdout);
-    return false;
-  }
-  return true;
-}
-
-bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
-                      const char* actual_name, const char* expected_name,
-                      const char* file, int line) {
-  if (!(actual == expected)) {
-    printf("\nError: %s:%d: Assertion failed: %s == %s\n", file, line,
-           actual_name, expected_name);
-    printf("Actual: %s\n", actual.ToString().c_str());
-    printf("Expected: %s\n", expected.ToString().c_str());
-    fflush(stdout);
-    return false;
-  }
-  return true;
 }

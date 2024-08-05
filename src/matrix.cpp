@@ -155,7 +155,27 @@ Matrix Matrix::Inverse() noexcept {
   return inversed_matrix;
 }
 
-std::string Matrix::ToString() const noexcept {
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+  os << "Matrix{\n  rows=" << m.rows << ", cols=" << m.cols << ", \n  ";
+  for (size_t row = 0; row < m.rows; ++row) {
+    for (size_t col = 0; col < m.cols; ++col) {
+      os << m.At(row, col);
+
+      if (col != m.cols - 1) {
+        os << ", ";
+      }
+    }
+    if (row != m.rows - 1) {
+      os << ",\n  ";
+    }
+  }
+
+  os << "\n}";
+
+  return os;
+}
+
+Matrix::operator std::string() const noexcept {
   std::string matrix_str = "Matrix{\n  rows=" + std::to_string(rows) +
                            ", cols=" + std::to_string(cols) + ",\n  ";
   for (size_t row = 0; row < rows; ++row) {

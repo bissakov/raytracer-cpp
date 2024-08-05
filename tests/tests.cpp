@@ -17,27 +17,28 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Initialize array", "Arrays", []() -> bool {
     DyArray<int> arr(5);
     DyArray<int> empty_arr;
-    return ASSERT_EQUAL_BOOLS(arr.length == 5 && empty_arr.length == 0 &&
-                                  empty_arr.elements == nullptr,
-                              true);
+    return ASSERT_EQUAL(bool,
+                        arr.length == 5 && empty_arr.length == 0 &&
+                            empty_arr.elements == nullptr,
+                        true);
   });
 
   fw.Add("Push array elements", "Arrays", []() -> bool {
     DyArray<int> arr;
     arr.Push(1);
-    bool res = ASSERT_EQUAL_BOOLS(arr.length == 1, true) &&
-               ASSERT_EQUAL_BOOLS(arr.elements[0] == 1, true);
+    bool res = ASSERT_EQUAL(bool, arr.length == 1, true) &&
+               ASSERT_EQUAL(bool, arr.elements[0] == 1, true);
 
     arr.Push(2);
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 2, true) &&
-          ASSERT_EQUAL_BOOLS(arr.elements[0] == 1, true) &&
-          ASSERT_EQUAL_BOOLS(arr.elements[1] == 2, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 2, true) &&
+          ASSERT_EQUAL(bool, arr.elements[0] == 1, true) &&
+          ASSERT_EQUAL(bool, arr.elements[1] == 2, true);
 
     arr.Push(3);
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 3, true) &&
-          ASSERT_EQUAL_BOOLS(arr.elements[0] == 1, true) &&
-          ASSERT_EQUAL_BOOLS(arr.elements[1] == 2, true) &&
-          ASSERT_EQUAL_BOOLS(arr.elements[2] == 3, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 3, true) &&
+          ASSERT_EQUAL(bool, arr.elements[0] == 1, true) &&
+          ASSERT_EQUAL(bool, arr.elements[1] == 2, true) &&
+          ASSERT_EQUAL(bool, arr.elements[2] == 3, true);
 
     return res;
   });
@@ -49,18 +50,18 @@ void RunTests(const std::string root_folder_path) {
     arr.Push(3);
     arr.Push(4);
     arr.Push(5);
-    bool res = ASSERT_EQUAL_BOOLS(arr.length == 5, true);
+    bool res = ASSERT_EQUAL(bool, arr.length == 5, true);
 
     arr.Pop();
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 4, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 4, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 3, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 3, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 2, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 2, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 1, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 1, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL_BOOLS(arr.length == 0, true);
+    res = res && ASSERT_EQUAL(bool, arr.length == 0, true);
 
     return res;
   });
@@ -68,8 +69,8 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Push fixed array into DyArray", "Arrays", []() -> bool {
     int elements[] = {1, 2, 3, 4, 5};
     DyArray<int> arr = {elements, 5};
-    return ASSERT_EQUAL_BOOLS(arr.length == 5 && arr.Compare(elements, 5),
-                              true);
+    return ASSERT_EQUAL(bool, arr.length == 5 && arr.Compare(elements, 5),
+                        true);
   });
 
   fw.Add("Push dynamic array into DyArray", "Arrays", []() -> bool {
@@ -79,8 +80,8 @@ void RunTests(const std::string root_folder_path) {
       elements[i] = i + 1;
     }
     DyArray<size_t> arr = {elements, size};
-    bool res = ASSERT_EQUAL_BOOLS(
-        arr.length == size && arr.Compare(elements, size), true);
+    bool res = ASSERT_EQUAL(
+        bool, arr.length == size && arr.Compare(elements, size), true);
 
     delete[] elements;
 
@@ -91,14 +92,14 @@ void RunTests(const std::string root_folder_path) {
     String actual = String{"Hello, World!"};
     const char* expected = "Hello, World!";
     bool res = actual == expected;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Compare string lengths", "Strings", []() -> bool {
     String actual = String{"Hello, World!"};
     const char* expected = "Hello, World!";
     bool res = actual == expected && actual.length == strlen(expected);
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Copy string", "Strings", []() -> bool {
@@ -106,7 +107,7 @@ void RunTests(const std::string root_folder_path) {
     String actual = str;
     String expected = String{"Hello, World!"};
     bool res = actual == expected;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Concatenate two strings", "Strings", []() -> bool {
@@ -115,7 +116,7 @@ void RunTests(const std::string root_folder_path) {
     String actual = str1 + str2;
     String expected = String{"123456"};
     bool res = actual == expected;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Concatenate four strings", "Strings", []() -> bool {
@@ -126,7 +127,7 @@ void RunTests(const std::string root_folder_path) {
     String actual = str1 + str2 + str3 + str4;
     String expected = String{"123456789101112"};
     bool res = actual == expected;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Add point to vector", "Tuples", []() -> bool {
@@ -134,7 +135,7 @@ void RunTests(const std::string root_folder_path) {
     Vector right = {-2, 3, 1};
     Point actual = left + right;
     Point expected = {1, 1, 6};
-    return ASSERT_EQUAL_POINTS(actual, expected);
+    return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw.Add("Subtract point from point", "Tuples", []() -> bool {
@@ -142,7 +143,7 @@ void RunTests(const std::string root_folder_path) {
     Point right = {-2, 3, 1};
     Vector actual = left - right;
     Vector expected = {5, -1, 0};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Subtract vector from point", "Tuples", []() -> bool {
@@ -150,7 +151,7 @@ void RunTests(const std::string root_folder_path) {
     Vector right = {5, 6, 7};
     Point actual = left - right;
     Point expected = {-2, -4, -6};
-    return ASSERT_EQUAL_POINTS(actual, expected);
+    return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw.Add("Subtract vector from vector", "Tuples", []() -> bool {
@@ -158,84 +159,84 @@ void RunTests(const std::string root_folder_path) {
     Vector right = {5, 6, 7};
     Vector actual = left - right;
     Vector expected = {-2, -4, -6};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Negate vector", "Tuples", []() -> bool {
     Vector v = {1, -2, 3};
     Vector actual = -v;
     Vector expected = {-1, 2, -3};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Multiply vector by scalar", "Tuples", []() -> bool {
     Vector v = {1, -2, 3};
     Vector actual = v * 3.5;
     Vector expected = {3.5, -7, 10.5};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Divide vector by multiplying by scalar", "Tuples", []() -> bool {
     Vector v = {1, -2, 3};
     Vector actual = v * 0.5;
     Vector expected = {0.5, -1, 1.5};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Divide vector by scalar", "Tuples", []() -> bool {
     Vector v = {1, -2, 3};
     Vector actual = v / 2;
     Vector expected = {0.5, -1, 1.5};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("The magnitude of a vector 1", "Tuples", []() -> bool {
     Vector v = {1, 0, 0};
     double actual = v.Magnitude();
     double expected = 1;
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("The magnitude of a vector 2", "Tuples", []() -> bool {
     Vector v = {0, 1, 0};
     double actual = v.Magnitude();
     double expected = 1;
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("The magnitude of a vector 3", "Tuples", []() -> bool {
     Vector v = {0, 0, 1};
     double actual = v.Magnitude();
     double expected = 1;
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("The magnitude of a vector 4", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     double actual = v.Magnitude();
     double expected = sqrt(14.0);
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("The magnitude of a vector 5", "Tuples", []() -> bool {
     Vector v = {-1, -2, -3};
     double actual = v.Magnitude();
     double expected = sqrt(14.0);
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Normalize vector 1", "Tuples", []() -> bool {
     Vector v = {4, 0, 0};
     Vector actual = v.Normalize();
     Vector expected = {1, 0, 0};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Normalize vector 2", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     Vector actual = v.Normalize();
     Vector expected = {1 / sqrt(14.0), 2 / sqrt(14.0), 3 / sqrt(14.0)};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("The magnitude of a normalized vector", "Tuples", []() -> bool {
@@ -243,7 +244,7 @@ void RunTests(const std::string root_folder_path) {
     Vector nv = v.Normalize();
     double actual = nv.Magnitude();
     double expected = 1;
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("The dot product (self)", "Tuples", []() -> bool {
@@ -252,7 +253,7 @@ void RunTests(const std::string root_folder_path) {
     double result = v1.DotProduct(v2);
     double expected = 20;
 
-    return ASSERT_EQUAL_DOUBLES(result, expected);
+    return ASSERT_EQUAL(double, result, expected);
   });
 
   fw.Add("The dot product (separate)", "Tuples", []() -> bool {
@@ -261,7 +262,7 @@ void RunTests(const std::string root_folder_path) {
     double result = DotProduct(v1, v2);
     double expected = 20;
 
-    return ASSERT_EQUAL_DOUBLES(result, expected);
+    return ASSERT_EQUAL(double, result, expected);
   });
 
   fw.Add("The cross product (self)", "Tuples", []() -> bool {
@@ -269,7 +270,7 @@ void RunTests(const std::string root_folder_path) {
     Vector v2 = {2, 3, 4};
     Vector actual = v1.CrossProduct(v2);
     Vector expected = {-1, 2, -1};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("The cross product (self, reversed)", "Tuples", []() -> bool {
@@ -277,7 +278,7 @@ void RunTests(const std::string root_folder_path) {
     Vector v2 = {2, 3, 4};
     Vector actual = v2.CrossProduct(v1);
     Vector expected = {1, -2, 1};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("The cross product (separate)", "Tuples", []() -> bool {
@@ -285,7 +286,7 @@ void RunTests(const std::string root_folder_path) {
     Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v1, v2);
     Vector expected = {-1, 2, -1};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("The cross product (separate, reversed)", "Tuples", []() -> bool {
@@ -293,7 +294,7 @@ void RunTests(const std::string root_folder_path) {
     Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v2, v1);
     Vector expected = {1, -2, 1};
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.Add("Add color to color", "Colors", []() -> bool {
@@ -301,7 +302,7 @@ void RunTests(const std::string root_folder_path) {
     Color right = {0.7, 0.1, 0.25f};
     Color actual = left + right;
     Color expected = {1.6, 0.7, 1};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Subtract color from color", "Colors", []() -> bool {
@@ -309,28 +310,28 @@ void RunTests(const std::string root_folder_path) {
     Color right = {0.7, 0.1, 0.25f};
     Color actual = left - right;
     Color expected = {0.2, 0.5, 0.5f};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Multiply color by scalar", "Colors", []() -> bool {
     Color c = {0.2, 0.3, 0.4f};
     Color actual = c * 2;
     Color expected = {0.4, 0.6, 0.8f};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Divide color by multiplying by scalar", "Colors", []() -> bool {
     Color c = {0.2, 0.3, 0.4f};
     Color actual = c * 0.5;
     Color expected = {0.1, 0.15, 0.2f};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Divide color by scalar", "Colors", []() -> bool {
     Color c = {0.2, 0.3, 0.4f};
     Color actual = c / 2;
     Color expected = {0.1, 0.15, 0.2f};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Multiply colors", "Colors", []() -> bool {
@@ -338,7 +339,7 @@ void RunTests(const std::string root_folder_path) {
     Color right = {0.9, 1, 0.1};
     Color actual = left * right;
     Color expected = {0.9, 0.2, 0.04};
-    return ASSERT_EQUAL_COLORS(actual, expected);
+    return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw.Add("Create canvas", "Canvas", []() -> bool {
@@ -347,8 +348,8 @@ void RunTests(const std::string root_folder_path) {
     size_t actual_height = canvas.height;
     size_t expected_width = 10;
     size_t expected_height = 20;
-    return ASSERT_EQUAL_SIZE_T(actual_width, expected_width) &&
-           ASSERT_EQUAL_SIZE_T(actual_height, expected_height);
+    return ASSERT_EQUAL(size_t, actual_width, expected_width) &&
+           ASSERT_EQUAL(size_t, actual_height, expected_height);
   });
 
   fw.Add("Check all default canvas colors (black)", "Canvas", []() -> bool {
@@ -363,7 +364,7 @@ void RunTests(const std::string root_folder_path) {
       }
     }
 
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Write color of the pixel", "Canvas", []() -> bool {
@@ -376,8 +377,8 @@ void RunTests(const std::string root_folder_path) {
     Pixel pixel = canvas.PixelAt(x, y);
     Color actual_color = pixel.color;
 
-    return ASSERT_EQUAL_COLORS(actual_color, red) &&
-           ASSERT_EQUAL_SIZE_T(pixel.x, x) && ASSERT_EQUAL_SIZE_T(pixel.y, y);
+    return ASSERT_EQUAL(Color, actual_color, red) &&
+           ASSERT_EQUAL(size_t, pixel.x, x) && ASSERT_EQUAL(size_t, pixel.y, y);
   });
 
   fw.Add("Save canvas to PPM", "Canvas", [fw]() -> bool {
@@ -401,7 +402,7 @@ void RunTests(const std::string root_folder_path) {
     std::string file_path = fw.root + "\\data\\canvas.ppm";
     bool res = canvas.SaveToPPM(file_path);
 
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Load canvas from PPM", "Canvas", [fw]() -> bool {
@@ -415,7 +416,7 @@ void RunTests(const std::string root_folder_path) {
 
     bool actual = CompareFiles(input_path, output_path) && res1 && res2;
     bool expected = true;
-    return ASSERT_EQUAL_BOOLS(actual, expected);
+    return ASSERT_EQUAL(bool, actual, expected);
   });
 
   fw.Add("Map the trajectory of projectile", "Canvas", [fw]() -> bool {
@@ -449,25 +450,25 @@ void RunTests(const std::string root_folder_path) {
     std::string output_path = fw.root + "\\data\\projectile.ppm";
     bool res = canvas.SaveToPPM(output_path);
 
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Initialize 4x4 matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
-    return ASSERT_EQUAL_SIZE_T(matrix.rows, 4) &&
-           ASSERT_EQUAL_SIZE_T(matrix.cols, 4);
+    return ASSERT_EQUAL(size_t, matrix.rows, 4) &&
+           ASSERT_EQUAL(size_t, matrix.cols, 4);
   });
 
   fw.Add("Initialize 3x3 matrix", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
-    return ASSERT_EQUAL_SIZE_T(matrix.rows, 3) &&
-           ASSERT_EQUAL_SIZE_T(matrix.cols, 3);
+    return ASSERT_EQUAL(size_t, matrix.rows, 3) &&
+           ASSERT_EQUAL(size_t, matrix.cols, 3);
   });
 
   fw.Add("Initialize 2x2 matrix", "Matrix", []() -> bool {
     Matrix matrix = {2, 2};
-    return ASSERT_EQUAL_SIZE_T(matrix.rows, 2) &&
-           ASSERT_EQUAL_SIZE_T(matrix.cols, 2);
+    return ASSERT_EQUAL(size_t, matrix.rows, 2) &&
+           ASSERT_EQUAL(size_t, matrix.cols, 2);
   });
 
   fw.Add("Check 4x4 matrix values", "Matrix", []() -> bool {
@@ -476,13 +477,13 @@ void RunTests(const std::string root_folder_path) {
                          9, 10, 11, 12, 13.5, 14.5f, 15.5f, 16.5f};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), 1) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(0, 3), 4) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(1, 0), 5.5) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(1, 2), 7.5) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(2, 2), 11) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(3, 0), 13.5) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(3, 2), 15.5);
+    bool res = ASSERT_EQUAL(double, matrix.At(0, 0), 1) &&
+               ASSERT_EQUAL(double, matrix.At(0, 3), 4) &&
+               ASSERT_EQUAL(double, matrix.At(1, 0), 5.5) &&
+               ASSERT_EQUAL(double, matrix.At(1, 2), 7.5) &&
+               ASSERT_EQUAL(double, matrix.At(2, 2), 11) &&
+               ASSERT_EQUAL(double, matrix.At(3, 0), 13.5) &&
+               ASSERT_EQUAL(double, matrix.At(3, 2), 15.5);
 
     return res;
   });
@@ -492,9 +493,9 @@ void RunTests(const std::string root_folder_path) {
     double elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), -3) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(1, 1), -2) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(2, 2), 1);
+    bool res = ASSERT_EQUAL(double, matrix.At(0, 0), -3) &&
+               ASSERT_EQUAL(double, matrix.At(1, 1), -2) &&
+               ASSERT_EQUAL(double, matrix.At(2, 2), 1);
 
     return res;
   });
@@ -504,10 +505,10 @@ void RunTests(const std::string root_folder_path) {
     double elements[] = {-3, 5, 1, -2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_DOUBLES(matrix.At(0, 0), -3) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(0, 1), 5) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(1, 0), 1) &&
-               ASSERT_EQUAL_DOUBLES(matrix.At(1, 1), -2);
+    bool res = ASSERT_EQUAL(double, matrix.At(0, 0), -3) &&
+               ASSERT_EQUAL(double, matrix.At(0, 1), 5) &&
+               ASSERT_EQUAL(double, matrix.At(1, 0), 1) &&
+               ASSERT_EQUAL(double, matrix.At(1, 1), -2);
 
     return res;
   });
@@ -522,7 +523,7 @@ void RunTests(const std::string root_folder_path) {
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 == matrix2;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Compare two different 4x4 matrices", "Matrix", []() -> bool {
@@ -535,7 +536,7 @@ void RunTests(const std::string root_folder_path) {
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 != matrix2;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Compare two differently sized matrices", "Matrix", []() -> bool {
@@ -548,7 +549,7 @@ void RunTests(const std::string root_folder_path) {
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
     bool res = matrix1 != matrix2;
-    return ASSERT_EQUAL_BOOLS(res, true);
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.Add("Multiply two 4x4 matrices", "Matrix", []() -> bool {
@@ -567,7 +568,7 @@ void RunTests(const std::string root_folder_path) {
                                   40, 58, 110, 102, 16, 26, 46,  42};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Multiply a 4x4 matrix by a 1x1 matrix", "Matrix", []() -> bool {
@@ -584,7 +585,7 @@ void RunTests(const std::string root_folder_path) {
     double expected_elements[] = {18, 24, 33, 1};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Multiply a matrix by an identity matrix", "Matrix", []() -> bool {
@@ -595,7 +596,7 @@ void RunTests(const std::string root_folder_path) {
     Matrix identity_matrix = IdentityMatrix();
     Matrix actual = matrix * identity_matrix;
 
-    return ASSERT_EQUAL_MATRICES(actual, matrix);
+    return ASSERT_EQUAL(Matrix, actual, matrix);
   });
 
   fw.Add("Transpose a 4x4 matrix", "Matrix", []() -> bool {
@@ -609,7 +610,7 @@ void RunTests(const std::string root_folder_path) {
     double elements2[] = {0, 9, 1, 0, 9, 8, 8, 0, 3, 0, 5, 5, 0, 8, 3, 8};
     matrix.Populate(elements2, matrix.rows * matrix.cols);
 
-    return ASSERT_EQUAL_MATRICES(transposed_matrix, matrix);
+    return ASSERT_EQUAL(Matrix, transposed_matrix, matrix);
   });
 
   fw.Add("Transpose an identity matrix", "Matrix", []() -> bool {
@@ -621,7 +622,7 @@ void RunTests(const std::string root_folder_path) {
                                   0, 0, 1, 0, 0, 0, 0, 1};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Determinant of a 2x2 matrix", "Matrix", []() -> bool {
@@ -632,7 +633,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Determinant();
     double expected = 17.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Submatrix of a 3x3 matrix", "Matrix", []() -> bool {
@@ -646,7 +647,7 @@ void RunTests(const std::string root_folder_path) {
     double expected_elements[] = {-3, 2, 0, 6};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Submatrix of a 4x4 matrix", "Matrix", []() -> bool {
@@ -660,7 +661,7 @@ void RunTests(const std::string root_folder_path) {
     double expected_elements[] = {-6, 1, 6, -8, 8, 6, -7, -1, 1};
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Minor of a 3x3 matrix", "Matrix", []() -> bool {
@@ -671,7 +672,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Minor(1, 0);
     double expected = 25.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Cofactor of a 3x3 matrix 1", "Matrix", []() -> bool {
@@ -682,7 +683,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Cofactor(0, 0);
     double expected = -12.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Cofactor of a 3x3 matrix 2", "Matrix", []() -> bool {
@@ -693,7 +694,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Cofactor(1, 0);
     double expected = -25.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Determinant of a 3x3 matrix", "Matrix", []() -> bool {
@@ -704,7 +705,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Determinant();
     double expected = -196.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Determinant of a 4x4 matrix", "Matrix", []() -> bool {
@@ -715,7 +716,7 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Determinant();
     double expected = -4071.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected);
+    return ASSERT_EQUAL(double, actual, expected);
   });
 
   fw.Add("Test a matrix for invertibility 1", "Matrix", []() -> bool {
@@ -726,8 +727,8 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Determinant();
     double expected = -2120.0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected) &&
-           ASSERT_EQUAL_BOOLS(IsEqualDouble(actual, 0.0), false);
+    return ASSERT_EQUAL(double, actual, expected) &&
+           ASSERT_EQUAL(bool, IsEqualDouble(actual, 0.0), false);
   });
 
   fw.Add("Test a matrix for invertibility 2", "Matrix", []() -> bool {
@@ -738,8 +739,8 @@ void RunTests(const std::string root_folder_path) {
     double actual = matrix.Determinant();
     double expected = 0;
 
-    return ASSERT_EQUAL_DOUBLES(actual, expected) &&
-           ASSERT_EQUAL_BOOLS(IsEqualDouble(actual, 0.0), true);
+    return ASSERT_EQUAL(double, actual, expected) &&
+           ASSERT_EQUAL(bool, IsEqualDouble(actual, 0.0), true);
   });
 
   fw.Add("Inverse a 4x4 matrix 1", "Matrix", []() -> bool {
@@ -760,7 +761,7 @@ void RunTests(const std::string root_folder_path) {
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Inverse a 4x4 matrix 2", "Matrix", []() -> bool {
@@ -780,7 +781,7 @@ void RunTests(const std::string root_folder_path) {
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Inverse a 4x4 matrix 3", "Matrix", []() -> bool {
@@ -800,13 +801,13 @@ void RunTests(const std::string root_folder_path) {
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
 
-    return ASSERT_EQUAL_MATRICES(actual, expected);
+    return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
   fw.Add("Inverse of identity matrix", "Matrix", []() -> bool {
     Matrix identity_matrix = IdentityMatrix();
     Matrix inverted = identity_matrix.Inverse();
-    return ASSERT_EQUAL_MATRICES(identity_matrix, inverted);
+    return ASSERT_EQUAL(Matrix, identity_matrix, inverted);
   });
 
   fw.Add("Multiply a matrix by its inverse", "Matrix", []() -> bool {
@@ -817,7 +818,7 @@ void RunTests(const std::string root_folder_path) {
     Matrix inverse = matrix.Inverse();
     Matrix identity_matrix = matrix * inverse;
 
-    return ASSERT_EQUAL_MATRICES(identity_matrix, IdentityMatrix());
+    return ASSERT_EQUAL(Matrix, identity_matrix, IdentityMatrix());
   });
 
   fw.Add("Compare inverse of transpose and vice versa", "Matrix", []() -> bool {
@@ -828,7 +829,7 @@ void RunTests(const std::string root_folder_path) {
     Matrix inverse_transpose = matrix.Transpose().Inverse();
     Matrix transpose_inverse = matrix.Inverse().Transpose();
 
-    return ASSERT_EQUAL_MATRICES(inverse_transpose, transpose_inverse);
+    return ASSERT_EQUAL(Matrix, inverse_transpose, transpose_inverse);
   });
 
   fw.Add("Product of point and translation matrix", "Matrix", []() -> bool {
@@ -837,7 +838,7 @@ void RunTests(const std::string root_folder_path) {
 
     Point actual = transform * p;
     Point expected = {2, 1, 7};
-    return ASSERT_EQUAL_POINTS(actual, expected);
+    return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw.Add("Product of point and inverse of translation", "Matrix", []() -> bool {
@@ -847,7 +848,7 @@ void RunTests(const std::string root_folder_path) {
 
     Point actual = inverse * p;
     Point expected = {-8, 7, 3};
-    return ASSERT_EQUAL_POINTS(actual, expected);
+    return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw.Add("Product of vector and a translation matrix", "Matrix", []() -> bool {
@@ -856,7 +857,8 @@ void RunTests(const std::string root_folder_path) {
 
     Vector actual = transform * v;
     Vector expected = v;
-    return ASSERT_EQUAL_VECTORS(actual, expected);
+
+    return ASSERT_EQUAL(Vector, actual, expected);
   });
 
   fw.RunTests();

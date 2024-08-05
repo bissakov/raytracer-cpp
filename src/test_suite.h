@@ -42,60 +42,21 @@ struct TestFramework {
 
 bool IsEqualDouble(const double a, const double b);
 
-bool AssertEqInts(const int& actual, const int& expected,
-                  const char* actual_name, const char* expected_name,
-                  const char* file, int line);
+template <typename T>
+bool AssertEq(const T& actual, const T& expected, const char* actual_name,
+              const char* expected_name, const char* file, int line) {
+  if (!(actual == expected)) {
+    std::cout << "\nError: " << file << ":" << line
+              << ":Assertion failed: " << actual_name << " == " << expected_name
+              << "\n";
+    std::cout << "Actual: " << actual << "\n";
+    std::cout << "Expected:" << expected << "\n";
+    return false;
+  }
+  return true;
+}
 
-bool AssertEqSizeT(const size_t& actual, const size_t& expected,
-                   const char* actual_name, const char* expected_name,
-                   const char* file, int line);
-
-bool AssertEqDoubles(const double& actual, const double& expected,
-                     const char* actual_name, const char* expected_name,
-                     const char* file, int line);
-
-bool AssertEqBools(const bool& actual, const bool& expected,
-                   const char* actual_name, const char* expected_name,
-                   const char* file, int line);
-
-bool AssertEqPoints(const Point& actual, const Point& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line);
-
-bool AssertEqVectors(const Vector& actual, const Vector& expected,
-                     const char* actual_name, const char* expected_name,
-                     const char* file, int line);
-
-bool AssertEqColors(const Color& actual, const Color& expected,
-                    const char* actual_name, const char* expected_name,
-                    const char* file, int line);
-
-bool AssertEqMatrices(const Matrix& actual, const Matrix& expected,
-                      const char* actual_name, const char* expected_name,
-                      const char* file, int line);
-
-#define ASSERT_EQUAL_INTS(actual, expected) \
-  AssertEqInts(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_SIZE_T(actual, expected) \
-  AssertEqSizeT(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_DOUBLES(actual, expected) \
-  AssertEqDoubles(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_BOOLS(actual, expected) \
-  AssertEqBools(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_POINTS(actual, expected) \
-  AssertEqPoints(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_VECTORS(actual, expected) \
-  AssertEqVectors(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_COLORS(actual, expected) \
-  AssertEqColors(actual, expected, #actual, #expected, __FILE__, __LINE__)
-
-#define ASSERT_EQUAL_MATRICES(actual, expected) \
-  AssertEqMatrices(actual, expected, #actual, #expected, __FILE__, __LINE__)
+#define ASSERT_EQUAL(type, actual, expected) \
+  AssertEq<type>(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #endif  // SRC_TEST_SUITE_H_

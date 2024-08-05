@@ -2,6 +2,7 @@
 #define SRC_POINT_VECTOR_H_
 
 #include <cassert>
+#include <iostream>
 #include <string>
 
 typedef struct Point Point;
@@ -29,8 +30,10 @@ struct Point {
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
-  const std::string ToString() const;
+  operator std::string() const noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const Point& p);
 
 struct Vector {
   double x;
@@ -64,8 +67,10 @@ struct Vector {
   double DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
 
-  const std::string ToString() const;
+  operator std::string() const noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const Vector& v);
 
 double DotProduct(const Vector& left, const Vector& right);
 Vector CrossProduct(const Vector& left, const Vector& right);

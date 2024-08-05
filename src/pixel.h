@@ -21,8 +21,10 @@ struct Color {
 
   bool IsColorInRange() const;
   std::string ToHex() const;
-  std::string ToString() const;
+  operator std::string() const noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const Color& c);
 
 struct Pixel {
   size_t x;
@@ -31,8 +33,11 @@ struct Pixel {
 
   bool operator==(const Pixel& other) const;
   bool operator!=(const Pixel& other) const;
-  std::string ToString() const;
+
+  operator std::string() const noexcept;
 };
+
+std::ostream& operator<<(std::ostream& os, const Pixel& p);
 
 struct ColorRGB {
   size_t r = SIZE_MAX;

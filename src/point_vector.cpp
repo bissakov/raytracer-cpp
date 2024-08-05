@@ -2,6 +2,7 @@
 #include <src/test_suite.h>
 
 #include <cmath>
+#include <iostream>
 #include <string>
 
 // NOTE: Point methods definitions
@@ -52,11 +53,17 @@ bool Point::operator==(const Point &other) const {
 bool Point::operator!=(const Point &p) const {
   return !(*this == p);
 }
-const std::string Point::ToString() const {
+
+Point::operator std::string() const noexcept {
   std::string result = "Point{x=" + std::to_string(x) +
                        ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
                        "}";
   return result;
+}
+
+std::ostream &operator<<(std::ostream &os, const Point &p) {
+  os << "Point{" << p.x << ", " << p.y << ", " << p.z << ", " << p.w << "}";
+  return os;
 }
 
 // NOTE: Vector methods definitions
@@ -144,9 +151,14 @@ Vector Vector::CrossProduct(const Vector &other) const {
   return ::CrossProduct(*this, other);
 }
 
-const std::string Vector::ToString() const {
+Vector::operator std::string() const noexcept {
   std::string result = "Vector{x=" + std::to_string(x) +
                        ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
                        ", w=" + std::to_string(w) + "}";
   return result;
+}
+
+std::ostream &operator<<(std::ostream &os, const Vector &v) {
+  os << "Vector{" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "}";
+  return os;
 }

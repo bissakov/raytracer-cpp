@@ -61,12 +61,17 @@ std::string Color::ToHex() const {
   return hex;
 }
 
-std::string Color::ToString() const {
+Color::operator std::string() const noexcept {
   char color_buffer[30];
   snprintf(color_buffer, sizeof(color_buffer),
            "Color{r=%.02f, g=%.02f, b=%.02f}", r, g, b);
   std::string color_str = color_buffer;
   return color_str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Color& c) {
+  os << "Color{" << c.r << ", " << c.g << ", " << c.b << "}";
+  return os;
 }
 
 bool Pixel::operator==(const Pixel& other) const {
@@ -80,10 +85,16 @@ bool Pixel::operator!=(const Pixel& other) const {
          !IsEqualDouble(color.b, other.color.b);
 }
 
-std::string Pixel::ToString() const {
+Pixel::operator std::string() const noexcept {
   char color_buffer[100];
-  snprintf(color_buffer, sizeof(color_buffer), "Pixel{x=%zu, y=%zu, color=%s}",
-           x, y, color.ToString().c_str());
+  snprintf(color_buffer, sizeof(color_buffer),
+           "Pixel{x=%zu, y=%zu, color={%f, %f, %f}}", x, y, color.r, color.g,
+           color.b);
   std::string color_str = color_buffer;
   return color_str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Pixel& p) {
+  os << "Pixel{" << p.x << ", " << p.y << ", " << p.color << "}";
+  return os;
 }
