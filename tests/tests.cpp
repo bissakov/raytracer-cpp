@@ -17,28 +17,27 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Initialize array", "Arrays", []() -> bool {
     DyArray<int> arr(5);
     DyArray<int> empty_arr;
-    return ASSERT_EQUAL(bool,
-                        arr.length == 5 && empty_arr.length == 0 &&
-                            empty_arr.elements == nullptr,
-                        true);
+    return ASSERT_EQUAL(
+        bool, arr.size == 5 && empty_arr.size == 0 && empty_arr.data == nullptr,
+        true);
   });
 
   fw.Add("Push array elements", "Arrays", []() -> bool {
     DyArray<int> arr;
     arr.Push(1);
-    bool res = ASSERT_EQUAL(bool, arr.length == 1, true) &&
-               ASSERT_EQUAL(bool, arr.elements[0] == 1, true);
+    bool res = ASSERT_EQUAL(bool, arr.size == 1, true) &&
+               ASSERT_EQUAL(bool, arr.data[0] == 1, true);
 
     arr.Push(2);
-    res = res && ASSERT_EQUAL(bool, arr.length == 2, true) &&
-          ASSERT_EQUAL(bool, arr.elements[0] == 1, true) &&
-          ASSERT_EQUAL(bool, arr.elements[1] == 2, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 2, true) &&
+          ASSERT_EQUAL(bool, arr.data[0] == 1, true) &&
+          ASSERT_EQUAL(bool, arr.data[1] == 2, true);
 
     arr.Push(3);
-    res = res && ASSERT_EQUAL(bool, arr.length == 3, true) &&
-          ASSERT_EQUAL(bool, arr.elements[0] == 1, true) &&
-          ASSERT_EQUAL(bool, arr.elements[1] == 2, true) &&
-          ASSERT_EQUAL(bool, arr.elements[2] == 3, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 3, true) &&
+          ASSERT_EQUAL(bool, arr.data[0] == 1, true) &&
+          ASSERT_EQUAL(bool, arr.data[1] == 2, true) &&
+          ASSERT_EQUAL(bool, arr.data[2] == 3, true);
 
     return res;
   });
@@ -50,18 +49,18 @@ void RunTests(const std::string root_folder_path) {
     arr.Push(3);
     arr.Push(4);
     arr.Push(5);
-    bool res = ASSERT_EQUAL(bool, arr.length == 5, true);
+    bool res = ASSERT_EQUAL(bool, arr.size == 5, true);
 
     arr.Pop();
-    res = res && ASSERT_EQUAL(bool, arr.length == 4, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 4, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL(bool, arr.length == 3, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 3, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL(bool, arr.length == 2, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 2, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL(bool, arr.length == 1, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 1, true);
     arr.Pop();
-    res = res && ASSERT_EQUAL(bool, arr.length == 0, true);
+    res = res && ASSERT_EQUAL(bool, arr.size == 0, true);
 
     return res;
   });
@@ -69,8 +68,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Push fixed array into DyArray", "Arrays", []() -> bool {
     int elements[] = {1, 2, 3, 4, 5};
     DyArray<int> arr = {elements, 5};
-    return ASSERT_EQUAL(bool, arr.length == 5 && arr.Compare(elements, 5),
-                        true);
+    return ASSERT_EQUAL(bool, arr.size == 5 && arr.Compare(elements, 5), true);
   });
 
   fw.Add("Push dynamic array into DyArray", "Arrays", []() -> bool {
@@ -81,7 +79,7 @@ void RunTests(const std::string root_folder_path) {
     }
     DyArray<size_t> arr = {elements, size};
     bool res = ASSERT_EQUAL(
-        bool, arr.length == size && arr.Compare(elements, size), true);
+        bool, arr.size == size && arr.Compare(elements, size), true);
 
     delete[] elements;
 

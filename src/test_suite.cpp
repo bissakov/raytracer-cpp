@@ -5,7 +5,6 @@
 #include <cfloat>
 #include <cmath>
 #include <functional>
-#include <iostream>
 #include <string>
 
 // NOTE: The lowest passing value so far - 3.553 * 10^-15
@@ -36,7 +35,8 @@ CustomTest& CustomTest::operator=(const CustomTest& other) noexcept {
 
 void TestFramework::Add(const char* name, const char* tag,
                         std::function<bool()> test_function) {
-  tests.Push({test_function, tag, name});
+  CustomTest test = {test_function, tag, name};
+  tests.Push(test);
   current_test_idx++;
 }
 

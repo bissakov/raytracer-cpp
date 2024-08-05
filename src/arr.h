@@ -3,41 +3,68 @@
 
 #include <algorithm>
 #include <cassert>
-#include <functional>
+#include <memory>
+#include <utility>
 
 template <typename T>
 struct DyArray {
-  size_t length;
-  T* elements;
+  size_t size;
+  size_t capacity;
+  std::unique_ptr<T[]> data;
 
-  explicit DyArray(const size_t length_) noexcept
-      : length(length_), elements(new T[length]) {}
+  explicit DyArray(const size_t length) noexcept
+      : size(length), capacity(length), data(std::make_unique<T[]>(capacity)) {}
 
-  DyArray() noexcept : length(0), elements(nullptr) {}
+  DyArray() noexcept : size(0), capacity(0), data(nullptr) {}
 
   explicit DyArray(const DyArray& other) noexcept
-      : length(other.length), elements(new T[other.length]) {
-    std::copy(other.elements, other.elements + other.length, elements);
+      : size(other.size),
+        capacity(other.capacity),
+        data(std::make_unique<T[]>(other.capacity)) {
+    std::copy(other.data.get(), other.data.get() + other.size, data.get());
   }
 
-  DyArray(T* array, size_t length_) noexcept
-      : length(length_), elements(new T[length]) {
-    std::copy(array, array + length, elements);
+  DyArray(T* array, size_t length) noexcept
+      : size(length), capacity(length), data(std::make_unique<T[]>(capacity)) {
+    std::copy(array, array + length, data.get());
   }
 
   DyArray(DyArray&& other) noexcept
-      : length(other.length), elements(other.elements) {
-    other.length = 0;
-    other.elements = nullptr;
+      : size(other.size),
+        capacity(other.capacity),
+        data(std::move(other.data)) {
+    other.size = 0;
+    other.capacity = 0;
+  }
+
+  DyArray& operator=(const DyArray& other) noexcept {
+    if (this != &other) {
+      size = other.size;
+      capacity = other.capacity;
+      data = std::make_unique<T[]>(other.capacity);
+      std::copy(other.data.get(), other.data.get() + other.size, data.get());
+    }
+    return *this;
+  }
+
+  DyArray& operator=(DyArray&& other) noexcept {
+    if (this != &other) {
+      size = other.size;
+      capacity = other.capacity;
+      data = std::move(other.data);
+      other.size = 0;
+      other.capacity = 0;
+    }
+    return *this;
   }
 
   bool operator==(const DyArray<T>& other) noexcept {
-    if (length != other.length) {
+    if (size != other.size || capacity != other.capacity) {
       return false;
     }
 
-    for (size_t i = 0; i < length; ++i) {
-      if (elements[i] != other.elements[i]) {
+    for (size_t i = 0; i < size; ++i) {
+      if (data[i] != other.data[i]) {
         return false;
       }
     }
@@ -49,13 +76,13 @@ struct DyArray {
     return !(*this == other);
   }
 
-  bool Compare(T* other_elements, size_t other_length) noexcept {
-    if (length != other_length) {
+  bool Compare(T* other_data, size_t other_size) noexcept {
+    if (size != other_size) {
       return false;
     }
 
-    for (size_t i = 0; i < length; ++i) {
-      if (elements[i] != other_elements[i]) {
+    for (size_t i = 0; i < size; ++i) {
+      if (data[i] != other_data[i]) {
         return false;
       }
     }
@@ -63,88 +90,60 @@ struct DyArray {
     return true;
   }
 
-  DyArray<T>& operator=(const DyArray<T>& other) noexcept {
-    if (*this != other) {
-      delete[] elements;
-      length = other.length;
-      elements = new T[other.length];
-      std::copy(other.elements, other.elements + other.length, elements);
-    }
-    return *this;
-  }
-
-  DyArray<T>& operator=(DyArray&& other) noexcept {
-    if (*this != other) {
-      delete[] elements;
-      length = other.length;
-      elements = other.elements;
-      other.length = 0;
-      other.elements = nullptr;
-    }
-    return *this;
-  }
-
-  ~DyArray<T>() noexcept {
-    delete[] elements;
-  }
-
   T& Get(size_t index) const {
-    assert(index < length);
-    return elements[index];
+    assert(index < size);
+    return data[index];
   }
 
-  void Push(T element) noexcept {
-    T* new_elements = new T[length + 1];
-    if (elements != nullptr) {
-      std::copy(elements, elements + length, new_elements);
-      delete[] elements;
+  void Push(T value) noexcept {
+    if (size == capacity) {
+      size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
+      std::unique_ptr<T[]> new_data = std::make_unique<T[]>(new_capacity);
+
+      for (size_t i = 0; i < size; ++i) {
+        new_data[i] = data[i];
+      }
+
+      data = std::move(new_data);
+      capacity = new_capacity;
     }
-    elements = new_elements;
-    elements[length] = element;
-    length++;
+
+    data[size++] = value;
   }
 
-  void Push(std::function<bool()> test_function, const char* tag,
-            const char* name) noexcept {
-    T* new_elements = new T[length + 1];
-    if (elements != nullptr) {
-      std::copy(elements, elements + length, new_elements);
-      delete[] elements;
-    }
-    elements = new_elements;
-    elements[length] = {test_function, tag, name};
-    length++;
+  void Pop() {
+    assert(size != 0 && "No elements to pop");
+    --size;
   }
 
-  void Pop() noexcept {
-    assert(length > 0);
+  void Insert(size_t index, int value) {
+    assert(index <= size && "Index out of range");
 
-    if (length == 1) {
-      delete[] elements;
-      elements = nullptr;
-      length = 0;
-      return;
+    if (size == capacity) {
+      size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
+      std::unique_ptr<T[]> new_data = std::make_unique<T[]>(new_capacity);
+
+      for (size_t i = 0; i < index; ++i) {
+        new_data[i] = data[i];
+      }
+
+      new_data[index] = value;
+
+      for (size_t i = index; i < size; ++i) {
+        new_data[i + 1] = data[i];
+      }
+
+      data = std::move(new_data);
+      capacity = new_capacity;
+    } else {
+      for (size_t i = size; i > index; --i) {
+        data[i] = data[i - 1];
+      }
+
+      data[index] = value;
     }
 
-    T* new_elements = new T[length - 1];
-    std::copy(elements, elements + length - 1, new_elements);
-    delete[] elements;
-    elements = new_elements;
-    length--;
-  }
-
-  void Insert(size_t idx, T value) noexcept {
-    assert(idx <= length);
-
-    T* new_elements = new T[length + 1];
-    if (elements != nullptr) {
-      std::copy(elements, elements + idx, new_elements);
-      new_elements[idx] = value;
-      std::copy(elements + idx, elements + length, new_elements + idx + 1);
-      delete[] elements;
-    }
-    elements = new_elements;
-    length++;
+    ++size;
   }
 };
 
