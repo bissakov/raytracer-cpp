@@ -60,8 +60,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix& m);
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
-// TODO(bissakov): to complete
 Matrix Translate(int32_t x, int32_t y, int32_t z);
+Matrix Scale(int32_t x, int32_t y, int32_t z);
 
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {

@@ -861,5 +861,36 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
+  fw.Add("A scaling matrix applied to a point", "Matrix", []() -> bool {
+    Matrix transform = Scale(2, 3, 4);
+    Point p = {-4, 6, 8};
+
+    Point actual = transform * p;
+    Point expected = {-8, 18, 32};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("A scaling matrix applied to a vector", "Matrix", []() -> bool {
+    Matrix transform = Scale(2, 3, 4);
+    Vector v = {-4, 6, 8};
+
+    Vector actual = transform * v;
+    Vector expected = {-8, 18, 32};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  fw.Add("Product of the inverse and a scaling matrix", "Matrix", []() -> bool {
+    Matrix transform = Scale(2, 3, 4);
+    Matrix inverse = transform.Inverse();
+    Vector v = {-4, 6, 8};
+
+    Vector actual = inverse * v;
+    Vector expected = {-2, 2, 2};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
   fw.RunTests();
 }
