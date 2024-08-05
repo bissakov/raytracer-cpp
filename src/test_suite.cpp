@@ -11,8 +11,10 @@
 #define ABSOLUTE_TOLERANCE 1e-14  // 10^-14
 
 const char* NORMAL = "\033[0m";
-const char* RED = "\033[0;31m";
-const char* GREEN = "\033[0;32m";
+const char* ITALIC = "\033[3m";
+const char* UNDERLINE = "\033[4m";
+const char* RED = "\033[1;31m";
+const char* GREEN = "\033[1;32m";
 
 bool CustomTest::operator==(const CustomTest& other) const noexcept {
   return tag == other.tag && name == other.name;
@@ -38,9 +40,10 @@ void TestFramework::AddTest(const char* name, const char* tag,
 }
 
 std::string GetColor(size_t idx) {
-  size_t color_idx = (33 + idx) % 36;
-  if (color_idx < 33) {
-    color_idx += 33;
+  size_t start = 31;
+  size_t color_idx = (start + idx) % 36;
+  if (color_idx < start) {
+    color_idx += start;
   }
   std::string color = "\033[0;" + std::to_string(color_idx) + "m";
   return color;
@@ -59,14 +62,14 @@ void TestFramework::RunTests() {
            test->name);
     total_tests++;
     if (test->test_function()) {
-      printf(" %sPASSED%s\n", GREEN, NORMAL);
+      printf(" %s%sPASSED%s\n", ITALIC, GREEN, NORMAL);
       passed_tests++;
     } else {
-      printf(" %sFAILED%s\n", RED, NORMAL);
+      printf(" %s%sFAILED%s\n", ITALIC, RED, NORMAL);
     }
   }
 
-  printf("\nTest summary: %s%zu/%zu%s tests passed.\n",
+  printf("\nTest summary: %s%s%zu/%zu%s tests passed.\n", UNDERLINE,
          (passed_tests == total_tests) ? GREEN : RED, passed_tests, total_tests,
          NORMAL);
 }
