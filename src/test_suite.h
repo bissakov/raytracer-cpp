@@ -46,11 +46,11 @@ template <typename T>
 bool AssertEq(const T& actual, const T& expected, const char* actual_name,
               const char* expected_name, const char* file, int line) {
   if (!(actual == expected)) {
-    std::cout << "\nError: " << file << ":" << line
+    std::cerr << "\nError: " << file << ":" << line
               << ":Assertion failed: " << actual_name << " == " << expected_name
               << "\n";
-    std::cout << "Actual: " << actual << "\n";
-    std::cout << "Expected:" << expected << "\n";
+    std::cerr << "Actual: " << actual << "\n";
+    std::cerr << "Expected: " << expected << "\n";
     return false;
   }
   return true;
