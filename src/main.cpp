@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #include <cstdio>
+#include <filesystem>
 #include <string>
 
 int main(int argc, char *argv[]) {
@@ -19,6 +20,10 @@ int main(int argc, char *argv[]) {
 
   if (argc == 4 && strcmp(argv[3], "--test") == 0) {
     std::string root_folder_path = argv[2];
+    if (root_folder_path == ".") {
+      std::filesystem::path cwd = std::filesystem::current_path();
+      root_folder_path = cwd.string();
+    }
     RunTests(root_folder_path);
     return EXIT_SUCCESS;
   }
