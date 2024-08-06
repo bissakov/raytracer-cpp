@@ -47,7 +47,8 @@ Vector Point::operator-(const Point &other) const {
 }
 
 bool Point::operator==(const Point &other) const {
-  return (x == other.x && y == other.y && z == other.z);
+  return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
+         IsEqualDouble(z, other.z);
 }
 
 bool Point::operator!=(const Point &p) const {
