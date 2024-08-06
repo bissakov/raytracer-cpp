@@ -3,6 +3,7 @@
 
 #include <src/point_vector.h>
 
+#include <numbers>  // IWYU pragma: keep
 #include <string>
 
 #define PI std::numbers::pi
