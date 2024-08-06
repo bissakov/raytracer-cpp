@@ -15,15 +15,6 @@ String::String(char* str) noexcept
 }
 
 String& String::operator=(char* str) noexcept {
-  // if (this != &other) {
-  //   delete[] value;
-  //
-  //   value = new char[other.length];
-  //   for (size_t i = 0; i < other.length; ++i) {
-  //     value[i] = other.value[i];
-  //   }
-  // }
-
   if (c_str != nullptr) {
     delete[] c_str;
   }
