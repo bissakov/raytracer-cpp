@@ -2,6 +2,7 @@
 #include <src/test_suite.h>
 
 #include <cassert>
+#include <cmath>
 #include <string>
 
 double Matrix::At(const size_t row, const size_t col) const noexcept {
@@ -246,5 +247,14 @@ Matrix Scale(int32_t x, int32_t y, int32_t z) {
   matrix.Set(0, 0, x);
   matrix.Set(1, 1, y);
   matrix.Set(2, 2, z);
+  return matrix;
+}
+
+Matrix RotateX(double radians) {
+  Matrix matrix = IdentityMatrix();
+  matrix.Set(1, 1, std::cos(radians));
+  matrix.Set(1, 2, -std::sin(radians));
+  matrix.Set(2, 1, std::sin(radians));
+  matrix.Set(2, 2, std::cos(radians));
   return matrix;
 }

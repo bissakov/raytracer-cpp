@@ -62,6 +62,7 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
 Matrix Translate(int32_t x, int32_t y, int32_t z);
 Matrix Scale(int32_t x, int32_t y, int32_t z);
+Matrix RotateX(double radians);
 
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {

@@ -5,6 +5,8 @@
 
 #include <string>
 
+#define PI std::numbers::pi
+
 struct Projectile {
   Point position;
   Vector velocity;
