@@ -46,7 +46,7 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
 Point Matrix::operator*(const Point& point) noexcept {
   assert(rows == 4 && cols == 4);
   Point p = {0, 0, 0};
-  for (size_t i = 0; i < 4; ++i) {
+  for (size_t i = 0; i < 3; ++i) {
     for (size_t j = 0; j < 4; ++j) {
       p[i] += At(i, j) * point[j];
     }
