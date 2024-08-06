@@ -9,7 +9,6 @@
 #include <src/test_suite.h>
 #include <tests/tests.h>
 
-#include <numbers>
 #include <string>
 
 void RunTests(const std::string root_folder_path) {
