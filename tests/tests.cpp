@@ -358,7 +358,7 @@ void RunTests(const std::string root_folder_path) {
     for (size_t i = 0; i < canvas.height; ++i) {
       for (size_t j = 0; j < canvas.width; ++j) {
         Pixel current_pixel = canvas.PixelAt(j, i);
-        res = res && (current_pixel.color == black);
+        res = res && ASSERT_EQUAL(bool, current_pixel.color == black, true);
       }
     }
 
