@@ -7,6 +7,8 @@
 #include <cassert>
 #include <string>
 
+enum ShearType { XY, XZ, YX, YZ, ZX, ZY };
+
 struct Matrix {
   size_t rows;
   size_t cols;
@@ -63,6 +65,9 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 Matrix Translate(int32_t x, int32_t y, int32_t z);
 Matrix Scale(int32_t x, int32_t y, int32_t z);
 Matrix RotateX(double radians);
+Matrix RotateY(double radians);
+Matrix RotateZ(double radians);
+Matrix Shear(ShearType type);
 
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {

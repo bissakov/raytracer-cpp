@@ -925,5 +925,115 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
+  fw.Add("Rotate a point around the Y axis", "Matrix", []() -> bool {
+    Point p = {0, 0, 1};
+    Matrix half_quarter = RotateY(PI / 4);
+    Matrix full_quarter = RotateY(PI / 2);
+
+    Point actual1 = half_quarter * p;
+    Point actual2 = full_quarter * p;
+    Point expected1 = {sqrt(2) / 2, 0, sqrt(2) / 2};
+    Point expected2 = {1, 0, 0};
+
+    return ASSERT_EQUAL(Point, actual1, expected1) &&
+           ASSERT_EQUAL(Point, actual2, expected2);
+  });
+
+  fw.Add("Opposite inverse of Y-rotation", "Matrix", []() -> bool {
+    Point p = {0, 0, 1};
+    Matrix half_quarter = RotateY(PI / 4);
+    Matrix inverse = half_quarter.Inverse();
+
+    Point actual = inverse * p;
+    Point expected = {-sqrt(2) / 2, 0, sqrt(2) / 2};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Rotate a point around the Z axis", "Matrix", []() -> bool {
+    Point p = {0, 1, 0};
+    Matrix half_quarter = RotateZ(PI / 4);
+    Matrix full_quarter = RotateZ(PI / 2);
+
+    Point actual1 = half_quarter * p;
+    Point actual2 = full_quarter * p;
+    Point expected1 = {-sqrt(2) / 2, sqrt(2) / 2, 0};
+    Point expected2 = {-1, 0, 0};
+
+    return ASSERT_EQUAL(Point, actual1, expected1) &&
+           ASSERT_EQUAL(Point, actual2, expected2);
+  });
+
+  fw.Add("Opposite inverse of Z-rotation", "Matrix", []() -> bool {
+    Point p = {0, 1, 0};
+    Matrix half_quarter = RotateZ(PI / 4);
+    Matrix inverse = half_quarter.Inverse();
+
+    Point actual = inverse * p;
+    Point expected = {sqrt(2) / 2, sqrt(2) / 2, 0};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear X in proportion to Y", "Matrix", []() -> bool {
+    Matrix transform = Shear(XY);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {5, 3, 4};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear X in proportion to Z", "Matrix", []() -> bool {
+    Matrix transform = Shear(XZ);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {6, 3, 4};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear Y in proportion to X", "Matrix", []() -> bool {
+    Matrix transform = Shear(YX);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {2, 5, 4};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear Y in proportion to Z", "Matrix", []() -> bool {
+    Matrix transform = Shear(YZ);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {2, 7, 4};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear Z in proportion to X", "Matrix", []() -> bool {
+    Matrix transform = Shear(ZX);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {2, 3, 6};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Shear Z in proportion to Y", "Matrix", []() -> bool {
+    Matrix transform = Shear(ZY);
+    Point p = {2, 3, 4};
+
+    Point actual = transform * p;
+    Point expected = {2, 3, 7};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
   fw.RunTests();
 }

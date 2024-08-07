@@ -258,3 +258,54 @@ Matrix RotateX(double radians) {
   matrix.Set(2, 2, std::cos(radians));
   return matrix;
 }
+
+Matrix RotateY(double radians) {
+  Matrix matrix = IdentityMatrix();
+  matrix.Set(0, 0, std::cos(radians));
+  matrix.Set(0, 2, std::sin(radians));
+  matrix.Set(2, 0, -std::sin(radians));
+  matrix.Set(2, 2, std::cos(radians));
+  return matrix;
+}
+
+Matrix RotateZ(double radians) {
+  Matrix matrix = IdentityMatrix();
+  matrix.Set(0, 0, std::cos(radians));
+  matrix.Set(0, 1, -std::sin(radians));
+  matrix.Set(1, 0, std::sin(radians));
+  matrix.Set(1, 1, std::cos(radians));
+  return matrix;
+}
+
+Matrix Shear(ShearType shear_type) {
+  Matrix matrix = IdentityMatrix();
+
+  switch (shear_type) {
+    case XY: {
+      matrix.Set(0, 1, 1.0);
+      break;
+    }
+    case XZ: {
+      matrix.Set(0, 2, 1.0);
+      break;
+    }
+    case YX: {
+      matrix.Set(1, 0, 1.0);
+      break;
+    }
+    case YZ: {
+      matrix.Set(1, 2, 1.0);
+      break;
+    }
+    case ZX: {
+      matrix.Set(2, 0, 1.0);
+      break;
+    }
+    case ZY: {
+      matrix.Set(2, 1, 1.0);
+      break;
+    }
+  }
+
+  return matrix;
+}
