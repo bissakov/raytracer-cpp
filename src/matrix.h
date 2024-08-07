@@ -67,7 +67,7 @@ Matrix Scale(int32_t x, int32_t y, int32_t z);
 Matrix RotateX(double radians);
 Matrix RotateY(double radians);
 Matrix RotateZ(double radians);
-Matrix Shear(ShearType type);
+Matrix Shear(ShearType shear_type);
 
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {
