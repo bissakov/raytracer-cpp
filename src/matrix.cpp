@@ -226,7 +226,31 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   return res;
 }
 
-Matrix IdentityMatrix() {
+Matrix Matrix::Translate(int32_t x, int32_t y, int32_t z) {
+  return ::Translate(x, y, z) * (*this);
+}
+
+Matrix Matrix::Scale(int32_t x, int32_t y, int32_t z) {
+  return ::Scale(x, y, z) * (*this);
+}
+
+Matrix Matrix::RotateX(double radians) {
+  return ::RotateX(radians) * (*this);
+}
+
+Matrix Matrix::RotateY(double radians) {
+  return ::RotateY(radians) * (*this);
+}
+
+Matrix Matrix::RotateZ(double radians) {
+  return ::RotateZ(radians) * (*this);
+}
+
+Matrix Matrix::Shear(ShearType shear_type) {
+  return ::Shear(shear_type) * (*this);
+}
+
+Matrix Identity() {
   Matrix identity_matrix = {4, 4};
   double elements[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
   identity_matrix.Populate(elements,
@@ -235,7 +259,7 @@ Matrix IdentityMatrix() {
 }
 
 Matrix Translate(int32_t x, int32_t y, int32_t z) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
   matrix.Set(0, 3, x);
   matrix.Set(1, 3, y);
   matrix.Set(2, 3, z);
@@ -243,7 +267,7 @@ Matrix Translate(int32_t x, int32_t y, int32_t z) {
 }
 
 Matrix Scale(int32_t x, int32_t y, int32_t z) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
   matrix.Set(0, 0, x);
   matrix.Set(1, 1, y);
   matrix.Set(2, 2, z);
@@ -251,7 +275,7 @@ Matrix Scale(int32_t x, int32_t y, int32_t z) {
 }
 
 Matrix RotateX(double radians) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
   matrix.Set(1, 1, std::cos(radians));
   matrix.Set(1, 2, -std::sin(radians));
   matrix.Set(2, 1, std::sin(radians));
@@ -260,7 +284,7 @@ Matrix RotateX(double radians) {
 }
 
 Matrix RotateY(double radians) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
   matrix.Set(0, 0, std::cos(radians));
   matrix.Set(0, 2, std::sin(radians));
   matrix.Set(2, 0, -std::sin(radians));
@@ -269,7 +293,7 @@ Matrix RotateY(double radians) {
 }
 
 Matrix RotateZ(double radians) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
   matrix.Set(0, 0, std::cos(radians));
   matrix.Set(0, 1, -std::sin(radians));
   matrix.Set(1, 0, std::sin(radians));
@@ -278,7 +302,7 @@ Matrix RotateZ(double radians) {
 }
 
 Matrix Shear(ShearType shear_type) {
-  Matrix matrix = IdentityMatrix();
+  Matrix matrix = Identity();
 
   switch (shear_type) {
     case XY: {

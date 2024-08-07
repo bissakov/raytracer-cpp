@@ -50,6 +50,13 @@ struct Matrix {
   double Cofactor(size_t row, size_t col) noexcept;
   Matrix Inverse() noexcept;
 
+  Matrix Translate(int32_t x, int32_t y, int32_t z);
+  Matrix Scale(int32_t x, int32_t y, int32_t z);
+  Matrix RotateX(double radians);
+  Matrix RotateY(double radians);
+  Matrix RotateZ(double radians);
+  Matrix Shear(ShearType shear_type);
+
   constexpr size_t Index(const size_t row, const size_t col) const noexcept;
   double At(const size_t row, const size_t col) const noexcept;
   void Set(const size_t row, const size_t col, const double value) noexcept;
@@ -74,7 +81,7 @@ constexpr size_t Matrix::Index(const size_t row,
   return row * cols + col;
 }
 
-Matrix IdentityMatrix();
+Matrix Identity();
 Matrix Translate(int32_t x, int32_t y, int32_t z);
 
 #define INDEX(row, col, matrix) ((row * (matrix).cols) + col)

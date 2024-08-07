@@ -591,7 +591,7 @@ void RunTests(const std::string root_folder_path) {
     double elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
     matrix.Populate(elements1, matrix.rows * matrix.cols);
 
-    Matrix identity_matrix = IdentityMatrix();
+    Matrix identity_matrix = Identity();
     Matrix actual = matrix * identity_matrix;
 
     return ASSERT_EQUAL(Matrix, actual, matrix);
@@ -612,7 +612,7 @@ void RunTests(const std::string root_folder_path) {
   });
 
   fw.Add("Transpose an identity matrix", "Matrix", []() -> bool {
-    Matrix identity_matrix = IdentityMatrix();
+    Matrix identity_matrix = Identity();
     Matrix actual = identity_matrix.Transpose();
 
     Matrix expected = {4, 4};
@@ -803,7 +803,7 @@ void RunTests(const std::string root_folder_path) {
   });
 
   fw.Add("Inverse of identity matrix", "Matrix", []() -> bool {
-    Matrix identity_matrix = IdentityMatrix();
+    Matrix identity_matrix = Identity();
     Matrix inverted = identity_matrix.Inverse();
     return ASSERT_EQUAL(Matrix, identity_matrix, inverted);
   });
@@ -816,7 +816,7 @@ void RunTests(const std::string root_folder_path) {
     Matrix inverse = matrix.Inverse();
     Matrix identity_matrix = matrix * inverse;
 
-    return ASSERT_EQUAL(Matrix, identity_matrix, IdentityMatrix());
+    return ASSERT_EQUAL(Matrix, identity_matrix, Identity());
   });
 
   fw.Add("Compare inverse of transpose and vice versa", "Matrix", []() -> bool {
@@ -1058,8 +1058,21 @@ void RunTests(const std::string root_folder_path) {
 
   fw.Add("Tranformation chain", "Matrix", []() -> bool {
     Point p = {1, 0, 1};
+    Matrix transform = Translate(10, 5, 7) * Scale(5, 5, 5) * RotateX(PI / 2);
 
-    Point actual = Translate(10, 5, 7) * Scale(5, 5, 5) * RotateX(PI / 2) * p;
+    Point actual = transform * p;
+    Point expected = {15, 0, 7};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Tranformation chain (fluid)", "Matrix", []() -> bool {
+    Point p = {1, 0, 1};
+
+    Matrix transform =
+        Identity().RotateX(PI / 2).Scale(5, 5, 5).Translate(10, 5, 7);
+
+    Point actual = transform * p;
     Point expected = {15, 0, 7};
 
     return ASSERT_EQUAL(Point, actual, expected);
