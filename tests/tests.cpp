@@ -1035,5 +1035,35 @@ void RunTests(const std::string root_folder_path) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
+  fw.Add("Tranformation sequence", "Matrix", []() -> bool {
+    Point p = {1, 0, 1};
+
+    Matrix rotate_x_tf = RotateX(PI / 2);
+    Matrix scale_tf = Scale(5, 5, 5);
+    Matrix translate_tf = Translate(10, 5, 7);
+
+    Point actual1 = rotate_x_tf * p;
+    Point expected1 = {1, -1, 0};
+
+    Point actual2 = scale_tf * actual1;
+    Point expected2 = {5, -5, 0};
+
+    Point actual3 = translate_tf * actual2;
+    Point expected3 = {15, 0, 7};
+
+    return ASSERT_EQUAL(Point, actual1, expected1) &&
+           ASSERT_EQUAL(Point, actual2, expected2) &&
+           ASSERT_EQUAL(Point, actual3, expected3);
+  });
+
+  fw.Add("Tranformation chain", "Matrix", []() -> bool {
+    Point p = {1, 0, 1};
+
+    Point actual = Translate(10, 5, 7) * Scale(5, 5, 5) * RotateX(PI / 2) * p;
+    Point expected = {15, 0, 7};
+
+    return ASSERT_EQUAL(Point, actual, expected);
+  });
+
   fw.RunTests();
 }
