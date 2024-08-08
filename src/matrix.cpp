@@ -19,6 +19,8 @@ void Matrix::Set(const size_t row, const size_t col,
 
 Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
+    rows = other.rows;
+    cols = other.cols;
     values = std::make_unique<double[]>(other.rows * other.cols);
     std::copy(other.values.get(), other.values.get() + other.rows * other.cols,
               values.get());
