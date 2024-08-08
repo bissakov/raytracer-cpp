@@ -9,6 +9,7 @@
 #include <src/test_suite.h>
 #include <tests/tests.h>
 
+#include <memory>
 #include <string>
 
 void RunTests(const std::string root_folder_path) {
@@ -1076,6 +1077,33 @@ void RunTests(const std::string root_folder_path) {
     Point expected = {15, 0, 7};
 
     return ASSERT_EQUAL(Point, actual, expected);
+  });
+
+  fw.Add("Clock", "Matrix", [fw]() -> bool {
+    Canvas canvas = {600, 600};
+    size_t radius = (canvas.width - 100) / 2;
+    Point origin = {canvas.width / 2.0, 0, canvas.height / 2.0};
+    Color green = {0, 1, 0};
+
+    size_t resolution = 12;
+
+    std::unique_ptr<Point[]> points = std::make_unique<Point[]>(resolution);
+
+    Point start = {0, 0, 1};
+    double turn = PI / (static_cast<double>(resolution) / 2);
+    for (size_t i = 0; i < resolution; ++i) {
+      double radians = i * turn;
+      points[i] = RotateY(radians) * start;
+
+      size_t pos_x = static_cast<size_t>(origin.x + points[i].x * radius);
+      size_t pos_y = static_cast<size_t>(origin.z + points[i].z * radius);
+      canvas.WritePixelColor(pos_x, pos_y, green);
+    }
+
+    std::string output_path = fw.root + "\\data\\clock.ppm";
+    bool res = canvas.SaveToPPM(output_path);
+
+    return ASSERT_EQUAL(bool, res, true);
   });
 
   fw.RunTests();
