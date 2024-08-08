@@ -1134,5 +1134,26 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL(Ray, ray1, ray2);
   });
 
+  fw.Add("Compute a point from a distance", "Rays", []() -> bool {
+    Ray ray = {{2, 3, 4}, {1, 0, 0}};
+
+    Point actual1 = ray.Position(0);
+    Point expected1 = {2, 3, 4};
+
+    Point actual2 = ray.Position(1);
+    Point expected2 = {3, 3, 4};
+
+    Point actual3 = ray.Position(-1);
+    Point expected3 = {1, 3, 4};
+
+    Point actual4 = ray.Position(2.5);
+    Point expected4 = {4.5, 3, 4};
+
+    return ASSERT_EQUAL(Point, actual1, expected1) &&
+           ASSERT_EQUAL(Point, actual2, expected2) &&
+           ASSERT_EQUAL(Point, actual3, expected3) &&
+           ASSERT_EQUAL(Point, actual4, expected4);
+  });
+
   fw.RunTests();
 }

@@ -25,3 +25,7 @@ std::ostream& operator<<(std::ostream& os, const Ray& ray) {
   os << std::string(ray);
   return os;
 }
+
+Point Ray::Position(double t) noexcept {
+  return origin + direction * t;
+}

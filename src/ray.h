@@ -22,6 +22,8 @@ struct Ray {
   bool operator==(const Ray& other) const;
   bool operator!=(const Ray& other) const;
   operator std::string() const noexcept;
+
+  Point Position(double t) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Ray& ray);
