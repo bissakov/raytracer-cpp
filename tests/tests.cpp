@@ -5,6 +5,7 @@
 #include <src/matrix.h>
 #include <src/pixel.h>
 #include <src/point_vector.h>
+#include <src/ray.h>
 #include <src/str.h>
 #include <src/test_suite.h>
 #include <tests/tests.h>
@@ -1117,6 +1118,20 @@ void RunTests(const std::string root_folder_path) {
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
+  });
+
+  fw.Add("Create and query a ray", "Rays", []() -> bool {
+    Point origin = {1, 2, 3};
+    Vector direction = {4, 5, 6};
+
+    Ray ray1 = {origin, direction};
+    Ray ray2;
+    ray2.origin = origin;
+    ray2.direction = direction;
+
+    return ASSERT_EQUAL(Point, ray1.origin, origin) &&
+           ASSERT_EQUAL(Vector, ray1.direction, direction) &&
+           ASSERT_EQUAL(Ray, ray1, ray2);
   });
 
   fw.RunTests();
