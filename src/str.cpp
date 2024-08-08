@@ -1,47 +1,20 @@
 #include <src/str.h>
 
-String::String(const char* str) noexcept
-    : length(strlen(str)), c_str(new char[length]) {
-  for (size_t i = 0; i < length; ++i) {
-    c_str[i] = str[i];
-  }
-}
-
-String::String(char* str) noexcept
-    : length(strlen(str)), c_str(new char[length]) {
-  for (size_t i = 0; i < length; ++i) {
-    c_str[i] = str[i];
-  }
-}
+#include <algorithm>
+#include <memory>
 
 String& String::operator=(char* str) noexcept {
-  if (c_str != nullptr) {
-    delete[] c_str;
-  }
   length = strlen(str);
-  c_str = new char[length];
-  for (size_t i = 0; i < length; ++i) {
-    c_str[i] = str[i];
-  }
-
+  c_str = std::make_unique<char[]>(length);
+  std::copy(str, str + length, c_str.get());
   return *this;
 }
 
 String& String::operator=(const String& other) noexcept {
   if (this != &other) {
-    if (c_str != nullptr) {
-      delete[] c_str;
-    }
-
-    if (other.c_str != nullptr) {
-      c_str = new char[other.length + 1];
-      for (size_t i = 0; i < other.length; ++i) {
-        c_str[i] = other.c_str[i];
-      }
-      c_str[other.length] = '\0';
-    } else {
-      c_str = nullptr;
-    }
+    length = other.length;
+    c_str = std::make_unique<char[]>(other.length);
+    std::copy(other.c_str.get(), other.c_str.get() + other.length, c_str.get());
   }
   return *this;
 }
