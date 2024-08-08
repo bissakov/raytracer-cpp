@@ -15,7 +15,9 @@ set test_files=%tests_dir%\tests.cpp
 set ignore_warnings=-wd4201 -wd4127 -wd4100 -wd4514 -wd4668 -wd5045
 set exe_name=raytracer.exe
 
-cl -std:c++20 -Fe: %exe_name% -nologo -Oid -GR- -EHsc -MT -MP -Gm- -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref
+cl -std:c++20 -Fe: %exe_name% -nologo -Oid -GR- -EHs -MT -MP -Gm- -W4 -WX %ignore_warnings% -FC -Z7 -Fm: lox.map -I%cwd% -Isrc -I%include_dir% %src_files% %test_files% %libs% /link -opt:ref
+
+if errorlevel 1 del %exe_name% && echo Build failed...
 
 popd
 
