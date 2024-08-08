@@ -5,20 +5,10 @@
 #include <windows.h>
 
 #include <cassert>
+#include <memory>
 #include <string>
 
 // TODO(bissakov): Implement platform-independent file IO.
-void FreeMemory(const BYTE* memory) {
-  if (memory == nullptr) {
-    return;
-  }
-
-  delete[] memory;
-  memory = nullptr;
-
-  assert(!memory);
-}
-
 FileResult ReadEntireFile(const std::string file_path) {
   FileResult result = {};
 
@@ -42,19 +32,17 @@ FileResult ReadEntireFile(const std::string file_path) {
   assert(file_size.QuadPart <= 0xFF'FF'FF'FF);
   result.file_size = (uint32_t)(file_size.QuadPart);
 
-  result.content = new BYTE[result.file_size];
+  result.content = std::make_unique<BYTE[]>(result.file_size);
 
   if (!result.content) {
-    FreeMemory(result.content);
     CloseHandle(file_handle);
     return result;
   }
 
   DWORD bytes_read = 0;
-  if (!(ReadFile(file_handle, result.content, result.file_size, &bytes_read,
-                 0) &&
+  if (!(ReadFile(file_handle, result.content.get(), result.file_size,
+                 &bytes_read, 0) &&
         result.file_size == bytes_read)) {
-    FreeMemory(result.content);
     CloseHandle(file_handle);
     return result;
   }
@@ -135,26 +123,22 @@ bool CompareFiles(const std::string& file_path1,
     return false;
   }
 
-  BYTE* buffer1 = new BYTE[file_size1];
-  BYTE* buffer2 = new BYTE[file_size2];
+  std::unique_ptr<BYTE[]> buffer1 = std::make_unique<BYTE[]>(file_size1);
+  std::unique_ptr<BYTE[]> buffer2 = std::make_unique<BYTE[]>(file_size2);
 
   DWORD bytes_read1, bytes_read2;
-  BOOL read1 = ReadFile(h_file1, buffer1, file_size1, &bytes_read1, NULL);
-  BOOL read2 = ReadFile(h_file2, buffer2, file_size2, &bytes_read2, NULL);
+  BOOL read1 = ReadFile(h_file1, buffer1.get(), file_size1, &bytes_read1, NULL);
+  BOOL read2 = ReadFile(h_file2, buffer2.get(), file_size2, &bytes_read2, NULL);
 
   if (!read1 || !read2 || bytes_read1 != file_size1 ||
       bytes_read2 != file_size2) {
-    delete[] buffer1;
-    delete[] buffer2;
     CloseHandle(h_file1);
     CloseHandle(h_file2);
     return false;
   }
 
-  bool result = (memcmp(buffer1, buffer2, file_size1) == 0);
+  bool result = (memcmp(buffer1.get(), buffer2.get(), file_size1) == 0);
 
-  delete[] buffer1;
-  delete[] buffer2;
   CloseHandle(h_file1);
   CloseHandle(h_file2);
 

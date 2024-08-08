@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <memory>
 #include <string>
 
 enum ShearType { XY, XZ, YX, YZ, ZX, ZY };
@@ -12,29 +13,27 @@ enum ShearType { XY, XZ, YX, YZ, ZX, ZY };
 struct Matrix {
   size_t rows;
   size_t cols;
-  double* values;
+  std::unique_ptr<double[]> values;
 
   Matrix() noexcept : rows(0), cols(0), values(nullptr) {}
 
   Matrix(const size_t rows_, const size_t cols_) noexcept
-      : rows(rows_), cols(cols_), values(new double[rows * cols]()) {}
+      : rows(rows_),
+        cols(cols_),
+        values(std::make_unique<double[]>(rows * cols)) {}
 
   Matrix(const Matrix& other) noexcept
       : rows(other.rows),
         cols(other.cols),
-        values(new double[other.rows * other.cols]) {
-    std::copy(other.values, other.values + rows * cols, values);
-  }
-
-  ~Matrix() noexcept {
-    delete[] values;
+        values(std::make_unique<double[]>(other.rows * other.cols)) {
+    std::copy(other.values.get(), other.values.get() + rows * cols,
+              values.get());
   }
 
   Matrix& operator=(const Matrix& other) noexcept;
   Matrix operator*(const Matrix& other) noexcept;
   Vector operator*(const Vector& vector) noexcept;
 
-  // TODO(bissakov): to complete
   Point operator*(const Point& point) noexcept;
 
   Matrix operator/(const double scalar) noexcept;

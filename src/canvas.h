@@ -3,17 +3,39 @@
 
 #include <src/pixel.h>
 
+#include <algorithm>
 #include <cassert>
+#include <memory>
 #include <string>
 
 struct Canvas {
   size_t width;
   size_t height;
-  Pixel *pixels;
+  std::unique_ptr<Pixel[]> pixels;
 
-  Canvas(const size_t _width, const size_t _height);
-  Canvas(const Canvas &other);
-  ~Canvas();
+  Canvas() noexcept : width(0), height(0), pixels(nullptr) {}
+
+  Canvas(const size_t width_, const size_t height_) noexcept
+      : width(width_),
+        height(height_),
+        pixels(std::make_unique<Pixel[]>(width_ * height_)) {
+    for (size_t row = 0; row < height; ++row) {
+      for (size_t col = 0; col < width; ++col) {
+        Pixel *pixel = &pixels[row * width + col];
+        pixel->x = col;
+        pixel->y = row;
+        pixel->color = {};
+      }
+    }
+  }
+
+  Canvas(const Canvas &other) noexcept
+      : width(other.width),
+        height(other.height),
+        pixels(std::make_unique<Pixel[]>(other.width * other.height)) {
+    std::copy(other.pixels.get(),
+              other.pixels.get() + other.width * other.height, pixels.get());
+  }
 
   Canvas &operator=(const Canvas &other);
 

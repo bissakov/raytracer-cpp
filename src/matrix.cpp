@@ -1,8 +1,10 @@
 #include <src/matrix.h>
 #include <src/test_suite.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <memory>
 #include <string>
 
 double Matrix::At(const size_t row, const size_t col) const noexcept {
@@ -17,12 +19,9 @@ void Matrix::Set(const size_t row, const size_t col,
 
 Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
-    delete[] values;
-
-    values = new double[other.rows * other.cols];
-    for (size_t i = 0; i < other.rows * other.cols; ++i) {
-      values[i] = other.values[i];
-    }
+    values = std::make_unique<double[]>(other.rows * other.cols);
+    std::copy(other.values.get(), other.values.get() + other.rows * other.cols,
+              values.get());
   }
   return *this;
 }

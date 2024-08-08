@@ -87,6 +87,19 @@ void RunTests(const std::string root_folder_path) {
     return res;
   });
 
+  fw.Add("Push shared ptr array into DyArray", "Arrays", []() -> bool {
+    size_t size = 5;
+    std::shared_ptr<size_t[]> elements = std::make_shared<size_t[]>(size);
+    for (size_t i = 0; i < size; ++i) {
+      elements[i] = i + 1;
+    }
+    DyArray<size_t> arr = {elements, size};
+    bool res = ASSERT_EQUAL(
+        bool, arr.size == size && arr.Compare(elements, size), true);
+
+    return res;
+  });
+
   fw.Add("Initialize string", "Strings", []() -> bool {
     String actual = String{"Hello, World!"};
     const char* expected = "Hello, World!";

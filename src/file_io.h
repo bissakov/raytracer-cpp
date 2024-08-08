@@ -4,15 +4,15 @@
 #include <windows.h>
 
 #include <cstdint>
+#include <memory>
 #include <string>
 
 struct FileResult {
-  BYTE *content;
+  std::unique_ptr<BYTE[]> content;
   uint32_t file_size;
   bool file_exists;
 };
 
-void FreeMemory(const BYTE *memory);
 FileResult ReadEntireFile(const std::string file_path);
 bool WriteEntireFile(const char *file_path, const uint32_t memory_size,
                      const BYTE *memory);

@@ -6,53 +6,14 @@
 
 #include <cassert>
 #include <cstdint>
+#include <memory>
 #include <string>
-
-Canvas::Canvas(const size_t width_, const size_t height_) {
-  width = width_;
-  height = height_;
-
-  if (width == 0 && height == 0) {
-    pixels = nullptr;
-    return;
-  }
-
-  pixels = new Pixel[width * height];
-  for (size_t row = 0; row < height; ++row) {
-    for (size_t col = 0; col < width; ++col) {
-      Pixel* pixel = &pixels[row * width + col];
-      pixel->x = col;
-      pixel->y = row;
-      pixel->color = {};
-    }
-  }
-}
-
-Canvas::Canvas(const Canvas& other) {
-  width = other.width;
-  height = other.height;
-  pixels = new Pixel[width * height];
-  for (size_t i = 0; i < width * height; ++i) {
-    pixels[i] = other.pixels[i];
-  }
-}
-
-Canvas::~Canvas() {
-  if ((width == 0 && height == 0) || pixels == nullptr) {
-    return;
-  }
-
-  delete[] pixels;
-}
 
 Canvas& Canvas::operator=(const Canvas& other) {
   if (this != &other) {
-    delete[] pixels;  // Clean up existing values
-
-    pixels = new Pixel[other.width * other.height];
-    for (size_t i = 0; i < other.width * other.height; ++i) {
-      pixels[i] = other.pixels[i];
-    }
+    pixels = std::make_unique<Pixel[]>(other.width * other.height);
+    std::copy(other.pixels.get(),
+              other.pixels.get() + other.width * other.height, pixels.get());
   }
   return *this;
 }
@@ -162,7 +123,7 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
   }
 
   FileResult result = ReadEntireFile(file_path);
-  char* source = reinterpret_cast<char*>(result.content);
+  char* source = reinterpret_cast<char*>(result.content.get());
 
   size_t start = 0;
   uint32_t current = 0;
@@ -192,11 +153,7 @@ bool Canvas::LoadFromPPM(const std::string file_path) {
 
   start = current;
 
-  if (pixels != nullptr) {
-    delete[] pixels;
-  }
-
-  pixels = new Pixel[width * height];
+  pixels = std::make_unique<Pixel[]>(width * height);
   for (size_t row = 0; row < height; ++row) {
     size_t col = 0;
     ColorRGB rgb_color = {};

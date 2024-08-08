@@ -29,6 +29,11 @@ struct DyArray {
     std::copy(array, array + length, data.get());
   }
 
+  DyArray(std::shared_ptr<T[]> array, size_t length) noexcept
+      : size(length), capacity(length), data(std::make_unique<T[]>(length)) {
+    std::copy(array.get(), array.get() + length, data.get());
+  }
+
   DyArray(DyArray&& other) noexcept
       : size(other.size),
         capacity(other.capacity),
@@ -77,6 +82,20 @@ struct DyArray {
   }
 
   bool Compare(T* other_data, size_t other_size) noexcept {
+    if (size != other_size) {
+      return false;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+      if (data[i] != other_data[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool Compare(std::shared_ptr<T[]> other_data, size_t other_size) noexcept {
     if (size != other_size) {
       return false;
     }
