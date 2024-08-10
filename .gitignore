@@ -6,7 +6,6 @@ x64/
 # temp
 include/
 
-*.vcxproj.user
 compile_commands.json
 
 # Prerequisites
