@@ -149,8 +149,8 @@ std::ostream& operator<<(std::ostream& os, const Hit& hit) {
 Hits& Hits::operator=(const Hits& other) noexcept {
   if (this != &other) {
     count = other.count;
-    hits[0] = other.hits[0];
-    hits[1] = other.hits[1];
+    hits = std::make_unique<Hit[]>(count);
+    std::copy(other.hits.get(), other.hits.get() + count, hits.get());
   }
   return *this;
 }
@@ -218,10 +218,7 @@ void Hits::Push(Hit* hit) noexcept {
 }
 
 Hits Aggregate(size_t size, Hit* hits) noexcept {
-  Hits xs;
-  for (size_t i = 0; i < size; ++i) {
-    Hit* hit = &hits[i];
-    xs.Push(hit);
-  }
+  Hits xs = Hits{size};
+  std::copy(hits, hits + size, xs.hits.get());
   return xs;
 }

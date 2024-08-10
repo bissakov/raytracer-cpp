@@ -1202,13 +1202,21 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL(double, xs[1].t, -4.0);
   });
 
-  fw.Add("Initialize hit", "Rays", []() -> bool {
+  fw.Add("Initialize hit and hits", "Rays", []() -> bool {
     Sphere sphere;
     Hit hit = {3.5, {SPHERE, &sphere}};
 
+    Hits xs;
+    xs.Push(&hit);
+
+    Hits xs_copy = xs;
+
     return ASSERT_EQUAL(double, hit.t, 3.5) &&
            ASSERT_EQUAL(Sphere, *reinterpret_cast<Sphere*>(hit.object.data),
-                        sphere);
+                        sphere) &&
+           ASSERT_EQUAL(Hits, xs, xs_copy) &&
+           ASSERT_EQUAL(size_t, xs.count, 1) &&
+           ASSERT_EQUAL(double, xs.hits[0].t, 3.5);
   });
 
   fw.Add("Aggregate hits", "Rays", []() -> bool {
