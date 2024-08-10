@@ -1155,20 +1155,20 @@ void RunTests(const std::string root_folder_path) {
            ASSERT_EQUAL(Point, actual4, expected4);
   });
 
-  fw.Add("Intersect a sphere at two points with a ray", "Rays", []() -> bool {
+  fw.Add("Hit a sphere at two points with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 0, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereHits xs = ray.Intersect(sphere);
+    Hits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, 4.0) &&
            ASSERT_EQUAL(double, xs[1].t, 6.0);
   });
 
-  fw.Add("Intersect a sphere at a tangent with a ray", "Rays", []() -> bool {
+  fw.Add("Hit a sphere at a tangent with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 1, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereHits xs = ray.Intersect(sphere);
+    Hits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 1) &&
            ASSERT_EQUAL(double, xs[0].t, 5.0);
@@ -1177,29 +1177,51 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Miss a sphere with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 2, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereHits xs = ray.Intersect(sphere);
+    Hits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 0);
   });
 
-  fw.Add("Intersect a sphere with a ray at its center", "Rays", []() -> bool {
+  fw.Add("Hit a sphere with a ray at its center", "Rays", []() -> bool {
     Ray ray = {{0, 0, 0}, {0, 0, 1}};
     Sphere sphere;
-    SphereHits xs = ray.Intersect(sphere);
+    Hits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, -1.0) &&
            ASSERT_EQUAL(double, xs[1].t, 1.0);
   });
 
-  fw.Add("Intersect a sphere with a ray behind it", "Rays", []() -> bool {
+  fw.Add("Hit a sphere with a ray behind it", "Rays", []() -> bool {
     Ray ray = {{0, 0, 5}, {0, 0, 1}};
     Sphere sphere;
-    SphereHits xs = ray.Intersect(sphere);
+    Hits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, -6.0) &&
            ASSERT_EQUAL(double, xs[1].t, -4.0);
+  });
+
+  fw.Add("Initialize hit", "Rays", []() -> bool {
+    Sphere sphere;
+    Hit hit = {3.5, {SPHERE, &sphere}};
+
+    return ASSERT_EQUAL(double, hit.t, 3.5) &&
+           ASSERT_EQUAL(Sphere, *reinterpret_cast<Sphere*>(hit.object.data),
+                        sphere);
+  });
+
+  fw.Add("Aggregate hits", "Rays", []() -> bool {
+    Sphere sphere;
+    Hit hit1 = {1, {SPHERE, &sphere}};
+    Hit hit2 = {2, {SPHERE, &sphere}};
+    Hit hits[] = {hit1, hit2};
+
+    Hits xs = Aggregate(2, hits);
+
+    return ASSERT_EQUAL(size_t, xs.count, 2) &&
+           ASSERT_EQUAL(double, xs[0].t, 1.0) &&
+           ASSERT_EQUAL(double, xs[1].t, 2.0);
   });
 
   fw.RunTests();
