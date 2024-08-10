@@ -1158,7 +1158,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Intersect a sphere at two points with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 0, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereIntersects xs = ray.Intersect(sphere);
+    SphereHits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, 4.0) &&
@@ -1168,7 +1168,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Intersect a sphere at a tangent with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 1, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereIntersects xs = ray.Intersect(sphere);
+    SphereHits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 1) &&
            ASSERT_EQUAL(double, xs[0].t, 5.0);
@@ -1177,7 +1177,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Miss a sphere with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 2, -5}, {0, 0, 1}};
     Sphere sphere;
-    SphereIntersects xs = ray.Intersect(sphere);
+    SphereHits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 0);
   });
@@ -1185,7 +1185,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Intersect a sphere with a ray at its center", "Rays", []() -> bool {
     Ray ray = {{0, 0, 0}, {0, 0, 1}};
     Sphere sphere;
-    SphereIntersects xs = ray.Intersect(sphere);
+    SphereHits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, -1.0) &&
@@ -1195,7 +1195,7 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Intersect a sphere with a ray behind it", "Rays", []() -> bool {
     Ray ray = {{0, 0, 5}, {0, 0, 1}};
     Sphere sphere;
-    SphereIntersects xs = ray.Intersect(sphere);
+    SphereHits xs = ray.Intersect(sphere);
 
     return ASSERT_EQUAL(size_t, xs.count, 2) &&
            ASSERT_EQUAL(double, xs[0].t, -6.0) &&

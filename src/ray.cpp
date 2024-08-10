@@ -34,8 +34,8 @@ Point Ray::Position(double t) noexcept {
   return origin + direction * t;
 }
 
-SphereIntersects Ray::Intersect(Sphere sphere) noexcept {
-  SphereIntersects xs;
+SphereHits Ray::Intersect(Sphere sphere) noexcept {
+  SphereHits xs;
 
   Vector sphere_to_ray = origin - sphere.origin;
 
@@ -87,49 +87,46 @@ std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
   return os;
 }
 
-SphereIntersects& SphereIntersects::operator=(
-    const SphereIntersects& other) noexcept {
+SphereHits& SphereHits::operator=(const SphereHits& other) noexcept {
   if (this != &other) {
     count = other.count;
-    intersects[0] = other.intersects[0];
-    intersects[1] = other.intersects[1];
+    hits[0] = other.hits[0];
+    hits[1] = other.hits[1];
   }
   return *this;
 }
 
-Intersection<Sphere>& SphereIntersects::operator[](size_t index) noexcept {
+Hit<Sphere>& SphereHits::operator[](size_t index) noexcept {
   assert(index < count);
-  return intersects[index];
+  return hits[index];
 }
 
-const Intersection<Sphere>& SphereIntersects::operator[](
-    size_t index) const noexcept {
+const Hit<Sphere>& SphereHits::operator[](size_t index) const noexcept {
   assert(index < count);
-  return intersects[index];
+  return hits[index];
 }
 
-bool SphereIntersects::operator==(const SphereIntersects& other) const {
+bool SphereHits::operator==(const SphereHits& other) const {
   if (count != other.count) {
     return false;
   }
 
   for (size_t i = 0; i < count; ++i) {
-    if (intersects[i] != other.intersects[i]) {
+    if (hits[i] != other.hits[i]) {
       return false;
     }
   }
 
   return true;
 }
-bool SphereIntersects::operator!=(const SphereIntersects& other) const {
+bool SphereHits::operator!=(const SphereHits& other) const {
   return !(*this == other);
 }
 
-SphereIntersects::operator std::string() const noexcept {
-  std::string str =
-      "SphereIntersects{count=" + std::to_string(count) + ", intersections={";
+SphereHits::operator std::string() const noexcept {
+  std::string str = "SphereHits{count=" + std::to_string(count) + ", hits={";
   for (size_t i = 0; i < count; ++i) {
-    str += std::string(intersects[i]);
+    str += std::string(hits[i]);
     if (i < count - 1) {
       str += ", ";
     }
@@ -138,16 +135,15 @@ SphereIntersects::operator std::string() const noexcept {
   return str;
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const SphereIntersects& intersections) {
-  os << std::string(intersections);
+std::ostream& operator<<(std::ostream& os, const SphereHits& sphere_hits) {
+  os << std::string(sphere_hits);
   return os;
 }
 
-void SphereIntersects::Push(double t, Sphere* sphere) noexcept {
+void SphereHits::Push(double t, Sphere* sphere) noexcept {
   assert(count + 1 <= 2 && "Ray can't intersect a sphere >2 times...");
   count++;
 
-  Intersection<Sphere> intersect = {t, sphere};
-  intersects[count - 1] = intersect;
+  Hit<Sphere> hit = {t, sphere};
+  hits[count - 1] = hit;
 }

@@ -7,8 +7,8 @@
 #include <string>
 
 typedef struct Sphere Sphere;
-typedef struct SphereIntersects SphereIntersects;
-typedef struct Intersects Intersects;
+typedef struct SphereHits SphereHits;
+typedef struct Hits Hits;
 
 struct Ray {
   Point origin;
@@ -29,7 +29,7 @@ struct Ray {
   operator std::string() const noexcept;
 
   Point Position(double t) noexcept;
-  SphereIntersects Intersect(Sphere sphere) noexcept;
+  SphereHits Intersect(Sphere sphere) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Ray& ray);
@@ -56,65 +56,61 @@ struct Sphere {
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere);
 
 template <typename T>
-struct Intersection {
+struct Hit {
   double t;
   T* object;
 
-  Intersection<T>() noexcept : t(0.0), object(nullptr) {}
+  Hit<T>() noexcept : t(0.0), object(nullptr) {}
 
-  Intersection<T>(double t, T* object) noexcept : t(t), object(object) {}
+  Hit<T>(double t, T* object) noexcept : t(t), object(object) {}
 
-  Intersection<T>(const Intersection<T>& other) noexcept
-      : t(other.t), object(other.object) {}
+  Hit<T>(const Hit<T>& other) noexcept : t(other.t), object(other.object) {}
 
-  bool operator==(const Intersection<T>& other) const {
+  bool operator==(const Hit<T>& other) const {
     return t == other.t && object == other.object;
   }
 
-  bool operator!=(const Intersection<T>& other) const {
+  bool operator!=(const Hit<T>& other) const {
     return !(*this == other);
   }
 
   operator std::string() const noexcept {
-    return "Intersection{t=" + std::to_string(t) +
-           ", object=" + std::string(*object) + "}";
+    return "Hit{t=" + std::to_string(t) + ", object=" + std::string(*object) +
+           "}";
   }
 };
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os,
-                         const Intersection<T>& intersection) {
-  os << std::string(intersection);
+std::ostream& operator<<(std::ostream& os, const Hit<T>& hit) {
+  os << std::string(hit);
   return os;
 }
 
-struct SphereIntersects {
+struct SphereHits {
   size_t count;
-  Intersection<Sphere> intersects[2];
+  Hit<Sphere> hits[2];
 
-  SphereIntersects() noexcept : count(0) {}
+  SphereHits() noexcept : count(0) {}
 
-  explicit SphereIntersects(size_t count) noexcept : count(count) {}
+  explicit SphereHits(size_t count) noexcept : count(count) {}
 
-  SphereIntersects(const SphereIntersects& other) noexcept
-      : count(other.count) {
-    intersects[0] = other.intersects[0];
-    intersects[1] = other.intersects[1];
+  SphereHits(const SphereHits& other) noexcept : count(other.count) {
+    hits[0] = other.hits[0];
+    hits[1] = other.hits[1];
   }
 
-  SphereIntersects& operator=(const SphereIntersects& other) noexcept;
+  SphereHits& operator=(const SphereHits& other) noexcept;
 
-  Intersection<Sphere>& operator[](size_t index) noexcept;
-  const Intersection<Sphere>& operator[](size_t index) const noexcept;
+  Hit<Sphere>& operator[](size_t index) noexcept;
+  const Hit<Sphere>& operator[](size_t index) const noexcept;
 
-  bool operator==(const SphereIntersects& other) const;
-  bool operator!=(const SphereIntersects& other) const;
+  bool operator==(const SphereHits& other) const;
+  bool operator!=(const SphereHits& other) const;
   operator std::string() const noexcept;
 
   void Push(double t, Sphere* sphere) noexcept;
 };
 
-std::ostream& operator<<(std::ostream& os,
-                         const SphereIntersects& sphere_intersects);
+std::ostream& operator<<(std::ostream& os, const SphereHits& sphere_hits);
 
 #endif  // SRC_RAY_H_
