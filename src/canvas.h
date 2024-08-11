@@ -2,11 +2,11 @@
 #define SRC_CANVAS_H_
 
 #include <src/pixel.h>
+#include <src/utils.h>
 
 #include <algorithm>
 #include <cassert>
 #include <memory>
-#include <string>
 
 struct Canvas {
   size_t width;
@@ -43,9 +43,8 @@ struct Canvas {
   Pixel PixelAt(const size_t pos_x, const size_t pos_y) const;
   void WritePixelColor(const size_t pos_x, const size_t pos_y,
                        const Color &color) const;
-  std::string ToString() const;
-  bool SaveToPPM(const std::string file_path);
-  bool LoadFromPPM(const std::string file_path);
+  bool SaveToPPM(const Path &file_path);
+  bool LoadFromPPM(const Path &file_path);
 };
 
 static inline void AdvanceUntil(char *file_content, uint32_t *idx,

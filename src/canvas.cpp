@@ -2,10 +2,12 @@
 
 #include <src/file_io.h>
 #include <src/utils.h>
+#include <string.h>
 #include <windows.h>
 
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <string>
 
@@ -35,64 +37,80 @@ void Canvas::WritePixelColor(const size_t pos_x, const size_t pos_y,
   pixel->color = color;
 }
 
-// std::string Canvas::ToString() const {
-//   /*
-//
-//   Canvas{
-//     width=1920,
-//     height=1080,
-//     pixels={
-//       #000000 #000000 #000000 #000000 #000000
-//       #000000 #000000 #000000 #000000 #000000
-//       #000000 #000000 #000000 #000000 #000000
-//       #000000 #000000 #000000 #000000 #000000
-//     }
-//   }
-//
-//   */
-//
-//   const size_t max_rows = 4;
-//   const size_t max_cols = 5;
-//
-//   char colors[1024];
-//   for (size_t j = 0; j < height; ++j) {
-//     for (size_t i = 0; i < width; ++i) {
-//     }
-//   }
-//
-//   char canvas_buffer[1024];
-//   snprintf(canvas_buffer, sizeof(canvas_buffer),
-//            "Canvas{\n  width=%d,\n  height=%d,\n  pixels={\n    #00000 #00000
-//            "
-//            "#00000\n    #00000 #00000 #00000\n  }\n}",
-//            width, height);
-//   std::string canvas_str = canvas_buffer;
-//   return canvas_str;
-// }
+bool WriteLineToFile(HANDLE file_handle, const char* line) {
+  DWORD bytes_to_write = (DWORD)strlen(line);
+  DWORD bytes_written;
 
-bool Canvas::SaveToPPM(const std::string file_path) {
-  std::string canvas_buffer = "";
-  canvas_buffer +=
-      "P3\n" + std::to_string(width) + " " + std::to_string(height) + "\n255\n";
+  if (!WriteFile(file_handle, line, bytes_to_write, &bytes_written, 0)) {
+    ErrorExit(TEXT("WriteFile"));
+    return false;
+  }
+
+  assert(bytes_to_write == bytes_written && "bytes_to_write != bytes_written");
+
+  return true;
+}
+
+bool Canvas::SaveToPPM(const Path& file_path) {
+  HANDLE file_handle =
+      CreateFile(file_path.value, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+  if (file_handle == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  {
+    char header[100];
+    int header_len = snprintf(header, sizeof(header), "P3\n%zu %zu\n%d\n",
+                              width, height, 255);
+    if (header_len < 0 || header_len >= sizeof(header)) {
+      CloseHandle(file_handle);
+      return false;
+    }
+    if (!WriteLineToFile(file_handle, header)) {
+      CloseHandle(file_handle);
+      return false;
+    }
+  }
+
+  const size_t buffer_size = width * (3 * 4 + 1);
+  char* buffer = new char[buffer_size];
 
   for (size_t row = 0; row < height; ++row) {
+    size_t buffer_pos = 0;
+
     for (size_t col = 0; col < width; ++col) {
       Color* color = &pixels[row * width + col].color;
       size_t red = Clamp(static_cast<size_t>(color->r * 255.0), 0, 255);
       size_t green = Clamp(static_cast<size_t>(color->g * 255.0), 0, 255);
       size_t blue = Clamp(static_cast<size_t>(color->b * 255.0), 0, 255);
 
-      canvas_buffer += std::to_string(red) + " " + std::to_string(green) + " " +
-                       std::to_string(blue);
-      if (row < width - 1) {
-        canvas_buffer += " ";
+      int written = snprintf(buffer + buffer_pos, buffer_size - buffer_pos,
+                             "%zu %zu %zu", red, green, blue);
+      if (written < 0 || written >= buffer_size - buffer_pos) {
+        delete[] buffer;
+        CloseHandle(file_handle);
+        return false;
+      }
+
+      buffer_pos += written;
+      if (col < width - 1) {
+        buffer[buffer_pos++] = ' ';
       }
     }
-    canvas_buffer += "\n";
+    buffer[buffer_pos++] = '\n';
+    buffer[buffer_pos] = '\0';
+
+    if (!WriteLineToFile(file_handle, buffer)) {
+      delete[] buffer;
+      CloseHandle(file_handle);
+      return false;
+    }
   }
 
-  bool res = WriteFileText(file_path, canvas_buffer);
-  return res;
+  delete[] buffer;
+  CloseHandle(file_handle);
+
+  return true;
 }
 
 static inline void AdvanceUntil(char* file_content, uint32_t* idx,
@@ -104,12 +122,12 @@ static inline void AdvanceUntil(char* file_content, uint32_t* idx,
 }
 
 static inline size_t StringToInt(char* start, const size_t length) {
-  std::string str = "";
-  for (size_t i = 0; i < length; ++i) {
-    str += *GetElement<char>(start, length, i);
-  }
-  size_t res = static_cast<size_t>(std::stoi(str));
+  char* str = new char[length + 1];
+  std::copy(start, start + length, str);
+  str[length] = '\0';
 
+  size_t res = static_cast<size_t>(std::stoi(str));
+  delete[] str;
   return res;
 }
 
@@ -117,12 +135,12 @@ static inline bool IsDigit(const char c) {
   return c >= '0' && c <= '9';
 }
 
-bool Canvas::LoadFromPPM(const std::string file_path) {
-  if (GetFileAttributesA(file_path.c_str()) == INVALID_FILE_ATTRIBUTES) {
+bool Canvas::LoadFromPPM(const Path& file_path) {
+  if (GetFileAttributesA(file_path.value) == INVALID_FILE_ATTRIBUTES) {
     return false;
   }
 
-  FileResult result = ReadEntireFile(file_path);
+  FileResult result = ReadEntireFile(file_path.value);
   char* source = reinterpret_cast<char*>(result.content.get());
 
   size_t start = 0;

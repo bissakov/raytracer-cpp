@@ -3,7 +3,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <string>
 
 // NOTE: Point methods definitions
 double &Point::operator[](size_t index) {
@@ -55,15 +54,15 @@ bool Point::operator!=(const Point &p) const {
   return !(*this == p);
 }
 
-Point::operator std::string() const noexcept {
-  std::string result = "Point{x=" + std::to_string(x) +
-                       ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
-                       "}";
-  return result;
+Point::operator const char *() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Point{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
+           y, z, w);
+  return buffer;
 }
 
 std::ostream &operator<<(std::ostream &os, const Point &p) {
-  os << "Point{" << p.x << ", " << p.y << ", " << p.z << ", " << p.w << "}";
+  os << (const char *)p;
   return os;
 }
 
@@ -152,14 +151,14 @@ Vector Vector::CrossProduct(const Vector &other) const {
   return ::CrossProduct(*this, other);
 }
 
-Vector::operator std::string() const noexcept {
-  std::string result = "Vector{x=" + std::to_string(x) +
-                       ", y=" + std::to_string(y) + ", z=" + std::to_string(z) +
-                       ", w=" + std::to_string(w) + "}";
-  return result;
+Vector::operator const char *() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Vector{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
+           y, z, w);
+  return buffer;
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &v) {
-  os << "Vector{" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "}";
+  os << (const char *)v;
   return os;
 }

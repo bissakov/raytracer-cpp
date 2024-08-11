@@ -4,7 +4,6 @@
 
 #include <cassert>
 #include <cstdio>
-#include <string>
 
 Color Color::operator+(const Color& other) const {
   return {r + other.r, g + other.g, b + other.b};
@@ -41,11 +40,11 @@ bool Color::IsColorInRange() const {
          (b >= 0.0f && b <= 1.0f);
 }
 
-std::string Color::ToHex() const {
+const char* Color::ToHex() const {
   assert(IsColorInRange() && "Color out of range");
 
   const char* hex_chars = "0123456789abcdef";
-  std::string hex(6, '0');
+  static char hex[7];
 
   size_t red = Clamp(static_cast<size_t>(r * 255.0f), 0, 255);
   size_t green = Clamp(static_cast<size_t>(g * 255.0f), 0, 255);
@@ -57,20 +56,19 @@ std::string Color::ToHex() const {
   hex[3] = hex_chars[green % 16];
   hex[4] = hex_chars[static_cast<int>(blue / 16)];
   hex[5] = hex_chars[blue % 16];
+  hex[6] = '\0';
 
   return hex;
 }
 
-Color::operator std::string() const noexcept {
-  char color_buffer[30];
-  snprintf(color_buffer, sizeof(color_buffer),
-           "Color{r=%.02f, g=%.02f, b=%.02f}", r, g, b);
-  std::string color_str = color_buffer;
-  return color_str;
+Color::operator const char*() const noexcept {
+  static char buffer[30];
+  snprintf(buffer, sizeof(buffer), "Color{r=%.02f, g=%.02f, b=%.02f}", r, g, b);
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Color& c) {
-  os << "Color{" << c.r << ", " << c.g << ", " << c.b << "}";
+  os << (const char*)c;
   return os;
 }
 
@@ -85,16 +83,14 @@ bool Pixel::operator!=(const Pixel& other) const {
          !IsEqualDouble(color.b, other.color.b);
 }
 
-Pixel::operator std::string() const noexcept {
-  char color_buffer[100];
-  snprintf(color_buffer, sizeof(color_buffer),
-           "Pixel{x=%zu, y=%zu, color={%f, %f, %f}}", x, y, color.r, color.g,
-           color.b);
-  std::string color_str = color_buffer;
-  return color_str;
+Pixel::operator const char*() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Pixel{x=%zu, y=%zu, color={%f, %f, %f}}", x,
+           y, color.r, color.g, color.b);
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Pixel& p) {
-  os << "Pixel{" << p.x << ", " << p.y << ", " << p.color << "}";
+  os << (const char*)p;
   return os;
 }

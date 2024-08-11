@@ -1,12 +1,10 @@
+#include <direct.h>
 #include <src/main.h>
 #include <tests/tests.h>
 #include <windows.h>
 
 #include <cstdio>
-#include <filesystem>
-#include <string>
-
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   if (argc < 3 || argc > 4 || strcmp(argv[1], "--root") != 0) {
     printf("\nUsage: raytracer [--root --test]\n");
     return EXIT_FAILURE;
@@ -19,12 +17,13 @@ int main(int argc, char *argv[]) {
   }
 
   if (argc == 4 && strcmp(argv[3], "--test") == 0) {
-    std::string root_folder_path = argv[2];
-    if (root_folder_path == ".") {
-      std::filesystem::path cwd = std::filesystem::current_path();
-      root_folder_path = cwd.string();
+    char* root = argv[2];
+    if (strcmp(root, ".") == 0) {
+      char* cwd = _getcwd(NULL, 0);
+      assert(cwd != NULL && "_getcwd error");
+      root = cwd;
     }
-    RunTests(root_folder_path);
+    RunTests(root);
     return EXIT_SUCCESS;
   }
 

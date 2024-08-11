@@ -2,7 +2,7 @@
 #define SRC_PIXEL_H_
 
 #include <cstdint>
-#include <string>
+#include <iostream>
 
 struct Color {
   double r;
@@ -20,8 +20,8 @@ struct Color {
   Color operator/(const double scalar) const;
 
   bool IsColorInRange() const;
-  std::string ToHex() const;
-  operator std::string() const noexcept;
+  const char* ToHex() const;
+  operator const char*() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Color& c);
@@ -34,7 +34,7 @@ struct Pixel {
   bool operator==(const Pixel& other) const;
   bool operator!=(const Pixel& other) const;
 
-  operator std::string() const noexcept;
+  operator const char*() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Pixel& p);

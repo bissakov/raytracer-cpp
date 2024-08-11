@@ -7,7 +7,6 @@
 #include <src/point_vector.h>
 
 #include <functional>
-#include <string>
 
 struct CustomTest {
   std::function<bool()> test_function;
@@ -27,13 +26,13 @@ struct CustomTest {
 };
 
 struct TestFramework {
-  std::string root;
-  DyArray<CustomTest> tests;
+  const char* root;
+  CustomTest tests[200];
   size_t passed_tests = 0;
   size_t total_tests = 0;
   size_t current_test_idx = 0;
 
-  explicit TestFramework(std::string root_) noexcept : root(root_) {}
+  explicit TestFramework(const char* root_) noexcept : root(root_) {}
 
   void Add(const char* name, const char* tag,
            std::function<bool()> test_function);

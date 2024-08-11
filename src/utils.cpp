@@ -19,3 +19,27 @@ void ErrorExit(const LPCTSTR function) {
   LocalFree(message_buffer);
   ExitProcess(last_error_code);
 }
+
+Path Join(const char* left, const char* right) noexcept {
+  assert(left != nullptr && "left string is nullptr");
+  assert(right != nullptr && "right string is nullptr");
+
+  size_t length1 = strlen(left);
+  size_t length2 = strlen(right);
+
+  bool leftHasSeparator = (length1 > 0 && left[length1 - 1] == '\\');
+  bool rightHasSeparator = (length2 > 0 && right[0] == '\\');
+  assert(leftHasSeparator || rightHasSeparator || "No separator specified");
+
+  size_t length = length1 + length2 + 1;
+  assert(length <= MAX_PATH);
+
+  Path path;
+
+  memcpy(path.value, left, length1);
+  memcpy(path.value + length1, right, length2);
+  path.value[length - 1] = '\0';
+
+  path.length = length;
+  return path;
+}

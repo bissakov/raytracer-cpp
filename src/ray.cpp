@@ -2,8 +2,7 @@
 #include <src/ray.h>
 #include <src/test_suite.h>
 
-#include <algorithm>
-#include <string>
+#include <cstdio>
 
 Ray& Ray::operator=(const Ray& other) noexcept {
   if (this != &other) {
@@ -21,13 +20,15 @@ bool Ray::operator!=(const Ray& other) const {
   return !(*this == other);
 }
 
-Ray::operator std::string() const noexcept {
-  return "Ray{origin=" + std::string(origin) +
-         ", direction=" + std::string(direction) + "}";
+Ray::operator const char*() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Ray{origin=%s, direction=%s}",
+           (const char*)origin, (const char*)direction);
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Ray& ray) {
-  os << std::string(ray);
+  os << (const char*)ray;
   return os;
 }
 
@@ -36,7 +37,7 @@ Point Ray::Position(double t) noexcept {
 }
 
 Hits Ray::Intersect(Sphere sphere) noexcept {
-  Hits xs;
+  Hits hits;
 
   Vector sphere_to_ray = origin - sphere.origin;
 
@@ -46,23 +47,19 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
 
   double discriminant = (b * b) - (4 * a * c);
 
-  Object object = {SPHERE, &sphere};
+  Object object = {&sphere, SPHERE};
 
-  if (discriminant < 0.0) {
-    return xs;
-  } else if (IsEqualDouble(discriminant, 0.0)) {
+  if (IsEqualDouble(discriminant, 0.0)) {
     double t = -b / (2 * a);
-
-    xs.Push({t, object});
-  } else {
+    hits.Push({object, t});
+  } else if (discriminant > 0.0) {
     double t1 = (-b - std::sqrt(discriminant)) / (2 * a);
     double t2 = (-b + std::sqrt(discriminant)) / (2 * a);
-
-    xs.Push({t1, object});
-    xs.Push({t2, object});
+    hits.Push({object, t1});
+    hits.Push({object, t2});
   }
 
-  return xs;
+  return hits;
 }
 
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
@@ -81,13 +78,15 @@ bool Sphere::operator!=(const Sphere& other) const {
   return !(*this == other);
 }
 
-Sphere::operator std::string() const noexcept {
-  return "Sphere{origin=" + std::string(origin) +
-         ", radius=" + std::to_string(radius) + "}";
+Sphere::operator const char*() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Sphere{origin=%s, radius=%.2f}",
+           (const char*)origin, radius);
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
-  os << std::string(sphere);
+  os << (const char*)sphere;
   return os;
 }
 
@@ -107,8 +106,15 @@ bool Object::operator!=(const Object& other) const {
   return !(*this == other);
 }
 
-Object::operator std::string() const noexcept {
-  return "Object{type=" + std::to_string(type) + "}";
+Object::operator const char*() const noexcept {
+  static char buffer[100];
+  snprintf(buffer, sizeof(buffer), "Object{type=%d}", type);
+  return buffer;
+}
+
+std::ostream& operator<<(std::ostream& os, const Object& object) {
+  os << (const char*)object;
+  return os;
 }
 
 Hit& Hit::operator=(const Hit& other) noexcept {
@@ -120,34 +126,30 @@ Hit& Hit::operator=(const Hit& other) noexcept {
 }
 
 bool Hit::operator==(const Hit& other) const {
-  return t == other.t && object == other.object;
+  return IsEqualDouble(t, other.t) && object == other.object;
 }
 
 bool Hit::operator!=(const Hit& other) const {
   return !(*this == other);
 }
 
-Hit::operator std::string() const noexcept {
-  std::string str = "Hit{t=" + std::to_string(t) + ", object_type=";
-  switch (object.type) {
-    case (1): {
-      str += "SPHERE, data=" +
-             std::string(*reinterpret_cast<Sphere*>(object.data));
-      break;
-    }
-  }
-  return str;
+Hit::operator const char*() const noexcept {
+  static char buffer[200];
+  snprintf(buffer, sizeof(buffer), "Hit{t=%.2f, object=%s}", t,
+           (const char*)object);
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Hit& hit) {
-  os << std::string(hit);
+  os << (const char*)hit;
   return os;
 }
 
 Hits& Hits::operator=(const Hits& other) noexcept {
   if (this != &other) {
     count = other.count;
-    hits = other.hits;
+    hits[0] = other.hits[0];
+    hits[1] = other.hits[1];
   }
   return *this;
 }
@@ -175,34 +177,44 @@ bool Hits::operator==(const Hits& other) const {
 
   return true;
 }
+
 bool Hits::operator!=(const Hits& other) const {
   return !(*this == other);
 }
 
-Hits::operator std::string() const noexcept {
-  std::string str = "Hits{count=" + std::to_string(count) + ", hits={";
-  for (size_t i = 0; i < count; ++i) {
-    str += std::string(hits[i]);
-    if (i < count - 1) {
-      str += ", ";
+Hits::operator const char*() const noexcept {
+  static char buffer[100];
+
+  switch (count) {
+    case 0: {
+      snprintf(buffer, sizeof(buffer), "Hits{count=%zu}", count);
+    }
+
+    case 1: {
+      snprintf(buffer, sizeof(buffer), "Hits{hit=%s, count=%zu}",
+               (const char*)hits[0], count);
+    }
+
+    case 2: {
+      snprintf(buffer, sizeof(buffer), "Hits{hit0=%s, hit1=%s, count=%zu}",
+               (const char*)hits[0], (const char*)hits[1], count);
+    }
+
+    default: {
+      assert("Wrong number of intersections...");
     }
   }
-  str += "}}";
-  return str;
-}
 
-std::ostream& operator<<(std::ostream& os, const Hits& hits) {
-  os << std::string(hits);
-  return os;
-}
-
-Hits Aggregate(size_t size, Hit* hits) noexcept {
-  Hits xs = Hits{size};
-  std::copy(hits, hits + size, xs.hits.data.get());
-  return xs;
+  return buffer;
 }
 
 void Hits::Push(Hit hit) noexcept {
+  assert(count <= 2);
+  hits[count] = hit;
   count++;
-  hits.Push(hit);
+}
+
+std::ostream& operator<<(std::ostream& os, const Hits& hits) {
+  os << (const char*)hits;
+  return os;
 }

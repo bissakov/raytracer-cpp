@@ -3,7 +3,6 @@
 
 #include <cassert>
 #include <iostream>
-#include <string>
 
 typedef struct Point Point;
 typedef struct Vector Vector;
@@ -30,7 +29,7 @@ struct Point {
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
-  operator std::string() const noexcept;
+  operator const char*() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Point& p);
@@ -67,7 +66,7 @@ struct Vector {
   double DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
 
-  operator std::string() const noexcept;
+  operator const char*() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);

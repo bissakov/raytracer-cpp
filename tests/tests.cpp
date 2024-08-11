@@ -8,13 +8,13 @@
 #include <src/ray.h>
 #include <src/str.h>
 #include <src/test_suite.h>
+#include <src/utils.h>
 #include <tests/tests.h>
 
 #include <memory>
-#include <string>
 
-void RunTests(const std::string root_folder_path) {
-  TestFramework fw = TestFramework{root_folder_path};
+void RunTests(const char* root) {
+  TestFramework fw = TestFramework{root};
 
   fw.Add("Initialize array", "Arrays", []() -> bool {
     DyArray<int> arr(5);
@@ -412,7 +412,7 @@ void RunTests(const std::string root_folder_path) {
       }
     }
 
-    std::string file_path = fw.root + "\\data\\canvas.ppm";
+    Path file_path = Join(fw.root, "\\data\\canvas.ppm");
     bool res = canvas.SaveToPPM(file_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -421,13 +421,14 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Load canvas from PPM", "Canvas", [fw]() -> bool {
     Canvas canvas = {0, 0};
 
-    const std::string input_path = fw.root + "\\data\\canvas.ppm";
+    Path input_path = Join(fw.root, "\\data\\canvas.ppm");
     bool res1 = canvas.LoadFromPPM(input_path);
 
-    const std::string output_path = fw.root + "\\data\\canvas_output.ppm";
+    Path output_path = Join(fw.root, "\\data\\canvas_output.ppm");
     bool res2 = canvas.SaveToPPM(output_path);
 
-    bool actual = CompareFiles(input_path, output_path) && res1 && res2;
+    bool actual =
+        CompareFiles(input_path.value, output_path.value) && res1 && res2;
     bool expected = true;
     return ASSERT_EQUAL(bool, actual, expected);
   });
@@ -460,7 +461,7 @@ void RunTests(const std::string root_folder_path) {
       proj.velocity = proj.velocity + env.gravity + env.wind;
     }
 
-    std::string output_path = fw.root + "\\data\\projectile.ppm";
+    Path output_path = Join(fw.root, "\\data\\projectile.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -1114,7 +1115,7 @@ void RunTests(const std::string root_folder_path) {
       canvas.WritePixelColor(pos_x, pos_y, green);
     }
 
-    std::string output_path = fw.root + "\\data\\clock.ppm";
+    Path output_path = Join(fw.root, "\\data\\clock.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -1158,78 +1159,65 @@ void RunTests(const std::string root_folder_path) {
   fw.Add("Hit a sphere at two points with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 0, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits xs = ray.Intersect(sphere);
+    Hits hits = ray.Intersect(sphere);
 
-    return ASSERT_EQUAL(size_t, xs.count, 2) &&
-           ASSERT_EQUAL(double, xs[0].t, 4.0) &&
-           ASSERT_EQUAL(double, xs[1].t, 6.0);
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(double, hits[0].t, 4.0) &&
+           ASSERT_EQUAL(double, hits[1].t, 6.0);
   });
 
   fw.Add("Hit a sphere at a tangent with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 1, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits xs = ray.Intersect(sphere);
+    Hits hits = ray.Intersect(sphere);
 
-    return ASSERT_EQUAL(size_t, xs.count, 1) &&
-           ASSERT_EQUAL(double, xs[0].t, 5.0);
+    return ASSERT_EQUAL(size_t, hits.count, 1) &&
+           ASSERT_EQUAL(double, hits[0].t, 5.0);
   });
 
   fw.Add("Miss a sphere with a ray", "Rays", []() -> bool {
     Ray ray = {{0, 2, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits xs = ray.Intersect(sphere);
+    Hits hits = ray.Intersect(sphere);
 
-    return ASSERT_EQUAL(size_t, xs.count, 0);
+    return ASSERT_EQUAL(size_t, hits.count, 0);
   });
 
   fw.Add("Hit a sphere with a ray at its center", "Rays", []() -> bool {
     Ray ray = {{0, 0, 0}, {0, 0, 1}};
     Sphere sphere;
-    Hits xs = ray.Intersect(sphere);
+    Hits hits = ray.Intersect(sphere);
 
-    return ASSERT_EQUAL(size_t, xs.count, 2) &&
-           ASSERT_EQUAL(double, xs[0].t, -1.0) &&
-           ASSERT_EQUAL(double, xs[1].t, 1.0);
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(double, hits[0].t, -1.0) &&
+           ASSERT_EQUAL(double, hits[1].t, 1.0);
   });
 
   fw.Add("Hit a sphere with a ray behind it", "Rays", []() -> bool {
     Ray ray = {{0, 0, 5}, {0, 0, 1}};
     Sphere sphere;
-    Hits xs = ray.Intersect(sphere);
+    Hits hits = ray.Intersect(sphere);
 
-    return ASSERT_EQUAL(size_t, xs.count, 2) &&
-           ASSERT_EQUAL(double, xs[0].t, -6.0) &&
-           ASSERT_EQUAL(double, xs[1].t, -4.0);
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(double, hits[0].t, -6.0) &&
+           ASSERT_EQUAL(double, hits[1].t, -4.0);
   });
 
   fw.Add("Initialize hit and hits", "Rays", []() -> bool {
     Sphere sphere;
-    Hit hit = {3.5, {SPHERE, &sphere}};
+    Hit hit = {{&sphere, SPHERE}, 3.5};
 
-    Hits xs;
-    xs.Push(hit);
+    Hits hits = Hits{1};
+    hits[0] = hit;
 
-    Hits xs_copy = xs;
+    Hits hits_copy = Hits{hits};
 
     return ASSERT_EQUAL(double, hit.t, 3.5) &&
            ASSERT_EQUAL(Sphere, *reinterpret_cast<Sphere*>(hit.object.data),
                         sphere) &&
-           ASSERT_EQUAL(Hits, xs, xs_copy) &&
-           ASSERT_EQUAL(size_t, xs.count, 1) &&
-           ASSERT_EQUAL(double, xs.hits[0].t, 3.5);
-  });
-
-  fw.Add("Aggregate hits", "Rays", []() -> bool {
-    Sphere sphere;
-    Hit hit1 = {1, {SPHERE, &sphere}};
-    Hit hit2 = {2, {SPHERE, &sphere}};
-    Hit hits[] = {hit1, hit2};
-
-    Hits xs = Aggregate(2, hits);
-
-    return ASSERT_EQUAL(size_t, xs.count, 2) &&
-           ASSERT_EQUAL(double, xs[0].t, 1.0) &&
-           ASSERT_EQUAL(double, xs[1].t, 2.0);
+           ASSERT_EQUAL(Hits, hits, hits_copy) &&
+           ASSERT_EQUAL(size_t, hits.count, 1) &&
+           ASSERT_EQUAL(double, hits[0].t, 3.5);
   });
 
   fw.RunTests();

@@ -3,7 +3,16 @@
 
 #include <windows.h>
 
+#include <cassert>
+
 void ErrorExit(const LPCTSTR function);
+
+struct Path {
+  size_t length;
+  char value[MAX_PATH];
+};
+
+Path Join(const char* left, const char* right) noexcept;
 
 constexpr size_t Min(const size_t a, const size_t b) {
   return (a < b) ? a : b;

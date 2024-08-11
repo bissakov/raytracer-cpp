@@ -4,7 +4,6 @@
 #include <src/point_vector.h>
 
 #include <numbers>  // IWYU pragma: keep
-#include <string>
 
 #define PI std::numbers::pi
 
@@ -18,6 +17,6 @@ struct Environment {
   Vector wind;
 };
 
-void RunTests(const std::string root_folder_path);
+void RunTests(const char* root);
 
 #endif  // TESTS_TESTS_H_

@@ -36,7 +36,7 @@ CustomTest& CustomTest::operator=(const CustomTest& other) noexcept {
 void TestFramework::Add(const char* name, const char* tag,
                         std::function<bool()> test_function) {
   CustomTest test = {test_function, tag, name};
-  tests.Push(test);
+  tests[current_test_idx] = test;
   current_test_idx++;
 }
 
@@ -53,9 +53,9 @@ std::string GetColor(size_t idx) {
 void TestFramework::RunTests() {
   size_t current_tag_idx = 0;
   for (size_t i = 0; i < current_test_idx; ++i) {
-    CustomTest* test = &(tests.Get(i));
+    CustomTest* test = &(tests[i]);
 
-    if (i > 0 && strcmp(test->tag, tests.Get(i - 1).tag) != 0) {
+    if (i > 0 && strcmp(test->tag, tests[i - 1].tag) != 0) {
       current_tag_idx++;
     }
 

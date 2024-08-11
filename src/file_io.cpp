@@ -9,7 +9,7 @@
 #include <string>
 
 // TODO(bissakov): Implement platform-independent file IO.
-FileResult ReadEntireFile(const std::string file_path) {
+FileResult ReadEntireFile(const std::string file_path) noexcept {
   FileResult result = {};
 
   HANDLE file_handle = CreateFile(file_path.c_str(), GENERIC_READ,
@@ -53,7 +53,7 @@ FileResult ReadEntireFile(const std::string file_path) {
 }
 
 bool WriteEntireFile(const char* file_path, const uint32_t memory_size,
-                     const BYTE* memory) {
+                     const BYTE* memory) noexcept {
   HANDLE file_handle =
       CreateFile(file_path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
@@ -73,9 +73,9 @@ bool WriteEntireFile(const char* file_path, const uint32_t memory_size,
   return res;
 }
 
-bool WriteFileText(const std::string file_path, const std::string text) {
+bool WriteFileText(const Path& file_path, const std::string text) noexcept {
   HANDLE file_handle =
-      CreateFile(file_path.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+      CreateFile(file_path.value, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
     CloseHandle(file_handle);
     return false;
@@ -97,12 +97,11 @@ bool WriteFileText(const std::string file_path, const std::string text) {
   return res;
 }
 
-bool CompareFiles(const std::string& file_path1,
-                  const std::string& file_path2) {
-  HANDLE h_file1 = CreateFile(file_path1.c_str(), GENERIC_READ, 0, NULL,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  HANDLE h_file2 = CreateFile(file_path2.c_str(), GENERIC_READ, 0, NULL,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+bool CompareFiles(const char* file_path1, const char* file_path2) noexcept {
+  HANDLE h_file1 = CreateFile(file_path1, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                              FILE_ATTRIBUTE_NORMAL, NULL);
+  HANDLE h_file2 = CreateFile(file_path2, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                              FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (h_file1 == INVALID_HANDLE_VALUE) {
     CloseHandle(h_file1);
