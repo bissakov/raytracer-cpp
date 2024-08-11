@@ -63,6 +63,16 @@ struct DyArray {
     return *this;
   }
 
+  T& operator[](size_t index) noexcept {
+    assert(index < size);
+    return data[index];
+  }
+
+  const T& operator[](size_t index) const noexcept {
+    assert(index < size);
+    return data[index];
+  }
+
   bool operator==(const DyArray<T>& other) noexcept {
     if (size != other.size || capacity != other.capacity) {
       return false;

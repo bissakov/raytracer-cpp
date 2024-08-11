@@ -4,8 +4,6 @@
 #include <src/arr.h>
 #include <src/point_vector.h>
 
-#include <algorithm>
-#include <memory>
 #include <string>
 
 typedef struct Sphere Sphere;
@@ -86,15 +84,12 @@ std::ostream& operator<<(std::ostream& os, const Hit& hit);
 
 struct Hits {
   size_t count;
-  std::unique_ptr<Hit[]> hits;
+  DyArray<Hit> hits;
 
-  Hits() noexcept : count(0), hits(nullptr) {}
+  Hits() noexcept : count(0) {}
   explicit Hits(size_t count) noexcept
-      : count(count), hits(std::make_unique<Hit[]>(count)) {}
-  Hits(const Hits& other) noexcept
-      : count(other.count), hits(std::make_unique<Hit[]>(count)) {
-    std::copy(other.hits.get(), other.hits.get() + count, hits.get());
-  }
+      : count(count), hits(DyArray<Hit>{count}) {}
+  Hits(const Hits& other) noexcept : count(other.count), hits(other.hits) {}
   Hits& operator=(const Hits& other) noexcept;
 
   Hit& operator[](size_t index) noexcept;
@@ -104,8 +99,7 @@ struct Hits {
   bool operator!=(const Hits& other) const;
   operator std::string() const noexcept;
 
-  void Push(double t, Object object) noexcept;
-  void Push(Hit* hit) noexcept;
+  void Push(Hit hit) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);

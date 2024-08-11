@@ -2,10 +2,8 @@
 #include <src/ray.h>
 #include <src/test_suite.h>
 
-#include <cstdarg>
-#include <memory>
+#include <algorithm>
 #include <string>
-#include <utility>
 
 Ray& Ray::operator=(const Ray& other) noexcept {
   if (this != &other) {
@@ -55,13 +53,13 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
   } else if (IsEqualDouble(discriminant, 0.0)) {
     double t = -b / (2 * a);
 
-    xs.Push(t, object);
+    xs.Push({t, object});
   } else {
     double t1 = (-b - std::sqrt(discriminant)) / (2 * a);
     double t2 = (-b + std::sqrt(discriminant)) / (2 * a);
 
-    xs.Push(t1, object);
-    xs.Push(t2, object);
+    xs.Push({t1, object});
+    xs.Push({t2, object});
   }
 
   return xs;
@@ -149,8 +147,7 @@ std::ostream& operator<<(std::ostream& os, const Hit& hit) {
 Hits& Hits::operator=(const Hits& other) noexcept {
   if (this != &other) {
     count = other.count;
-    hits = std::make_unique<Hit[]>(count);
-    std::copy(other.hits.get(), other.hits.get() + count, hits.get());
+    hits = other.hits;
   }
   return *this;
 }
@@ -199,26 +196,13 @@ std::ostream& operator<<(std::ostream& os, const Hits& hits) {
   return os;
 }
 
-void Hits::Push(double t, Object object) noexcept {
-  if (count == 0) {
-    hits = std::make_unique<Hit[]>(1);
-    hits[0] = {t, object};
-    count = 1;
-  } else {
-    auto new_hits = std::make_unique<Hit[]>(count + 1);
-    std::copy(hits.get(), hits.get() + count, new_hits.get());
-    new_hits[count] = {t, object};
-    hits = std::move(new_hits);
-    count++;
-  }
-}
-
-void Hits::Push(Hit* hit) noexcept {
-  Push(hit->t, hit->object);
-}
-
 Hits Aggregate(size_t size, Hit* hits) noexcept {
   Hits xs = Hits{size};
-  std::copy(hits, hits + size, xs.hits.get());
+  std::copy(hits, hits + size, xs.hits.data.get());
   return xs;
+}
+
+void Hits::Push(Hit hit) noexcept {
+  count++;
+  hits.Push(hit);
 }

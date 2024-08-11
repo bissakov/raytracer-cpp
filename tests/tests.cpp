@@ -1207,7 +1207,7 @@ void RunTests(const std::string root_folder_path) {
     Hit hit = {3.5, {SPHERE, &sphere}};
 
     Hits xs;
-    xs.Push(&hit);
+    xs.Push(hit);
 
     Hits xs_copy = xs;
 
