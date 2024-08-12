@@ -272,20 +272,19 @@ void Hits::Push(Hit hit) noexcept {
   count++;
 }
 
-const Hit& Hits::FirstHit() const noexcept {
+int32_t Hits::FirstHitIdx() noexcept {
   assert(count > 0);
 
-  if (count == 1) {
-    return hits[0];
-  }
+  Hit min_value;
+  min_value.t = DBL_MAX;
+  int32_t min_index = -1;
 
-  size_t closest_hit_idx = 0;
-
-  for (size_t i = 1; i < count; i++) {
-    if (hits[i] < hits[closest_hit_idx]) {
-      closest_hit_idx = i;
+  for (int32_t i = 0; i < count; i++) {
+    if (hits.data[i].t >= 0 && hits.data[i].t < min_value.t) {
+      min_value = hits.data[i];
+      min_index = i;
     }
   }
 
-  return hits[closest_hit_idx];
+  return min_index;
 }

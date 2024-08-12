@@ -1220,18 +1220,68 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(double, hits[0].t, 3.5);
   });
 
-  fw.Add("Initialize hit and hits", "Rays", []() -> bool {
+  fw.Add("The hit with all positive t intersections", "Rays", []() -> bool {
     Sphere sphere;
 
     Hits hits = Hits{
-        {{&sphere, SPHERE}, 2}, {{&sphere, SPHERE}, 1}, {{&sphere, SPHERE}, 4},
-        {{&sphere, SPHERE}, 5}, {{&sphere, SPHERE}, 8}, {{&sphere, SPHERE}, 9},
+        {{&sphere, SPHERE}, 1},
+        {{&sphere, SPHERE}, 2},
     };
 
-    Hit intersection = hits.FirstHit();
+    int32_t idx = hits.FirstHitIdx();
+    assert(idx >= 0);
+    Hit intersection = hits[idx];
 
-    return ASSERT_EQUAL(size_t, hits.count, 6) &&
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, intersection.t, 1);
+  });
+
+  fw.Add("The hit with some negative t intersections", "Rays", []() -> bool {
+    Sphere sphere;
+
+    Hits hits = Hits{
+        {{&sphere, SPHERE}, -1},
+        {{&sphere, SPHERE}, 1},
+    };
+
+    int32_t idx = hits.FirstHitIdx();
+    assert(idx >= 0);
+    Hit intersection = hits[idx];
+
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(double, intersection.t, 1);
+  });
+
+  fw.Add("The hit with all negative t intersections", "Rays", []() -> bool {
+    Sphere sphere;
+
+    Hits hits = Hits{
+        {{&sphere, SPHERE}, -2},
+        {{&sphere, SPHERE}, -1},
+    };
+
+    int32_t idx = hits.FirstHitIdx();
+
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(int32_t, idx, -1);
+  });
+
+  fw.Add("The hit with various t intersections", "Rays", []() -> bool {
+    Sphere sphere;
+
+    Hits hits = Hits{
+        {{&sphere, SPHERE}, 5},
+        {{&sphere, SPHERE}, 7},
+        {{&sphere, SPHERE}, -3},
+        {{&sphere, SPHERE}, 2},
+    };
+
+    int32_t idx = hits.FirstHitIdx();
+    assert(idx >= 0);
+    Hit intersection = hits[idx];
+
+    return ASSERT_EQUAL(size_t, hits.count, 4) &&
+           ASSERT_EQUAL(double, intersection.t, 2);
   });
 
   fw.RunTests();

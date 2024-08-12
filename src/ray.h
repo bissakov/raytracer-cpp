@@ -109,7 +109,7 @@ struct Hits {
   operator const char*() const noexcept;
 
   void Push(Hit hit) noexcept;
-  const Hit& FirstHit() const noexcept;
+  int32_t FirstHitIdx() noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
