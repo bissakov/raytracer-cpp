@@ -1284,5 +1284,25 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(double, intersection.t, 2);
   });
 
+  fw.Add("Translate a ray", "Rays", []() -> bool {
+    Ray ray = {{1, 2, 3}, {0, 1, 0}};
+    Matrix transform = Translate(3, 4, 5);
+
+    Ray actual = ray.Transform(transform);
+    Ray expected = {{4, 6, 8}, {0, 1, 0}};
+
+    return ASSERT_EQUAL(Ray, actual, expected);
+  });
+
+  fw.Add("Scale a ray", "Rays", []() -> bool {
+    Ray ray = {{1, 2, 3}, {0, 1, 0}};
+    Matrix transform = Scale(2, 3, 4);
+
+    Ray actual = ray.Transform(transform);
+    Ray expected = {{2, 6, 12}, {0, 3, 0}};
+
+    return ASSERT_EQUAL(Ray, actual, expected);
+  });
+
   fw.RunTests();
 }

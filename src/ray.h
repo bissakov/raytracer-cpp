@@ -2,6 +2,7 @@
 #define SRC_RAY_H_
 
 #include <src/arr.h>
+#include <src/matrix.h>
 #include <src/point.h>
 #include <src/vector.h>
 
@@ -25,6 +26,7 @@ struct Ray {
 
   Point Position(double t) noexcept;
   Hits Intersect(Sphere sphere) noexcept;
+  Ray Transform(Matrix transform) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Ray& ray);

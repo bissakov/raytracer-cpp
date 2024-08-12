@@ -69,6 +69,11 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
   return hits;
 }
 
+Ray Ray::Transform(Matrix transform) noexcept {
+  Ray ray = {transform * origin, transform * direction};
+  return ray;
+}
+
 Sphere::Sphere() noexcept : origin({0, 0, 0}), radius(1.0) {}
 Sphere::Sphere(Point origin, double radius) noexcept
     : origin(origin), radius(radius) {}
