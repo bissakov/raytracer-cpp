@@ -1304,5 +1304,138 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Ray, actual, expected);
   });
 
+  fw.Add("Default sphere transformation", "Rays", []() -> bool {
+    Sphere sphere;
+    Matrix expected = Identity();
+
+    return ASSERT_EQUAL(Matrix, sphere.transform, expected);
+  });
+
+  fw.Add("Change sphere transformation", "Rays", []() -> bool {
+    Sphere sphere;
+    Matrix transform = Translate(2, 3, 4);
+    sphere.Transform(transform);
+
+    return ASSERT_EQUAL(Matrix, sphere.transform, transform);
+  });
+
+  fw.Add("Intersect a scaled sphere with a ray", "Rays", []() -> bool {
+    Ray ray = {{0, 0, -5}, {0, 0, 1}};
+
+    Sphere sphere;
+    sphere.Transform(Scale(2, 2, 2));
+
+    Hits hits = ray.Intersect(sphere);
+
+    return ASSERT_EQUAL(size_t, hits.count, 2) &&
+           ASSERT_EQUAL(double, hits[0].t, 3.0) &&
+           ASSERT_EQUAL(double, hits[1].t, 7.0);
+  });
+
+  fw.Add("Intersect a translated sphere with a ray", "Rays", []() -> bool {
+    Ray ray = {{0, 0, -5}, {0, 0, 1}};
+
+    Sphere sphere;
+    sphere.Transform(Translate(5, 0, 0));
+
+    Hits hits = ray.Intersect(sphere);
+
+    return ASSERT_EQUAL(size_t, hits.count, 0);
+  });
+
+  fw.Add("Cast rays at a sphere", "Rays", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas = {canvas_size, canvas_size};
+
+    Point ray_origin = {0, 0, -5};
+    Sphere shape;
+    Color color = {.26, .96, .53};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_sphere.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
+  });
+
+  fw.Add("Cast rays at an oval 1", "Rays", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas = {canvas_size, canvas_size};
+
+    Point ray_origin = {0, 0, -5};
+    Sphere shape;
+    shape.Transform(Scale(1, .5, 1));
+    Color color = {.26, .96, .53};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_oval1.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
+  });
+
+  fw.Add("Cast rays at an oval 2", "Rays", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas = {canvas_size, canvas_size};
+
+    Point ray_origin = {0, 0, -5};
+    Sphere shape;
+    shape.Transform(Scale(.5, 1, 1));
+    Color color = {.26, .96, .53};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_oval2.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
+  });
+
+  fw.Add("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas = {canvas_size, canvas_size};
+
+    Point ray_origin = {0, 0, -5};
+    Sphere shape;
+    shape.Transform(Scale(.5, 1, 1).RotateZ(PI / 4));
+    Color color = {.26, .96, .53};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_rotated_oval.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
+  });
+
+  fw.Add("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas = {canvas_size, canvas_size};
+
+    Point ray_origin = {0, 0, -5};
+    Sphere shape;
+    shape.Transform(Shear(XY).Scale(.5, 1, 1));
+    Color color = {.26, .96, .53};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_skewed_oval.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
+  });
+
   fw.RunTests();
 }

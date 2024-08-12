@@ -46,10 +46,12 @@ Point Ray::Position(double t) noexcept {
 Hits Ray::Intersect(Sphere sphere) noexcept {
   Hits hits;
 
-  Vector sphere_to_ray = origin - sphere.origin;
+  Ray ray = Transform(sphere.transform.Inverse());
 
-  double a = DotProduct(direction, direction);
-  double b = 2 * DotProduct(direction, sphere_to_ray);
+  Vector sphere_to_ray = ray.origin - sphere.origin;
+
+  double a = DotProduct(ray.direction, ray.direction);
+  double b = 2 * DotProduct(ray.direction, sphere_to_ray);
   double c = DotProduct(sphere_to_ray, sphere_to_ray) - 1;
 
   double discriminant = (b * b) - (4 * a * c);
@@ -74,22 +76,25 @@ Ray Ray::Transform(Matrix transform) noexcept {
   return ray;
 }
 
-Sphere::Sphere() noexcept : origin({0, 0, 0}), radius(1.0) {}
-Sphere::Sphere(Point origin, double radius) noexcept
-    : origin(origin), radius(radius) {}
+Sphere::Sphere() noexcept
+    : origin({0, 0, 0}), transform(Identity()), radius(1.0) {}
+Sphere::Sphere(Point origin, Matrix transform, double radius) noexcept
+    : origin(origin), transform(transform), radius(radius) {}
 Sphere::Sphere(const Sphere& other) noexcept
-    : origin(other.origin), radius(other.radius) {}
+    : origin(other.origin), transform(other.transform), radius(other.radius) {}
 
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
   if (this != &other) {
     origin = other.origin;
+    transform = other.transform;
     radius = other.radius;
   }
   return *this;
 }
 
 bool Sphere::operator==(const Sphere& other) const {
-  return origin == other.origin && radius == other.radius;
+  return origin == other.origin && transform == other.transform &&
+         radius == other.radius;
 }
 
 bool Sphere::operator!=(const Sphere& other) const {
@@ -97,15 +102,20 @@ bool Sphere::operator!=(const Sphere& other) const {
 }
 
 Sphere::operator const char*() const noexcept {
-  static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Sphere{origin=%s, radius=%.2f}",
-           (const char*)origin, radius);
+  static char buffer[200];
+  snprintf(buffer, sizeof(buffer),
+           "Sphere{origin=%s, transform=%s, radius=%.2f}", (const char*)origin,
+           (const char*)transform, radius);
   return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
   os << (const char*)sphere;
   return os;
+}
+
+void Sphere::Transform(Matrix transform_) noexcept {
+  transform = transform_;
 }
 
 Object::Object() noexcept : data(nullptr), type(SPHERE) {}
@@ -298,4 +308,25 @@ int32_t Hits::FirstHitIdx() noexcept {
   }
 
   return -1;
+}
+
+void CastShape(Canvas* canvas, Point* ray_origin, Sphere* shape, Color* color,
+               double wall_z, double wall_size) noexcept {
+  double pixel_size = wall_size / static_cast<double>(canvas->width);
+  double half_wall_size = wall_size / 2;
+
+  for (size_t y = 0; y < canvas->height; ++y) {
+    double world_y = half_wall_size - pixel_size * y;
+    for (size_t x = 0; x < canvas->width; ++x) {
+      double world_x = -half_wall_size + pixel_size * x;
+
+      Point position = {world_x, world_y, wall_z};
+      Ray ray = {*ray_origin, (position - *ray_origin).Normalize()};
+      Hits hits = ray.Intersect(*shape);
+
+      if (hits.count > 0) {
+        canvas->WritePixelColor(x, y, *color);
+      }
+    }
+  }
 }

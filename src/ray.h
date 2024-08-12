@@ -2,6 +2,7 @@
 #define SRC_RAY_H_
 
 #include <src/arr.h>
+#include <src/canvas.h>
 #include <src/matrix.h>
 #include <src/point.h>
 #include <src/vector.h>
@@ -33,10 +34,11 @@ std::ostream& operator<<(std::ostream& os, const Ray& ray);
 
 struct Sphere {
   Point origin;
+  Matrix transform;
   double radius;
 
   Sphere() noexcept;
-  Sphere(Point origin, double radius) noexcept;
+  Sphere(Point origin, Matrix transform, double radius) noexcept;
   Sphere(const Sphere& other) noexcept;
   Sphere& operator=(const Sphere& other) noexcept;
 
@@ -44,6 +46,8 @@ struct Sphere {
   bool operator!=(const Sphere& other) const;
 
   operator const char*() const noexcept;
+
+  void Transform(Matrix transform) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere);
@@ -115,5 +119,8 @@ struct Hits {
 };
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
+
+void CastShape(Canvas* canvas, Point* ray_origin, Sphere* shape, Color* color,
+               double wall_z, double wall_size) noexcept;
 
 #endif  // SRC_RAY_H_
