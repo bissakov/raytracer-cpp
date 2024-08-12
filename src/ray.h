@@ -34,7 +34,7 @@ std::ostream& operator<<(std::ostream& os, const Ray& ray);
 
 struct Sphere {
   Point origin;
-  Matrix transform;
+  Matrix transform_matrix;
   double radius;
 
   Sphere() noexcept;

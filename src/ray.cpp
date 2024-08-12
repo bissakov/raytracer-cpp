@@ -46,7 +46,7 @@ Point Ray::Position(double t) noexcept {
 Hits Ray::Intersect(Sphere sphere) noexcept {
   Hits hits;
 
-  Ray ray = Transform(sphere.transform.Inverse());
+  Ray ray = Transform(sphere.transform_matrix.Inverse());
 
   Vector sphere_to_ray = ray.origin - sphere.origin;
 
@@ -77,23 +77,25 @@ Ray Ray::Transform(Matrix transform) noexcept {
 }
 
 Sphere::Sphere() noexcept
-    : origin({0, 0, 0}), transform(Identity()), radius(1.0) {}
+    : origin({0, 0, 0}), transform_matrix(Identity()), radius(1.0) {}
 Sphere::Sphere(Point origin, Matrix transform, double radius) noexcept
-    : origin(origin), transform(transform), radius(radius) {}
+    : origin(origin), transform_matrix(transform), radius(radius) {}
 Sphere::Sphere(const Sphere& other) noexcept
-    : origin(other.origin), transform(other.transform), radius(other.radius) {}
+    : origin(other.origin),
+      transform_matrix(other.transform_matrix),
+      radius(other.radius) {}
 
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
   if (this != &other) {
     origin = other.origin;
-    transform = other.transform;
+    transform_matrix = other.transform_matrix;
     radius = other.radius;
   }
   return *this;
 }
 
 bool Sphere::operator==(const Sphere& other) const {
-  return origin == other.origin && transform == other.transform &&
+  return origin == other.origin && transform_matrix == other.transform_matrix &&
          radius == other.radius;
 }
 
@@ -105,7 +107,7 @@ Sphere::operator const char*() const noexcept {
   static char buffer[200];
   snprintf(buffer, sizeof(buffer),
            "Sphere{origin=%s, transform=%s, radius=%.2f}", (const char*)origin,
-           (const char*)transform, radius);
+           (const char*)transform_matrix, radius);
   return buffer;
 }
 
@@ -115,7 +117,7 @@ std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
 }
 
 void Sphere::Transform(Matrix transform_) noexcept {
-  transform = transform_;
+  transform_matrix = transform_;
 }
 
 Object::Object() noexcept : data(nullptr), type(SPHERE) {}

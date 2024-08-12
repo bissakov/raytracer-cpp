@@ -1308,7 +1308,7 @@ void RunTests(const char* root) {
     Sphere sphere;
     Matrix expected = Identity();
 
-    return ASSERT_EQUAL(Matrix, sphere.transform, expected);
+    return ASSERT_EQUAL(Matrix, sphere.transform_matrix, expected);
   });
 
   fw.Add("Change sphere transformation", "Rays", []() -> bool {
@@ -1316,7 +1316,7 @@ void RunTests(const char* root) {
     Matrix transform = Translate(2, 3, 4);
     sphere.Transform(transform);
 
-    return ASSERT_EQUAL(Matrix, sphere.transform, transform);
+    return ASSERT_EQUAL(Matrix, sphere.transform_matrix, transform);
   });
 
   fw.Add("Intersect a scaled sphere with a ray", "Rays", []() -> bool {
