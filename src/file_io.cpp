@@ -9,11 +9,11 @@
 #include <string>
 
 // TODO(bissakov): Implement platform-independent file IO.
-FileResult ReadEntireFile(const std::string file_path) noexcept {
+FileResult ReadEntireFile(const char* file_path) noexcept {
   FileResult result = {};
 
-  HANDLE file_handle = CreateFile(file_path.c_str(), GENERIC_READ,
-                                  FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+  HANDLE file_handle = CreateFile(file_path, GENERIC_READ, FILE_SHARE_READ, 0,
+                                  OPEN_EXISTING, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
     CloseHandle(file_handle);
     result.file_exists = false;
@@ -95,6 +95,18 @@ bool WriteFileText(const Path& file_path, const std::string text) noexcept {
 
   bool res = bytes_written == bytes_to_write;
   return res;
+}
+
+bool WriteLineToFile(HANDLE file_handle, const char* line) noexcept {
+  DWORD bytes_to_write = (DWORD)strlen(line);
+  DWORD bytes_written;
+
+  if (!WriteFile(file_handle, line, bytes_to_write, &bytes_written, 0)) {
+    ErrorExit(TEXT("WriteFile"));
+    return false;
+  }
+
+  return bytes_to_write == bytes_written;
 }
 
 bool CompareFiles(const char* file_path1, const char* file_path2) noexcept {

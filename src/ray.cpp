@@ -1,8 +1,15 @@
-#include <src/point_vector.h>
+#include <src/point.h>
 #include <src/ray.h>
 #include <src/test_suite.h>
+#include <src/vector.h>
 
 #include <cstdio>
+
+Ray::Ray(Point origin_, Vector direction_) noexcept
+    : origin(origin_), direction(direction_) {}
+
+Ray::Ray(const Ray& other) noexcept
+    : origin(other.origin), direction(other.direction) {}
 
 Ray& Ray::operator=(const Ray& other) noexcept {
   if (this != &other) {
@@ -62,6 +69,12 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
   return hits;
 }
 
+Sphere::Sphere() noexcept : origin({0, 0, 0}), radius(1.0) {}
+Sphere::Sphere(Point origin, double radius) noexcept
+    : origin(origin), radius(radius) {}
+Sphere::Sphere(const Sphere& other) noexcept
+    : origin(other.origin), radius(other.radius) {}
+
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
   if (this != &other) {
     origin = other.origin;
@@ -90,6 +103,11 @@ std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
   return os;
 }
 
+Object::Object() noexcept : data(nullptr), type(SPHERE) {}
+Object::Object(void* data, ObjectType type) noexcept : data(data), type(type) {}
+Object::Object(const Object& other) noexcept
+    : data(other.data), type(other.type) {}
+
 Object& Object::operator=(const Object& other) noexcept {
   if (this != &other) {
     type = other.type;
@@ -108,7 +126,14 @@ bool Object::operator!=(const Object& other) const {
 
 Object::operator const char*() const noexcept {
   static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Object{type=%d}", type);
+
+  switch (type) {
+    case (1): {
+      snprintf(buffer, sizeof(buffer), "Object{type=SPHERE, data=%s}",
+               (const char*)(*reinterpret_cast<Sphere*>(data)));
+      break;
+    }
+  }
   return buffer;
 }
 
@@ -117,10 +142,16 @@ std::ostream& operator<<(std::ostream& os, const Object& object) {
   return os;
 }
 
+Hit::Hit() noexcept : t(0.0) {}
+
+Hit::Hit(Object object, double t) noexcept : object(object), t(t) {}
+
+Hit::Hit(const Hit& other) noexcept : object(other.object), t(other.t) {}
+
 Hit& Hit::operator=(const Hit& other) noexcept {
   if (this != &other) {
-    t = other.t;
     object = other.object;
+    t = other.t;
   }
   return *this;
 }
@@ -131,6 +162,22 @@ bool Hit::operator==(const Hit& other) const {
 
 bool Hit::operator!=(const Hit& other) const {
   return !(*this == other);
+}
+
+bool Hit::operator<(const Hit& other) const {
+  return t < other.t;
+}
+
+bool Hit::operator<=(const Hit& other) const {
+  return t <= other.t;
+}
+
+bool Hit::operator>(const Hit& other) const {
+  return t > other.t;
+}
+
+bool Hit::operator>=(const Hit& other) const {
+  return t >= other.t;
 }
 
 Hit::operator const char*() const noexcept {
@@ -145,11 +192,16 @@ std::ostream& operator<<(std::ostream& os, const Hit& hit) {
   return os;
 }
 
+Hits::Hits() noexcept : count(0) {}
+
+Hits::Hits(size_t count) noexcept : hits(DyArray<Hit>(count)), count(count) {}
+
+Hits::Hits(const Hits& other) noexcept : hits(other.hits), count(other.count) {}
+
 Hits& Hits::operator=(const Hits& other) noexcept {
   if (this != &other) {
+    hits = other.hits;
     count = other.count;
-    hits[0] = other.hits[0];
-    hits[1] = other.hits[1];
   }
   return *this;
 }
@@ -183,38 +235,57 @@ bool Hits::operator!=(const Hits& other) const {
 }
 
 Hits::operator const char*() const noexcept {
-  static char buffer[100];
+  static char buffer[HITS_BUFFER_SIZE];
 
-  switch (count) {
-    case 0: {
-      snprintf(buffer, sizeof(buffer), "Hits{count=%zu}", count);
-    }
+  if (count == 0) {
+    snprintf(buffer, sizeof(buffer), "Hits{count=%zu}", count);
+    return buffer;
+  }
 
-    case 1: {
-      snprintf(buffer, sizeof(buffer), "Hits{hit=%s, count=%zu}",
-               (const char*)hits[0], count);
-    }
+  size_t buffer_pos =
+      snprintf(buffer, sizeof(buffer), "Hits{count=%zu, ", count);
 
-    case 2: {
-      snprintf(buffer, sizeof(buffer), "Hits{hit0=%s, hit1=%s, count=%zu}",
-               (const char*)hits[0], (const char*)hits[1], count);
-    }
+  for (size_t i = 0; i < count; ++i) {
+    int written = snprintf(buffer + buffer_pos, HITS_BUFFER_SIZE - buffer_pos,
+                           "%s", (const char*)hits[i]);
+    buffer_pos += written;
 
-    default: {
-      assert("Wrong number of intersections...");
+    if (i < count - 1) {
+      buffer[buffer_pos++] = ',';
+      buffer[buffer_pos++] = ' ';
     }
   }
 
-  return buffer;
-}
+  buffer[buffer_pos++] = '}';
+  buffer[buffer_pos] = '\0';
 
-void Hits::Push(Hit hit) noexcept {
-  assert(count <= 2);
-  hits[count] = hit;
-  count++;
+  return buffer;
 }
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits) {
   os << (const char*)hits;
   return os;
+}
+
+void Hits::Push(Hit hit) noexcept {
+  hits.Push(hit);
+  count++;
+}
+
+const Hit& Hits::FirstHit() const noexcept {
+  assert(count > 0);
+
+  if (count == 1) {
+    return hits[0];
+  }
+
+  size_t closest_hit_idx = 0;
+
+  for (size_t i = 1; i < count; i++) {
+    if (hits[i] < hits[closest_hit_idx]) {
+      closest_hit_idx = i;
+    }
+  }
+
+  return hits[closest_hit_idx];
 }

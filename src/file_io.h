@@ -14,10 +14,11 @@ struct FileResult {
   bool file_exists;
 };
 
-FileResult ReadEntireFile(const std::string file_path) noexcept;
+FileResult ReadEntireFile(const char* file_path) noexcept;
 bool WriteEntireFile(const char* file_path, const uint32_t memory_size,
                      const BYTE* memory) noexcept;
 bool WriteFileText(const Path& file_path, const std::string text) noexcept;
+bool WriteLineToFile(HANDLE file_handle, const char* line) noexcept;
 bool CompareFiles(const char* file_path1, const char* file_path2) noexcept;
 
 #endif  // SRC_FILE_IO_H_

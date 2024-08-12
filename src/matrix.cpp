@@ -1,29 +1,32 @@
 #include <src/matrix.h>
 #include <src/test_suite.h>
 
-#include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <memory>
-#include <string>
 
-double Matrix::At(const size_t row, const size_t col) const noexcept {
-  assert(IsValueInRange(row, col));
-  return values[Index(row, col)];
+Matrix::Matrix() noexcept : rows(0), cols(0) {}
+
+Matrix::Matrix(const size_t rows, const size_t cols) noexcept
+    : rows(rows), cols(cols) {
+  for (size_t i = 0; i < MAX_MATRIX_SIZE; ++i) {
+    values[i] = 0.0;
+  }
 }
 
-void Matrix::Set(const size_t row, const size_t col,
-                 const double value) noexcept {
-  values[Index(row, col)] = value;
+Matrix::Matrix(const Matrix& other) noexcept
+    : rows(other.rows), cols(other.cols) {
+  for (size_t i = 0; i < rows * cols; ++i) {
+    values[i] = other.values[i];
+  }
 }
 
 Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
     rows = other.rows;
     cols = other.cols;
-    values = std::make_unique<double[]>(other.rows * other.cols);
-    std::copy(other.values.get(), other.values.get() + other.rows * other.cols,
-              values.get());
+    for (size_t i = 0; i < rows * cols; ++i) {
+      values[i] = other.values[i];
+    }
   }
   return *this;
 }
@@ -78,10 +81,6 @@ void Matrix::Populate(double* elements, size_t element_count) noexcept {
   for (size_t i = 0; i < rows * cols; ++i) {
     values[i] = elements[i];
   }
-}
-
-bool Matrix::IsValueInRange(const size_t row, const size_t col) const noexcept {
-  return (row < rows) && (col < cols);
 }
 
 Matrix Matrix::Transpose() noexcept {
@@ -157,45 +156,32 @@ Matrix Matrix::Inverse() noexcept {
   return inversed_matrix;
 }
 
-std::ostream& operator<<(std::ostream& os, const Matrix& m) {
-  os << "Matrix{\n  rows=" << m.rows << ", cols=" << m.cols << ", \n  ";
-  for (size_t row = 0; row < m.rows; ++row) {
-    for (size_t col = 0; col < m.cols; ++col) {
-      os << m.At(row, col);
+Matrix::operator const char*() const noexcept {
+  static char buffer[BUFFER_SIZE];
+  size_t buffer_pos = snprintf(
+      buffer, sizeof(buffer), "Matrix{\n  rows=%zu, cols=%zu,\n  ", rows, cols);
 
-      if (col != m.cols - 1) {
-        os << ", ";
-      }
-    }
-    if (row != m.rows - 1) {
-      os << ",\n  ";
-    }
-  }
-
-  os << "\n}";
-
-  return os;
-}
-
-Matrix::operator std::string() const noexcept {
-  std::string matrix_str = "Matrix{\n  rows=" + std::to_string(rows) +
-                           ", cols=" + std::to_string(cols) + ",\n  ";
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      matrix_str += std::to_string(At(row, col));
-
-      if (col != cols - 1) {
-        matrix_str += ", ";
-      }
+      int written = snprintf(buffer + buffer_pos, BUFFER_SIZE - buffer_pos,
+                             "%.2f ", At(row, col));
+      buffer_pos += written;
     }
-    if (row != rows - 1) {
-      matrix_str += ",\n  ";
+    buffer[buffer_pos++] = '\n';
+    if (row < rows - 1) {
+      buffer[buffer_pos++] = ' ';
+      buffer[buffer_pos++] = ' ';
     }
   }
+  buffer[buffer_pos++] = '}';
+  buffer[buffer_pos] = '\0';
 
-  matrix_str += "\n}";
+  return buffer;
+}
 
-  return matrix_str;
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+  os << (const char*)m;
+  return os;
 }
 
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept {

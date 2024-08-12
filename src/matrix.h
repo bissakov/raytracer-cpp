@@ -1,36 +1,26 @@
 #ifndef SRC_MATRIX_H_
 #define SRC_MATRIX_H_
 
-#include <src/point_vector.h>
+#include <src/point.h>
+#include <src/vector.h>
 
-#include <algorithm>
 #include <cassert>
-#include <memory>
-#include <string>
+
+#define MAX_MATRIX_SIZE 16
+#define BUFFER_SIZE 300
 
 enum ShearType { XY, XZ, YX, YZ, ZX, ZY };
 
 struct Matrix {
   size_t rows;
   size_t cols;
-  std::unique_ptr<double[]> values;
+  double values[MAX_MATRIX_SIZE];
 
-  Matrix() noexcept : rows(0), cols(0), values(nullptr) {}
-
-  Matrix(const size_t rows_, const size_t cols_) noexcept
-      : rows(rows_),
-        cols(cols_),
-        values(std::make_unique<double[]>(rows * cols)) {}
-
-  Matrix(const Matrix& other) noexcept
-      : rows(other.rows),
-        cols(other.cols),
-        values(std::make_unique<double[]>(other.rows * other.cols)) {
-    std::copy(other.values.get(), other.values.get() + rows * cols,
-              values.get());
-  }
-
+  Matrix() noexcept;
+  Matrix(const size_t rows, const size_t cols) noexcept;
+  Matrix(const Matrix& other) noexcept;
   Matrix& operator=(const Matrix& other) noexcept;
+
   Matrix operator*(const Matrix& other) noexcept;
   Vector operator*(const Vector& vector) noexcept;
 
@@ -41,7 +31,8 @@ struct Matrix {
   bool operator!=(const Matrix& other) const noexcept;
 
   void Populate(double* elements, size_t element_count) noexcept;
-  bool IsValueInRange(const size_t row, const size_t col) const noexcept;
+  constexpr bool IsValueInRange(const size_t row,
+                                const size_t col) const noexcept;
   Matrix Transpose() noexcept;
   double Determinant() noexcept;
   Matrix SubMatrix(size_t excluded_row, size_t excluded_col) noexcept;
@@ -57,10 +48,11 @@ struct Matrix {
   Matrix Shear(ShearType shear_type);
 
   constexpr size_t Index(const size_t row, const size_t col) const noexcept;
-  double At(const size_t row, const size_t col) const noexcept;
-  void Set(const size_t row, const size_t col, const double value) noexcept;
+  constexpr double At(const size_t row, const size_t col) const noexcept;
+  constexpr void Set(const size_t row, const size_t col,
+                     const double value) noexcept;
 
-  operator std::string() const noexcept;
+  operator const char*() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& m);
@@ -78,6 +70,21 @@ Matrix Shear(ShearType shear_type);
 constexpr size_t Matrix::Index(const size_t row,
                                const size_t col) const noexcept {
   return row * cols + col;
+}
+
+constexpr bool Matrix::IsValueInRange(const size_t row,
+                                      const size_t col) const noexcept {
+  return (row < rows) && (col < cols);
+}
+
+constexpr double Matrix::At(const size_t row, const size_t col) const noexcept {
+  assert(IsValueInRange(row, col));
+  return values[Index(row, col)];
+}
+
+constexpr void Matrix::Set(const size_t row, const size_t col,
+                           const double value) noexcept {
+  values[Index(row, col)] = value;
 }
 
 Matrix Identity();

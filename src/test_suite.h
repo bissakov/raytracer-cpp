@@ -4,7 +4,8 @@
 #include <src/arr.h>
 #include <src/matrix.h>
 #include <src/pixel.h>
-#include <src/point_vector.h>
+#include <src/point.h>
+#include <src/vector.h>
 
 #include <functional>
 
@@ -17,8 +18,7 @@ struct CustomTest {
              const char* name_) noexcept
       : test_function(test_function_), tag(tag_), name(name_) {}
 
-  CustomTest() noexcept
-      : test_function([]() -> bool { return true; }), tag(""), name("") {}
+  CustomTest() noexcept : test_function([]() -> bool { return true; }) {}
 
   CustomTest& operator=(const CustomTest& other) noexcept;
   bool operator==(const CustomTest& other) const noexcept;

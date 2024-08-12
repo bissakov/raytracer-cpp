@@ -5,13 +5,38 @@
 #include <string.h>
 #include <windows.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
 #include <memory>
 #include <string>
 
-Canvas& Canvas::operator=(const Canvas& other) {
+Canvas::Canvas() noexcept : width(0), height(0), pixels(nullptr) {}
+
+Canvas::Canvas(const size_t width_, const size_t height_) noexcept
+    : width(width_),
+      height(height_),
+      pixels(std::make_unique<Pixel[]>(width_ * height_)) {
+  for (size_t row = 0; row < height; ++row) {
+    for (size_t col = 0; col < width; ++col) {
+      Pixel* pixel = &pixels[row * width + col];
+      pixel->x = col;
+      pixel->y = row;
+      pixel->color = {};
+    }
+  }
+}
+
+Canvas::Canvas(const Canvas& other) noexcept
+    : width(other.width),
+      height(other.height),
+      pixels(std::make_unique<Pixel[]>(other.width * other.height)) {
+  std::copy(other.pixels.get(), other.pixels.get() + other.width * other.height,
+            pixels.get());
+}
+
+Canvas& Canvas::operator=(const Canvas& other) noexcept {
   if (this != &other) {
     pixels = std::make_unique<Pixel[]>(other.width * other.height);
     std::copy(other.pixels.get(),
@@ -20,38 +45,19 @@ Canvas& Canvas::operator=(const Canvas& other) {
   return *this;
 }
 
-bool Canvas::IsPixelInRange(const size_t pos_x, const size_t pos_y) const {
-  return (pos_x < width) && (pos_y < height);
-}
-
-Pixel Canvas::PixelAt(const size_t pos_x, const size_t pos_y) const {
+Pixel Canvas::PixelAt(const size_t pos_x, const size_t pos_y) const noexcept {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  Pixel pixel = pixels[pos_y * width + pos_x];
-  return pixel;
+  return pixels[pos_y * width + pos_x];
 }
 
 void Canvas::WritePixelColor(const size_t pos_x, const size_t pos_y,
-                             const Color& color) const {
+                             const Color& color) const noexcept {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
   Pixel* pixel = &pixels[pos_y * width + pos_x];
   pixel->color = color;
 }
 
-bool WriteLineToFile(HANDLE file_handle, const char* line) {
-  DWORD bytes_to_write = (DWORD)strlen(line);
-  DWORD bytes_written;
-
-  if (!WriteFile(file_handle, line, bytes_to_write, &bytes_written, 0)) {
-    ErrorExit(TEXT("WriteFile"));
-    return false;
-  }
-
-  assert(bytes_to_write == bytes_written && "bytes_to_write != bytes_written");
-
-  return true;
-}
-
-bool Canvas::SaveToPPM(const Path& file_path) {
+bool Canvas::SaveToPPM(const Path& file_path) noexcept {
   HANDLE file_handle =
       CreateFile(file_path.value, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
@@ -135,7 +141,7 @@ static inline bool IsDigit(const char c) {
   return c >= '0' && c <= '9';
 }
 
-bool Canvas::LoadFromPPM(const Path& file_path) {
+bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
   if (GetFileAttributesA(file_path.value) == INVALID_FILE_ATTRIBUTES) {
     return false;
   }

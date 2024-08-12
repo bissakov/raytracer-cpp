@@ -3,7 +3,46 @@
 #include <tests/tests.h>
 #include <windows.h>
 
+#include <cassert>
 #include <cstdio>
+
+#if 0
+struct Metrics {
+  size_t total_allocated = 0;
+  size_t total_freed = 0;
+
+  size_t CurrentUsage() {
+    return total_allocated - total_freed;
+  }
+};
+
+static Metrics metrics;
+
+void* operator new(size_t size) {
+  metrics.total_allocated += size;
+  return malloc(size);
+}
+
+void operator delete(void* memory, size_t size) noexcept {
+  metrics.total_freed += size;
+  free(memory);
+}
+
+void* operator new[](size_t size) {
+  metrics.total_allocated += size;
+  return malloc(size);
+}
+
+void operator delete[](void* memory, size_t size) noexcept {
+  metrics.total_freed += size;
+  free(memory);
+}
+
+static void PrintUsage() {
+  std::cout << "Memory usage: " << metrics.CurrentUsage() << " bytes\n";
+}
+#endif
+
 int main(int argc, char* argv[]) {
   if (argc < 3 || argc > 4 || strcmp(argv[1], "--root") != 0) {
     printf("\nUsage: raytracer [--root --test]\n");
@@ -23,7 +62,9 @@ int main(int argc, char* argv[]) {
       assert(cwd != NULL && "_getcwd error");
       root = cwd;
     }
+
     RunTests(root);
+
     return EXIT_SUCCESS;
   }
 

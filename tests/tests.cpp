@@ -4,11 +4,11 @@
 #include <src/main.h>
 #include <src/matrix.h>
 #include <src/pixel.h>
-#include <src/point_vector.h>
 #include <src/ray.h>
 #include <src/str.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
+#include <src/vector.h>
 #include <tests/tests.h>
 
 #include <memory>
@@ -1218,6 +1218,20 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Hits, hits, hits_copy) &&
            ASSERT_EQUAL(size_t, hits.count, 1) &&
            ASSERT_EQUAL(double, hits[0].t, 3.5);
+  });
+
+  fw.Add("Initialize hit and hits", "Rays", []() -> bool {
+    Sphere sphere;
+
+    Hits hits = Hits{
+        {{&sphere, SPHERE}, 2}, {{&sphere, SPHERE}, 1}, {{&sphere, SPHERE}, 4},
+        {{&sphere, SPHERE}, 5}, {{&sphere, SPHERE}, 8}, {{&sphere, SPHERE}, 9},
+    };
+
+    Hit intersection = hits.FirstHit();
+
+    return ASSERT_EQUAL(size_t, hits.count, 6) &&
+           ASSERT_EQUAL(double, intersection.t, 1);
   });
 
   fw.RunTests();

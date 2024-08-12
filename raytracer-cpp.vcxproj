@@ -25,11 +25,12 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\matrix.cpp" />
     <ClCompile Include="src\pixel.cpp" />
-    <ClCompile Include="src\point_vector.cpp" />
+    <ClCompile Include="src\point.cpp" />
     <ClCompile Include="src\ray.cpp" />
     <ClCompile Include="src\str.cpp" />
     <ClCompile Include="src\test_suite.cpp" />
     <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\vector.cpp" />
     <ClCompile Include="tests\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,11 +40,12 @@
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\matrix.h" />
     <ClInclude Include="src\pixel.h" />
-    <ClInclude Include="src\point_vector.h" />
+    <ClInclude Include="src\point.h" />
     <ClInclude Include="src\ray.h" />
     <ClInclude Include="src\str.h" />
     <ClInclude Include="src\test_suite.h" />
     <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\vector.h" />
     <ClInclude Include="tests\tests.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -57,21 +59,25 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -112,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -133,7 +139,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ExceptionHandling>SyncCThrow</ExceptionHandling>
@@ -154,7 +160,7 @@
       <PreprocessorDefinitions>DEV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -178,7 +184,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>

@@ -33,9 +33,6 @@
     <ClCompile Include="src\pixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\point_vector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\test_suite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,6 +46,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\point.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,9 +74,6 @@
     <ClInclude Include="src\pixel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\point_vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\test_suite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +87,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
