@@ -268,23 +268,29 @@ std::ostream& operator<<(std::ostream& os, const Hits& hits) {
 }
 
 void Hits::Push(Hit hit) noexcept {
-  hits.Push(hit);
+  if (count == 0) {
+    hits.Push(hit);
+    count++;
+    return;
+  }
+
+  size_t idx = 0;
+  while (idx < count && hits[idx] < hit) {
+    idx++;
+  }
+
+  hits.Insert(idx, hit);
   count++;
 }
 
 int32_t Hits::FirstHitIdx() noexcept {
   assert(count > 0);
 
-  Hit min_value;
-  min_value.t = DBL_MAX;
-  int32_t min_index = -1;
-
   for (int32_t i = 0; i < count; i++) {
-    if (hits.data[i].t >= 0 && hits.data[i].t < min_value.t) {
-      min_value = hits.data[i];
-      min_index = i;
+    if (hits[i].t >= 0.0) {
+      return i;
     }
   }
 
-  return min_index;
+  return -1;
 }

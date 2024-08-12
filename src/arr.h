@@ -145,7 +145,7 @@ struct DyArray {
     --size;
   }
 
-  void Insert(size_t index, int value) {
+  void Insert(size_t index, T value) {
     assert(index <= size && "Index out of range");
 
     if (size == capacity) {
