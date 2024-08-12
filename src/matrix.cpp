@@ -213,11 +213,11 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   return res;
 }
 
-Matrix Matrix::Translate(int32_t x, int32_t y, int32_t z) {
+Matrix Matrix::Translate(double x, double y, double z) {
   return ::Translate(x, y, z) * (*this);
 }
 
-Matrix Matrix::Scale(int32_t x, int32_t y, int32_t z) {
+Matrix Matrix::Scale(double x, double y, double z) {
   return ::Scale(x, y, z) * (*this);
 }
 
@@ -245,7 +245,7 @@ Matrix Identity() {
   return identity_matrix;
 }
 
-Matrix Translate(int32_t x, int32_t y, int32_t z) {
+Matrix Translate(double x, double y, double z) {
   Matrix matrix = Identity();
   matrix.Set(0, 3, x);
   matrix.Set(1, 3, y);
@@ -253,7 +253,7 @@ Matrix Translate(int32_t x, int32_t y, int32_t z) {
   return matrix;
 }
 
-Matrix Scale(int32_t x, int32_t y, int32_t z) {
+Matrix Scale(double x, double y, double z) {
   Matrix matrix = Identity();
   matrix.Set(0, 0, x);
   matrix.Set(1, 1, y);

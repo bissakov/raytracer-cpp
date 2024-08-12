@@ -40,8 +40,8 @@ struct Matrix {
   double Cofactor(size_t row, size_t col) noexcept;
   Matrix Inverse() noexcept;
 
-  Matrix Translate(int32_t x, int32_t y, int32_t z);
-  Matrix Scale(int32_t x, int32_t y, int32_t z);
+  Matrix Translate(double x, double y, double z);
+  Matrix Scale(double x, double y, double z);
   Matrix RotateX(double radians);
   Matrix RotateY(double radians);
   Matrix RotateZ(double radians);
@@ -60,8 +60,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix& m);
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
-Matrix Translate(int32_t x, int32_t y, int32_t z);
-Matrix Scale(int32_t x, int32_t y, int32_t z);
+Matrix Translate(double x, double y, double z);
+Matrix Scale(double x, double y, double z);
 Matrix RotateX(double radians);
 Matrix RotateY(double radians);
 Matrix RotateZ(double radians);
@@ -88,7 +88,7 @@ constexpr void Matrix::Set(const size_t row, const size_t col,
 }
 
 Matrix Identity();
-Matrix Translate(int32_t x, int32_t y, int32_t z);
+Matrix Translate(double x, double y, double z);
 
 #define INDEX(row, col, matrix) ((row * (matrix).cols) + col)
 #define AT(row, col, matrix) ((matrix).values[INDEX(row, col, (matrix))])
