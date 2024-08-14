@@ -124,7 +124,7 @@ struct DyArray {
     return data[index];
   }
 
-  void Push(T value) noexcept {
+  void Push(const T& value) noexcept {
     if (size == capacity) {
       size_t new_capacity = capacity == 0 ? 1 : capacity * 2;
       std::unique_ptr<T[]> new_data = std::make_unique<T[]>(new_capacity);
@@ -145,7 +145,7 @@ struct DyArray {
     --size;
   }
 
-  void Insert(size_t index, T value) {
+  void Insert(size_t index, const T& value) {
     assert(index <= size && "Index out of range");
 
     if (size == capacity) {

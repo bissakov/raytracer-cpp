@@ -14,36 +14,31 @@ struct CustomTest {
   const char* tag;
   const char* name;
 
-  CustomTest(std::function<bool()> test_function_, const char* tag_,
-             const char* name_) noexcept
-      : test_function(test_function_), tag(tag_), name(name_) {}
+  CustomTest(std::function<bool()> test_function, const char* tag,
+             const char* name) noexcept
+      : test_function(test_function), tag(tag), name(name) {}
 
   CustomTest() noexcept : test_function([]() -> bool { return true; }) {}
-
-  CustomTest& operator=(const CustomTest& other) noexcept;
-  bool operator==(const CustomTest& other) const noexcept;
-  bool operator!=(const CustomTest& other) const noexcept;
 };
 
 struct TestFramework {
   const char* root;
-  CustomTest tests[200];
   size_t passed_tests = 0;
   size_t total_tests = 0;
   size_t current_test_idx = 0;
 
   explicit TestFramework(const char* root_) noexcept : root(root_) {}
 
-  void Add(const char* name, const char* tag,
-           std::function<bool()> test_function);
-  void RunTests();
+  void Run(const char* name, const char* tag,
+           std::function<bool()> test_function) noexcept;
+  void Summary() noexcept;
 };
 
-bool IsEqualDouble(const double a, const double b);
+bool IsEqualDouble(const double a, const double b) noexcept;
 
 template <typename T>
 bool AssertEq(const T& actual, const T& expected, const char* actual_name,
-              const char* expected_name, const char* file, int line) {
+              const char* expected_name, const char* file, int line) noexcept {
   if (!(actual == expected)) {
     std::cerr << "\nError: " << file << ":" << line
               << ":Assertion failed: " << actual_name << " == " << expected_name

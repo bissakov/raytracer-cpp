@@ -21,7 +21,7 @@ Point &Point::operator=(const Point &other) noexcept {
   return *this;
 }
 
-double &Point::operator[](size_t index) {
+double &Point::operator[](const size_t index) {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -35,7 +35,7 @@ double &Point::operator[](size_t index) {
   }
 }
 
-const double &Point::operator[](size_t index) const {
+const double &Point::operator[](const size_t index) const {
   assert(index < 4);
   switch (index) {
     case 0:

@@ -11,11 +11,17 @@
 struct Projectile {
   Point position;
   Vector velocity;
+
+  Projectile(const Point& position, const Vector& velocity) noexcept
+      : position(position), velocity(velocity) {}
 };
 
 struct Environment {
   Vector gravity;
   Vector wind;
+
+  Environment(const Vector& gravity, const Vector& wind) noexcept
+      : gravity(gravity), wind(wind) {}
 };
 
 void RunTests(const char* root);

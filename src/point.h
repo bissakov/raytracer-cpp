@@ -16,8 +16,8 @@ struct Point {
   Point(const Point& other) noexcept;
   Point& operator=(const Point& other) noexcept;
 
-  double& operator[](size_t index);
-  const double& operator[](size_t index) const;
+  double& operator[](const size_t index);
+  const double& operator[](const size_t index) const;
 
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;

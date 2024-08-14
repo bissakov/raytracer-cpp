@@ -16,8 +16,8 @@ struct Vector {
   Vector(const Vector& other) noexcept;
   Vector& operator=(const Vector& other) noexcept;
 
-  double& operator[](size_t index);
-  const double& operator[](size_t index) const;
+  double& operator[](const size_t index);
+  const double& operator[](const size_t index) const;
 
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;

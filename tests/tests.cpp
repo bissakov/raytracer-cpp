@@ -5,7 +5,6 @@
 #include <src/matrix.h>
 #include <src/pixel.h>
 #include <src/ray.h>
-#include <src/str.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
 #include <src/vector.h>
@@ -13,10 +12,8 @@
 
 #include <memory>
 
-void RunTests(const char* root) {
-  TestFramework fw = TestFramework{root};
-
-  fw.Add("Initialize array", "Arrays", []() -> bool {
+static inline void TestArray(TestFramework* fw) {
+  fw->Run("Initialize array", "Arrays", []() -> bool {
     DyArray<int> arr(5);
     DyArray<int> empty_arr;
     return ASSERT_EQUAL(
@@ -24,7 +21,7 @@ void RunTests(const char* root) {
         true);
   });
 
-  fw.Add("Push array elements", "Arrays", []() -> bool {
+  fw->Run("Push array elements", "Arrays", []() -> bool {
     DyArray<int> arr;
     arr.Push(1);
     bool res = ASSERT_EQUAL(bool, arr.size == 1, true) &&
@@ -44,7 +41,7 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Remove array elements", "Arrays", []() -> bool {
+  fw->Run("Remove array elements", "Arrays", []() -> bool {
     DyArray<int> arr;
     arr.Push(1);
     arr.Push(2);
@@ -67,13 +64,13 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Push fixed array into DyArray", "Arrays", []() -> bool {
-    int elements[] = {1, 2, 3, 4, 5};
-    DyArray<int> arr = {elements, 5};
+  fw->Run("Push fixed array into DyArray", "Arrays", []() -> bool {
+    int elements[]{1, 2, 3, 4, 5};
+    DyArray<int> arr{elements, 5};
     return ASSERT_EQUAL(bool, arr.size == 5 && arr.Compare(elements, 5), true);
   });
 
-  fw.Add("Push dynamic array into DyArray", "Arrays", []() -> bool {
+  fw->Run("Push dynamic array into DyArray", "Arrays", []() -> bool {
     size_t size = 5;
     size_t* elements = new size_t[size];
     for (size_t i = 0; i < size; ++i) {
@@ -88,171 +85,130 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Push shared ptr array into DyArray", "Arrays", []() -> bool {
+  fw->Run("Push shared ptr array into DyArray", "Arrays", []() -> bool {
     size_t size = 5;
     std::shared_ptr<size_t[]> elements = std::make_shared<size_t[]>(size);
     for (size_t i = 0; i < size; ++i) {
       elements[i] = i + 1;
     }
     DyArray<size_t> arr = {elements, size};
-    bool res = ASSERT_EQUAL(
-        bool, arr.size == size && arr.Compare(elements, size), true);
 
-    return res;
+    return ASSERT_EQUAL(size_t, arr.size, size) &&
+           ASSERT_EQUAL(bool, arr.Compare(elements, size), true);
   });
+}
 
-  fw.Add("Initialize string", "Strings", []() -> bool {
-    String actual = String{"Hello, World!"};
-    const char* expected = "Hello, World!";
-    bool res = actual == expected;
-    return ASSERT_EQUAL(bool, res, true);
-  });
-
-  fw.Add("Compare string lengths", "Strings", []() -> bool {
-    String actual = String{"Hello, World!"};
-    const char* expected = "Hello, World!";
-    bool res = actual == expected && actual.length == strlen(expected);
-    return ASSERT_EQUAL(bool, res, true);
-  });
-
-  fw.Add("Copy string", "Strings", []() -> bool {
-    String str = String{"Hello, World!"};
-    String actual = str;
-    String expected = String{"Hello, World!"};
-    bool res = actual == expected;
-    return ASSERT_EQUAL(bool, res, true);
-  });
-
-  fw.Add("Concatenate two strings", "Strings", []() -> bool {
-    String str1 = String{"123"};
-    String str2 = String{"456"};
-    String actual = str1 + str2;
-    String expected = String{"123456"};
-    bool res = actual == expected;
-    return ASSERT_EQUAL(bool, res, true);
-  });
-
-  fw.Add("Concatenate four strings", "Strings", []() -> bool {
-    String str1 = String{"123"};
-    String str2 = String{"456"};
-    String str3 = String{"789"};
-    String str4 = String{"101112"};
-    String actual = str1 + str2 + str3 + str4;
-    String expected = String{"123456789101112"};
-    bool res = actual == expected;
-    return ASSERT_EQUAL(bool, res, true);
-  });
-
-  fw.Add("Add point to vector", "Tuples", []() -> bool {
-    Point left = {3, -2, 5};
-    Vector right = {-2, 3, 1};
-    Point actual = left + right;
-    Point expected = {1, 1, 6};
+static inline void TestTuple(TestFramework* fw) {
+  fw->Run("Add point to vector", "Tuples", []() -> bool {
+    Point left{3, -2, 5};
+    Vector right{-2, 3, 1};
+    Point actual{left + right};
+    Point expected{1, 1, 6};
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Subtract point from point", "Tuples", []() -> bool {
-    Point left = {3, 2, 1};
-    Point right = {-2, 3, 1};
-    Vector actual = left - right;
-    Vector expected = {5, -1, 0};
+  fw->Run("Subtract point from point", "Tuples", []() -> bool {
+    Point left{3, 2, 1};
+    Point right{-2, 3, 1};
+    Vector actual{left - right};
+    Vector expected{5, -1, 0};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Subtract vector from point", "Tuples", []() -> bool {
-    Point left = {3, 2, 1};
-    Vector right = {5, 6, 7};
-    Point actual = left - right;
-    Point expected = {-2, -4, -6};
+  fw->Run("Subtract vector from point", "Tuples", []() -> bool {
+    Point left{3, 2, 1};
+    Vector right{5, 6, 7};
+    Point actual{left - right};
+    Point expected{-2, -4, -6};
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Subtract vector from vector", "Tuples", []() -> bool {
-    Vector left = {3, 2, 1};
-    Vector right = {5, 6, 7};
-    Vector actual = left - right;
-    Vector expected = {-2, -4, -6};
+  fw->Run("Subtract vector from vector", "Tuples", []() -> bool {
+    Vector left{3, 2, 1};
+    Vector right{5, 6, 7};
+    Vector actual{left - right};
+    Vector expected{-2, -4, -6};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Negate vector", "Tuples", []() -> bool {
-    Vector v = {1, -2, 3};
-    Vector actual = -v;
-    Vector expected = {-1, 2, -3};
+  fw->Run("Negate vector", "Tuples", []() -> bool {
+    Vector v{1, -2, 3};
+    Vector actual{-v};
+    Vector expected{-1, 2, -3};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Multiply vector by scalar", "Tuples", []() -> bool {
-    Vector v = {1, -2, 3};
-    Vector actual = v * 3.5;
-    Vector expected = {3.5, -7, 10.5};
+  fw->Run("Multiply vector by scalar", "Tuples", []() -> bool {
+    Vector v{1, -2, 3};
+    Vector actual{v * 3.5};
+    Vector expected{3.5, -7, 10.5};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Divide vector by multiplying by scalar", "Tuples", []() -> bool {
-    Vector v = {1, -2, 3};
-    Vector actual = v * 0.5;
-    Vector expected = {0.5, -1, 1.5};
+  fw->Run("Divide vector by multiplying by scalar", "Tuples", []() -> bool {
+    Vector v{1, -2, 3};
+    Vector actual{v * 0.5};
+    Vector expected{0.5, -1, 1.5};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Divide vector by scalar", "Tuples", []() -> bool {
-    Vector v = {1, -2, 3};
-    Vector actual = v / 2;
-    Vector expected = {0.5, -1, 1.5};
+  fw->Run("Divide vector by scalar", "Tuples", []() -> bool {
+    Vector v{1, -2, 3};
+    Vector actual{v / 2};
+    Vector expected{0.5, -1, 1.5};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("The magnitude of a vector 1", "Tuples", []() -> bool {
-    Vector v = {1, 0, 0};
+  fw->Run("The magnitude of a vector 1", "Tuples", []() -> bool {
+    Vector v{1, 0, 0};
     double actual = v.Magnitude();
     double expected = 1;
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("The magnitude of a vector 2", "Tuples", []() -> bool {
-    Vector v = {0, 1, 0};
+  fw->Run("The magnitude of a vector 2", "Tuples", []() -> bool {
+    Vector v{0, 1, 0};
     double actual = v.Magnitude();
     double expected = 1;
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("The magnitude of a vector 3", "Tuples", []() -> bool {
-    Vector v = {0, 0, 1};
+  fw->Run("The magnitude of a vector 3", "Tuples", []() -> bool {
+    Vector v{0, 0, 1};
     double actual = v.Magnitude();
     double expected = 1;
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("The magnitude of a vector 4", "Tuples", []() -> bool {
+  fw->Run("The magnitude of a vector 4", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     double actual = v.Magnitude();
     double expected = sqrt(14.0);
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("The magnitude of a vector 5", "Tuples", []() -> bool {
+  fw->Run("The magnitude of a vector 5", "Tuples", []() -> bool {
     Vector v = {-1, -2, -3};
     double actual = v.Magnitude();
     double expected = sqrt(14.0);
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Normalize vector 1", "Tuples", []() -> bool {
+  fw->Run("Normalize vector 1", "Tuples", []() -> bool {
     Vector v = {4, 0, 0};
     Vector actual = v.Normalize();
     Vector expected = {1, 0, 0};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Normalize vector 2", "Tuples", []() -> bool {
+  fw->Run("Normalize vector 2", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     Vector actual = v.Normalize();
     Vector expected = {1 / sqrt(14.0), 2 / sqrt(14.0), 3 / sqrt(14.0)};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("The magnitude of a normalized vector", "Tuples", []() -> bool {
+  fw->Run("The magnitude of a normalized vector", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     Vector nv = v.Normalize();
     double actual = nv.Magnitude();
@@ -260,7 +216,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("The dot product (self)", "Tuples", []() -> bool {
+  fw->Run("The dot product (self)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     double result = v1.DotProduct(v2);
@@ -269,7 +225,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, result, expected);
   });
 
-  fw.Add("The dot product (separate)", "Tuples", []() -> bool {
+  fw->Run("The dot product (separate)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     double result = DotProduct(v1, v2);
@@ -278,7 +234,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, result, expected);
   });
 
-  fw.Add("The cross product (self)", "Tuples", []() -> bool {
+  fw->Run("The cross product (self)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     Vector actual = v1.CrossProduct(v2);
@@ -286,7 +242,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("The cross product (self, reversed)", "Tuples", []() -> bool {
+  fw->Run("The cross product (self, reversed)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     Vector actual = v2.CrossProduct(v1);
@@ -294,7 +250,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("The cross product (separate)", "Tuples", []() -> bool {
+  fw->Run("The cross product (separate)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v1, v2);
@@ -302,61 +258,65 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("The cross product (separate, reversed)", "Tuples", []() -> bool {
+  fw->Run("The cross product (separate, reversed)", "Tuples", []() -> bool {
     Vector v1 = {1, 2, 3};
     Vector v2 = {2, 3, 4};
     Vector actual = CrossProduct(v2, v1);
     Vector expected = {1, -2, 1};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
+}
 
-  fw.Add("Add color to color", "Colors", []() -> bool {
-    Color left = {0.9, 0.6, 0.75f};
-    Color right = {0.7, 0.1, 0.25f};
-    Color actual = left + right;
-    Color expected = {1.6, 0.7, 1};
+static inline void TestColor(TestFramework* fw) {
+  fw->Run("Add color to color", "Colors", []() -> bool {
+    Color left{0.9, 0.6, 0.75f};
+    Color right{0.7, 0.1, 0.25f};
+    Color actual{left + right};
+    Color expected{1.6, 0.7, 1};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
-  fw.Add("Subtract color from color", "Colors", []() -> bool {
-    Color left = {0.9, 0.6, 0.75f};
-    Color right = {0.7, 0.1, 0.25f};
-    Color actual = left - right;
-    Color expected = {0.2, 0.5, 0.5f};
+  fw->Run("Subtract color from color", "Colors", []() -> bool {
+    Color left{0.9, 0.6, 0.75f};
+    Color right{0.7, 0.1, 0.25f};
+    Color actual{left - right};
+    Color expected{0.2, 0.5, 0.5f};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
-  fw.Add("Multiply color by scalar", "Colors", []() -> bool {
-    Color c = {0.2, 0.3, 0.4f};
-    Color actual = c * 2;
-    Color expected = {0.4, 0.6, 0.8f};
+  fw->Run("Multiply color by scalar", "Colors", []() -> bool {
+    Color c{0.2, 0.3, 0.4f};
+    Color actual{c * 2};
+    Color expected{0.4, 0.6, 0.8f};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
-  fw.Add("Divide color by multiplying by scalar", "Colors", []() -> bool {
-    Color c = {0.2, 0.3, 0.4f};
-    Color actual = c * 0.5;
-    Color expected = {0.1, 0.15, 0.2f};
+  fw->Run("Divide color by multiplying by scalar", "Colors", []() -> bool {
+    Color c{0.2, 0.3, 0.4f};
+    Color actual{c * 0.5};
+    Color expected{0.1, 0.15, 0.2f};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
-  fw.Add("Divide color by scalar", "Colors", []() -> bool {
-    Color c = {0.2, 0.3, 0.4f};
-    Color actual = c / 2;
-    Color expected = {0.1, 0.15, 0.2f};
+  fw->Run("Divide color by scalar", "Colors", []() -> bool {
+    Color c{0.2, 0.3, 0.4f};
+    Color actual{c / 2};
+    Color expected{0.1, 0.15, 0.2f};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
-  fw.Add("Multiply colors", "Colors", []() -> bool {
-    Color left = {1, 0.2, 0.4};
-    Color right = {0.9, 1, 0.1};
-    Color actual = left * right;
-    Color expected = {0.9, 0.2, 0.04};
+  fw->Run("Multiply colors", "Colors", []() -> bool {
+    Color left{1, 0.2, 0.4};
+    Color right{0.9, 1, 0.1};
+    Color actual{left * right};
+    Color expected{0.9, 0.2, 0.04};
     return ASSERT_EQUAL(Color, actual, expected);
   });
+}
 
-  fw.Add("Create canvas", "Canvas", []() -> bool {
-    Canvas canvas = {10, 20};
+static inline void TestCanvas(TestFramework* fw) {
+  fw->Run("Create canvas", "Canvas", []() -> bool {
+    Canvas canvas{10, 20};
     size_t actual_width = canvas.width;
     size_t actual_height = canvas.height;
     size_t expected_width = 10;
@@ -365,9 +325,9 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(size_t, actual_height, expected_height);
   });
 
-  fw.Add("Check all default canvas colors (black)", "Canvas", []() -> bool {
-    Canvas canvas = {10, 20};
-    Color black = {0, 0, 0};
+  fw->Run("Check all default canvas colors (black)", "Canvas", []() -> bool {
+    Canvas canvas{10, 20};
+    Color black{0, 0, 0};
 
     bool res = true;
     for (size_t i = 0; i < canvas.height; ++i) {
@@ -380,9 +340,9 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(bool, res, true);
   });
 
-  fw.Add("Write color of the pixel", "Canvas", []() -> bool {
-    Canvas canvas = {5, 10};
-    Color red = {1, 0, 0};
+  fw->Run("Write color of the pixel", "Canvas", []() -> bool {
+    Canvas canvas{5, 10};
+    Color red{1, 0, 0};
 
     size_t x = 2;
     size_t y = 3;
@@ -394,11 +354,11 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(size_t, pixel.x, x) && ASSERT_EQUAL(size_t, pixel.y, y);
   });
 
-  fw.Add("Save canvas to PPM", "Canvas", [fw]() -> bool {
-    Canvas canvas = {500, 300};
+  fw->Run("Save canvas to PPM", "Canvas", [fw]() -> bool {
+    Canvas canvas{500, 300};
 
-    Color blue = {0, 0.34, 0.72f};
-    Color yellow = {1, 0.85, 0};
+    Color blue{0, 0.34, 0.72f};
+    Color yellow{1, 0.85, 0};
 
     size_t stripe_thickness = 20;
 
@@ -412,19 +372,19 @@ void RunTests(const char* root) {
       }
     }
 
-    Path file_path = Join(fw.root, "\\data\\canvas.ppm");
+    Path file_path = Join(fw->root, "\\data\\canvas.ppm");
     bool res = canvas.SaveToPPM(file_path);
 
     return ASSERT_EQUAL(bool, res, true);
   });
 
-  fw.Add("Load canvas from PPM", "Canvas", [fw]() -> bool {
-    Canvas canvas = {0, 0};
+  fw->Run("Load canvas from PPM", "Canvas", [fw]() -> bool {
+    Canvas canvas{0, 0};
 
-    Path input_path = Join(fw.root, "\\data\\canvas.ppm");
+    Path input_path = Join(fw->root, "\\data\\canvas.ppm");
     bool res1 = canvas.LoadFromPPM(input_path);
 
-    Path output_path = Join(fw.root, "\\data\\canvas_output.ppm");
+    Path output_path = Join(fw->root, "\\data\\canvas_output.ppm");
     bool res2 = canvas.SaveToPPM(output_path);
 
     bool actual =
@@ -433,19 +393,15 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(bool, actual, expected);
   });
 
-  fw.Add("Map the trajectory of projectile", "Canvas", [fw]() -> bool {
-    Canvas canvas = {900, 550};
+  fw->Run("Map the trajectory of projectile", "Canvas", [fw]() -> bool {
+    Canvas canvas{900, 550};
 
-    Projectile proj;
-    proj.position = {0, 1, 0};
-    proj.velocity = {1, 1.8, 0};
+    Projectile proj{{0, 1, 0}, {1, 1.8, 0}};
     proj.velocity = proj.velocity.Normalize() * 11.25;
 
-    Environment env;
-    env.gravity = {0, -0.1, 0};
-    env.wind = {-0.01, 0, 0};
+    Environment env{{0, -0.1, 0}, {-0.01, 0, 0}};
 
-    Color red = {1, 0, 0};
+    Color red{1, 0, 0};
 
     while (proj.position.y > 0) {
       size_t pos_x = static_cast<size_t>(floor(proj.position.x));
@@ -461,31 +417,33 @@ void RunTests(const char* root) {
       proj.velocity = proj.velocity + env.gravity + env.wind;
     }
 
-    Path output_path = Join(fw.root, "\\data\\projectile.ppm");
+    Path output_path = Join(fw->root, "\\data\\projectile.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
   });
+}
 
-  fw.Add("Initialize 4x4 matrix", "Matrix", []() -> bool {
+static inline void TestMatrix(TestFramework* fw) {
+  fw->Run("Initialize 4x4 matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     return ASSERT_EQUAL(size_t, matrix.rows, 4) &&
            ASSERT_EQUAL(size_t, matrix.cols, 4);
   });
 
-  fw.Add("Initialize 3x3 matrix", "Matrix", []() -> bool {
+  fw->Run("Initialize 3x3 matrix", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     return ASSERT_EQUAL(size_t, matrix.rows, 3) &&
            ASSERT_EQUAL(size_t, matrix.cols, 3);
   });
 
-  fw.Add("Initialize 2x2 matrix", "Matrix", []() -> bool {
+  fw->Run("Initialize 2x2 matrix", "Matrix", []() -> bool {
     Matrix matrix = {2, 2};
     return ASSERT_EQUAL(size_t, matrix.rows, 2) &&
            ASSERT_EQUAL(size_t, matrix.cols, 2);
   });
 
-  fw.Add("Check 4x4 matrix values", "Matrix", []() -> bool {
+  fw->Run("Check 4x4 matrix values", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {1, 2,  3,  4,  5.5,  6.5f,  7.5f,  8.5f,
                          9, 10, 11, 12, 13.5, 14.5f, 15.5f, 16.5f};
@@ -502,7 +460,7 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Check 3x3 matrix values", "Matrix", []() -> bool {
+  fw->Run("Check 3x3 matrix values", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -514,7 +472,7 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Check 2x2 matrix values", "Matrix", []() -> bool {
+  fw->Run("Check 2x2 matrix values", "Matrix", []() -> bool {
     Matrix matrix = {2, 2};
     double elements[] = {-3, 5, 1, -2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -527,7 +485,7 @@ void RunTests(const char* root) {
     return res;
   });
 
-  fw.Add("Compare two equal 4x4 matrices", "Matrix", []() -> bool {
+  fw->Run("Compare two equal 4x4 matrices", "Matrix", []() -> bool {
     Matrix matrix1 = {4, 4};
     double elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
@@ -540,7 +498,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(bool, res, true);
   });
 
-  fw.Add("Compare two different 4x4 matrices", "Matrix", []() -> bool {
+  fw->Run("Compare two different 4x4 matrices", "Matrix", []() -> bool {
     Matrix matrix1 = {4, 4};
     double elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
@@ -553,7 +511,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(bool, res, true);
   });
 
-  fw.Add("Compare two differently sized matrices", "Matrix", []() -> bool {
+  fw->Run("Compare two differently sized matrices", "Matrix", []() -> bool {
     Matrix matrix1 = {3, 3};
     double elements1[] = {1, 2, 3, 2, 5, 6, 7, 8, 9};
     matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
@@ -566,7 +524,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(bool, res, true);
   });
 
-  fw.Add("Multiply two 4x4 matrices", "Matrix", []() -> bool {
+  fw->Run("Multiply two 4x4 matrices", "Matrix", []() -> bool {
     Matrix matrix1 = {4, 4};
     double elements1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
@@ -585,7 +543,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Multiply a 4x4 matrix by a 1x1 matrix", "Matrix", []() -> bool {
+  fw->Run("Multiply a 4x4 matrix by a 1x1 matrix", "Matrix", []() -> bool {
     Matrix matrix1 = {4, 4};
     double elements1[] = {1, 2, 3, 4, 2, 4, 4, 2, 8, 6, 4, 1, 0, 0, 0, 1};
     matrix1.Populate(elements1, matrix1.rows * matrix1.cols);
@@ -602,7 +560,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Multiply a matrix by an identity matrix", "Matrix", []() -> bool {
+  fw->Run("Multiply a matrix by an identity matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
     matrix.Populate(elements1, matrix.rows * matrix.cols);
@@ -613,7 +571,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, matrix);
   });
 
-  fw.Add("Transpose a 4x4 matrix", "Matrix", []() -> bool {
+  fw->Run("Transpose a 4x4 matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements1[] = {0, 9, 3, 0, 9, 8, 0, 8, 1, 8, 5, 3, 0, 0, 5, 8};
     matrix.Populate(elements1, matrix.rows * matrix.cols);
@@ -627,7 +585,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, transposed_matrix, matrix);
   });
 
-  fw.Add("Transpose an identity matrix", "Matrix", []() -> bool {
+  fw->Run("Transpose an identity matrix", "Matrix", []() -> bool {
     Matrix identity_matrix = Identity();
     Matrix actual = identity_matrix.Transpose();
 
@@ -639,7 +597,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Determinant of a 2x2 matrix", "Matrix", []() -> bool {
+  fw->Run("Determinant of a 2x2 matrix", "Matrix", []() -> bool {
     Matrix matrix = {2, 2};
     double elements[] = {1, 5, -3, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -650,7 +608,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Submatrix of a 3x3 matrix", "Matrix", []() -> bool {
+  fw->Run("Submatrix of a 3x3 matrix", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {1, 5, 0, -3, 2, 7, 0, 6, -3};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -664,7 +622,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Submatrix of a 4x4 matrix", "Matrix", []() -> bool {
+  fw->Run("Submatrix of a 4x4 matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-6, 1, 1, 6, -8, 5, 8, 6, -1, 0, 8, 2, -7, 1, -1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -678,7 +636,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Minor of a 3x3 matrix", "Matrix", []() -> bool {
+  fw->Run("Minor of a 3x3 matrix", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -689,7 +647,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Cofactor of a 3x3 matrix 1", "Matrix", []() -> bool {
+  fw->Run("Cofactor of a 3x3 matrix 1", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -700,7 +658,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Cofactor of a 3x3 matrix 2", "Matrix", []() -> bool {
+  fw->Run("Cofactor of a 3x3 matrix 2", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -711,7 +669,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Determinant of a 3x3 matrix", "Matrix", []() -> bool {
+  fw->Run("Determinant of a 3x3 matrix", "Matrix", []() -> bool {
     Matrix matrix = {3, 3};
     double elements[] = {1, 2, 6, -5, 8, -4, 2, 6, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -722,7 +680,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Determinant of a 4x4 matrix", "Matrix", []() -> bool {
+  fw->Run("Determinant of a 4x4 matrix", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -733,7 +691,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(double, actual, expected);
   });
 
-  fw.Add("Test a matrix for invertibility 1", "Matrix", []() -> bool {
+  fw->Run("Test a matrix for invertibility 1", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -745,7 +703,7 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(bool, IsEqualDouble(actual, 0.0), false);
   });
 
-  fw.Add("Test a matrix for invertibility 2", "Matrix", []() -> bool {
+  fw->Run("Test a matrix for invertibility 2", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -757,7 +715,7 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(bool, IsEqualDouble(actual, 0.0), true);
   });
 
-  fw.Add("Inverse a 4x4 matrix 1", "Matrix", []() -> bool {
+  fw->Run("Inverse a 4x4 matrix 1", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {-5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -778,7 +736,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Inverse a 4x4 matrix 2", "Matrix", []() -> bool {
+  fw->Run("Inverse a 4x4 matrix 2", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {8, -5, 9, 2, 7, 5, 6, 1, -6, 0, 9, 6, -3, 0, -9, -4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -798,7 +756,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Inverse a 4x4 matrix 3", "Matrix", []() -> bool {
+  fw->Run("Inverse a 4x4 matrix 3", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -818,13 +776,13 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, actual, expected);
   });
 
-  fw.Add("Inverse of identity matrix", "Matrix", []() -> bool {
+  fw->Run("Inverse of identity matrix", "Matrix", []() -> bool {
     Matrix identity_matrix = Identity();
     Matrix inverted = identity_matrix.Inverse();
     return ASSERT_EQUAL(Matrix, identity_matrix, inverted);
   });
 
-  fw.Add("Multiply a matrix by its inverse", "Matrix", []() -> bool {
+  fw->Run("Multiply a matrix by its inverse", "Matrix", []() -> bool {
     Matrix matrix = {4, 4};
     double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -835,18 +793,20 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Matrix, identity_matrix, Identity());
   });
 
-  fw.Add("Compare inverse of transpose and vice versa", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
-    double elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
-    matrix.Populate(elements, matrix.rows * matrix.cols);
+  fw->Run("Compare inverse of transpose and vice versa", "Matrix",
+          []() -> bool {
+            Matrix matrix = {4, 4};
+            double elements[] = {9,  3, 0, 9, -5, -2, -6, -3,
+                                 -4, 9, 6, 4, -7, 6,  6,  2};
+            matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    Matrix inverse_transpose = matrix.Transpose().Inverse();
-    Matrix transpose_inverse = matrix.Inverse().Transpose();
+            Matrix inverse_transpose = matrix.Transpose().Inverse();
+            Matrix transpose_inverse = matrix.Inverse().Transpose();
 
-    return ASSERT_EQUAL(Matrix, inverse_transpose, transpose_inverse);
-  });
+            return ASSERT_EQUAL(Matrix, inverse_transpose, transpose_inverse);
+          });
 
-  fw.Add("Product of point and translation matrix", "Matrix", []() -> bool {
+  fw->Run("Product of point and translation matrix", "Matrix", []() -> bool {
     Matrix transform = Translate(5, -3, 2);
     Point p = {-3, 4, 5};
 
@@ -855,17 +815,18 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Product of point and inverse of translation", "Matrix", []() -> bool {
-    Matrix transform = Translate(5, -3, 2);
-    Matrix inverse = transform.Inverse();
-    Point p = {-3, 4, 5};
+  fw->Run("Product of point and inverse of translation", "Matrix",
+          []() -> bool {
+            Matrix transform = Translate(5, -3, 2);
+            Matrix inverse = transform.Inverse();
+            Point p = {-3, 4, 5};
 
-    Point actual = inverse * p;
-    Point expected = {-8, 7, 3};
-    return ASSERT_EQUAL(Point, actual, expected);
-  });
+            Point actual = inverse * p;
+            Point expected = {-8, 7, 3};
+            return ASSERT_EQUAL(Point, actual, expected);
+          });
 
-  fw.Add("Product of vector and a translation matrix", "Matrix", []() -> bool {
+  fw->Run("Product of vector and a translation matrix", "Matrix", []() -> bool {
     Matrix transform = Translate(5, -3, 2);
     Vector v = {-3, 4, 5};
 
@@ -875,7 +836,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("A scaling matrix applied to a point", "Matrix", []() -> bool {
+  fw->Run("A scaling matrix applied to a point", "Matrix", []() -> bool {
     Matrix transform = Scale(2, 3, 4);
     Point p = {-4, 6, 8};
 
@@ -885,7 +846,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("A scaling matrix applied to a vector", "Matrix", []() -> bool {
+  fw->Run("A scaling matrix applied to a vector", "Matrix", []() -> bool {
     Matrix transform = Scale(2, 3, 4);
     Vector v = {-4, 6, 8};
 
@@ -895,18 +856,19 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  fw.Add("Product of the inverse and a scaling matrix", "Matrix", []() -> bool {
-    Matrix transform = Scale(2, 3, 4);
-    Matrix inverse = transform.Inverse();
-    Vector v = {-4, 6, 8};
+  fw->Run("Product of the inverse and a scaling matrix", "Matrix",
+          []() -> bool {
+            Matrix transform{Scale(2, 3, 4)};
+            Matrix inverse{transform.Inverse()};
+            Vector v{-4, 6, 8};
 
-    Vector actual = inverse * v;
-    Vector expected = {-2, 2, 2};
+            Vector actual{inverse * v};
+            Vector expected{-2, 2, 2};
 
-    return ASSERT_EQUAL(Vector, actual, expected);
-  });
+            return ASSERT_EQUAL(Vector, actual, expected);
+          });
 
-  fw.Add("Reflect a point", "Matrix", []() -> bool {
+  fw->Run("Reflect a point", "Matrix", []() -> bool {
     Matrix transform = Scale(-1, 1, 1);
     Point p = {2, 3, 4};
 
@@ -916,7 +878,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Rotate a point around the x axis", "Matrix", []() -> bool {
+  fw->Run("Rotate a point around the x axis", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
     Matrix half_quarter = RotateX(PI / 4);
     Matrix full_quarter = RotateX(PI / 2);
@@ -930,7 +892,7 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Point, actual2, expected2);
   });
 
-  fw.Add("Opposite inverse of X-rotation", "Matrix", []() -> bool {
+  fw->Run("Opposite inverse of X-rotation", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
     Matrix half_quarter = RotateX(PI / 4);
     Matrix inverse = half_quarter.Inverse();
@@ -941,7 +903,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Rotate a point around the Y axis", "Matrix", []() -> bool {
+  fw->Run("Rotate a point around the Y axis", "Matrix", []() -> bool {
     Point p = {0, 0, 1};
     Matrix half_quarter = RotateY(PI / 4);
     Matrix full_quarter = RotateY(PI / 2);
@@ -955,7 +917,7 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Point, actual2, expected2);
   });
 
-  fw.Add("Opposite inverse of Y-rotation", "Matrix", []() -> bool {
+  fw->Run("Opposite inverse of Y-rotation", "Matrix", []() -> bool {
     Point p = {0, 0, 1};
     Matrix half_quarter = RotateY(PI / 4);
     Matrix inverse = half_quarter.Inverse();
@@ -966,7 +928,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Rotate a point around the Z axis", "Matrix", []() -> bool {
+  fw->Run("Rotate a point around the Z axis", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
     Matrix half_quarter = RotateZ(PI / 4);
     Matrix full_quarter = RotateZ(PI / 2);
@@ -980,7 +942,7 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Point, actual2, expected2);
   });
 
-  fw.Add("Opposite inverse of Z-rotation", "Matrix", []() -> bool {
+  fw->Run("Opposite inverse of Z-rotation", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
     Matrix half_quarter = RotateZ(PI / 4);
     Matrix inverse = half_quarter.Inverse();
@@ -991,7 +953,7 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear X in proportion to Y", "Matrix", []() -> bool {
+  fw->Run("Shear X in proportion to Y", "Matrix", []() -> bool {
     Matrix transform = Shear(XY);
     Point p = {2, 3, 4};
 
@@ -1001,110 +963,110 @@ void RunTests(const char* root) {
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear X in proportion to Z", "Matrix", []() -> bool {
+  fw->Run("Shear X in proportion to Z", "Matrix", []() -> bool {
     Matrix transform = Shear(XZ);
-    Point p = {2, 3, 4};
+    Point p{2, 3, 4};
 
     Point actual = transform * p;
-    Point expected = {6, 3, 4};
+    Point expected{6, 3, 4};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear Y in proportion to X", "Matrix", []() -> bool {
+  fw->Run("Shear Y in proportion to X", "Matrix", []() -> bool {
     Matrix transform = Shear(YX);
-    Point p = {2, 3, 4};
+    Point p{2, 3, 4};
 
     Point actual = transform * p;
-    Point expected = {2, 5, 4};
+    Point expected{2, 5, 4};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear Y in proportion to Z", "Matrix", []() -> bool {
+  fw->Run("Shear Y in proportion to Z", "Matrix", []() -> bool {
     Matrix transform = Shear(YZ);
-    Point p = {2, 3, 4};
+    Point p{2, 3, 4};
 
     Point actual = transform * p;
-    Point expected = {2, 7, 4};
+    Point expected{2, 7, 4};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear Z in proportion to X", "Matrix", []() -> bool {
+  fw->Run("Shear Z in proportion to X", "Matrix", []() -> bool {
     Matrix transform = Shear(ZX);
-    Point p = {2, 3, 4};
+    Point p{2, 3, 4};
 
     Point actual = transform * p;
-    Point expected = {2, 3, 6};
+    Point expected{2, 3, 6};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Shear Z in proportion to Y", "Matrix", []() -> bool {
+  fw->Run("Shear Z in proportion to Y", "Matrix", []() -> bool {
     Matrix transform = Shear(ZY);
-    Point p = {2, 3, 4};
+    Point p{2, 3, 4};
 
     Point actual = transform * p;
-    Point expected = {2, 3, 7};
+    Point expected{2, 3, 7};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Tranformation sequence", "Matrix", []() -> bool {
-    Point p = {1, 0, 1};
+  fw->Run("Tranformation sequence", "Matrix", []() -> bool {
+    Point p{1, 0, 1};
 
     Matrix rotate_x_tf = RotateX(PI / 2);
     Matrix scale_tf = Scale(5, 5, 5);
     Matrix translate_tf = Translate(10, 5, 7);
 
     Point actual1 = rotate_x_tf * p;
-    Point expected1 = {1, -1, 0};
+    Point expected1{1, -1, 0};
 
     Point actual2 = scale_tf * actual1;
-    Point expected2 = {5, -5, 0};
+    Point expected2{5, -5, 0};
 
     Point actual3 = translate_tf * actual2;
-    Point expected3 = {15, 0, 7};
+    Point expected3{15, 0, 7};
 
     return ASSERT_EQUAL(Point, actual1, expected1) &&
            ASSERT_EQUAL(Point, actual2, expected2) &&
            ASSERT_EQUAL(Point, actual3, expected3);
   });
 
-  fw.Add("Tranformation chain", "Matrix", []() -> bool {
-    Point p = {1, 0, 1};
+  fw->Run("Tranformation chain", "Matrix", []() -> bool {
+    Point p{1, 0, 1};
     Matrix transform = Translate(10, 5, 7) * Scale(5, 5, 5) * RotateX(PI / 2);
 
     Point actual = transform * p;
-    Point expected = {15, 0, 7};
+    Point expected{15, 0, 7};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Tranformation chain (fluid)", "Matrix", []() -> bool {
-    Point p = {1, 0, 1};
+  fw->Run("Tranformation chain (fluid)", "Matrix", []() -> bool {
+    Point p{1, 0, 1};
 
     Matrix transform =
         Identity().RotateX(PI / 2).Scale(5, 5, 5).Translate(10, 5, 7);
 
     Point actual = transform * p;
-    Point expected = {15, 0, 7};
+    Point expected{15, 0, 7};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
-  fw.Add("Clock", "Matrix", [fw]() -> bool {
-    Canvas canvas = {600, 600};
+  fw->Run("Clock", "Matrix", [fw]() -> bool {
+    Canvas canvas{600, 600};
     size_t radius = (canvas.width - 100) / 2;
-    Point origin = {canvas.width / 2.0, 0, canvas.height / 2.0};
-    Color green = {0, 1, 0};
+    Point origin{canvas.width / 2.0, 0, canvas.height / 2.0};
+    Color green{0, 1, 0};
 
     size_t resolution = 12;
 
     std::unique_ptr<Point[]> points = std::make_unique<Point[]>(resolution);
 
-    Point start = {0, 0, 1};
+    Point start{0, 0, 1};
     double turn = PI / (static_cast<double>(resolution) / 2);
     for (size_t i = 0; i < resolution; ++i) {
       double radians = i * turn;
@@ -1115,17 +1077,19 @@ void RunTests(const char* root) {
       canvas.WritePixelColor(pos_x, pos_y, green);
     }
 
-    Path output_path = Join(fw.root, "\\data\\clock.ppm");
+    Path output_path = Join(fw->root, "\\data\\clock.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
   });
+}
 
-  fw.Add("Create and query a ray", "Rays", []() -> bool {
-    Point origin = {1, 2, 3};
-    Vector direction = {4, 5, 6};
+static inline void TestRay(TestFramework* fw) {
+  fw->Run("Create and query a ray", "Rays", []() -> bool {
+    Point origin{1, 2, 3};
+    Vector direction{4, 5, 6};
 
-    Ray ray1 = {origin, direction};
+    Ray ray1{origin, direction};
     Ray ray2;
     ray2.origin = origin;
     ray2.direction = direction;
@@ -1135,20 +1099,20 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Ray, ray1, ray2);
   });
 
-  fw.Add("Compute a point from a distance", "Rays", []() -> bool {
-    Ray ray = {{2, 3, 4}, {1, 0, 0}};
+  fw->Run("Compute a point from a distance", "Rays", []() -> bool {
+    Ray ray{{2, 3, 4}, {1, 0, 0}};
 
-    Point actual1 = ray.Position(0);
-    Point expected1 = {2, 3, 4};
+    Point actual1{ray.Position(0)};
+    Point expected1{2, 3, 4};
 
-    Point actual2 = ray.Position(1);
-    Point expected2 = {3, 3, 4};
+    Point actual2{ray.Position(1)};
+    Point expected2{3, 3, 4};
 
-    Point actual3 = ray.Position(-1);
-    Point expected3 = {1, 3, 4};
+    Point actual3{ray.Position(-1)};
+    Point expected3{1, 3, 4};
 
-    Point actual4 = ray.Position(2.5);
-    Point expected4 = {4.5, 3, 4};
+    Point actual4{ray.Position(2.5)};
+    Point expected4{4.5, 3, 4};
 
     return ASSERT_EQUAL(Point, actual1, expected1) &&
            ASSERT_EQUAL(Point, actual2, expected2) &&
@@ -1156,61 +1120,61 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(Point, actual4, expected4);
   });
 
-  fw.Add("Hit a sphere at two points with a ray", "Rays", []() -> bool {
-    Ray ray = {{0, 0, -5}, {0, 0, 1}};
+  fw->Run("Hit a sphere at two points with a ray", "Rays", []() -> bool {
+    Ray ray{{0, 0, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, hits[0].t, 4.0) &&
            ASSERT_EQUAL(double, hits[1].t, 6.0);
   });
 
-  fw.Add("Hit a sphere at a tangent with a ray", "Rays", []() -> bool {
-    Ray ray = {{0, 1, -5}, {0, 0, 1}};
+  fw->Run("Hit a sphere at a tangent with a ray", "Rays", []() -> bool {
+    Ray ray{{0, 1, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 1) &&
            ASSERT_EQUAL(double, hits[0].t, 5.0);
   });
 
-  fw.Add("Miss a sphere with a ray", "Rays", []() -> bool {
-    Ray ray = {{0, 2, -5}, {0, 0, 1}};
+  fw->Run("Miss a sphere with a ray", "Rays", []() -> bool {
+    Ray ray{{0, 2, -5}, {0, 0, 1}};
     Sphere sphere;
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 0);
   });
 
-  fw.Add("Hit a sphere with a ray at its center", "Rays", []() -> bool {
-    Ray ray = {{0, 0, 0}, {0, 0, 1}};
+  fw->Run("Hit a sphere with a ray at its center", "Rays", []() -> bool {
+    Ray ray{{0, 0, 0}, {0, 0, 1}};
     Sphere sphere;
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, hits[0].t, -1.0) &&
            ASSERT_EQUAL(double, hits[1].t, 1.0);
   });
 
-  fw.Add("Hit a sphere with a ray behind it", "Rays", []() -> bool {
-    Ray ray = {{0, 0, 5}, {0, 0, 1}};
+  fw->Run("Hit a sphere with a ray behind it", "Rays", []() -> bool {
+    Ray ray{{0, 0, 5}, {0, 0, 1}};
     Sphere sphere;
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, hits[0].t, -6.0) &&
            ASSERT_EQUAL(double, hits[1].t, -4.0);
   });
 
-  fw.Add("Initialize hit and hits", "Rays", []() -> bool {
+  fw->Run("Initialize hit and hits", "Rays", []() -> bool {
     Sphere sphere;
-    Hit hit = {{&sphere, SPHERE}, 3.5};
+    Hit hit{{&sphere, SPHERE}, 3.5};
 
-    Hits hits = Hits{1};
+    Hits hits{Hits{1}};
     hits[0] = hit;
 
-    Hits hits_copy = Hits{hits};
+    Hits hits_copy{Hits{hits}};
 
     return ASSERT_EQUAL(double, hit.t, 3.5) &&
            ASSERT_EQUAL(Sphere, *reinterpret_cast<Sphere*>(hit.object.data),
@@ -1220,45 +1184,45 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(double, hits[0].t, 3.5);
   });
 
-  fw.Add("The hit with all positive t intersections", "Rays", []() -> bool {
+  fw->Run("The hit with all positive t intersections", "Rays", []() -> bool {
     Sphere sphere;
 
-    Hits hits = Hits{
+    Hits hits{Hits{
         {{&sphere, SPHERE}, 1},
         {{&sphere, SPHERE}, 2},
-    };
+    }};
 
     int32_t idx = hits.FirstHitIdx();
     assert(idx >= 0);
-    Hit intersection = hits[idx];
+    Hit intersection{hits[idx]};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, intersection.t, 1);
   });
 
-  fw.Add("The hit with some negative t intersections", "Rays", []() -> bool {
+  fw->Run("The hit with some negative t intersections", "Rays", []() -> bool {
     Sphere sphere;
 
-    Hits hits = Hits{
+    Hits hits{Hits{
         {{&sphere, SPHERE}, -1},
         {{&sphere, SPHERE}, 1},
-    };
+    }};
 
     int32_t idx = hits.FirstHitIdx();
     assert(idx >= 0);
-    Hit intersection = hits[idx];
+    Hit intersection{hits[idx]};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, intersection.t, 1);
   });
 
-  fw.Add("The hit with all negative t intersections", "Rays", []() -> bool {
+  fw->Run("The hit with all negative t intersections", "Rays", []() -> bool {
     Sphere sphere;
 
-    Hits hits = Hits{
+    Hits hits{Hits{
         {{&sphere, SPHERE}, -2},
         {{&sphere, SPHERE}, -1},
-    };
+    }};
 
     int32_t idx = hits.FirstHitIdx();
 
@@ -1266,176 +1230,254 @@ void RunTests(const char* root) {
            ASSERT_EQUAL(int32_t, idx, -1);
   });
 
-  fw.Add("The hit with various t intersections", "Rays", []() -> bool {
+  fw->Run("The hit with various t intersections", "Rays", []() -> bool {
     Sphere sphere;
 
-    Hits hits = Hits{
+    Hits hits{Hits{
         {{&sphere, SPHERE}, 5},
         {{&sphere, SPHERE}, 7},
         {{&sphere, SPHERE}, -3},
         {{&sphere, SPHERE}, 2},
-    };
+    }};
 
     int32_t idx = hits.FirstHitIdx();
     assert(idx >= 0);
-    Hit intersection = hits[idx];
+    Hit intersection{hits[idx]};
 
     return ASSERT_EQUAL(size_t, hits.count, 4) &&
            ASSERT_EQUAL(double, intersection.t, 2);
   });
 
-  fw.Add("Translate a ray", "Rays", []() -> bool {
-    Ray ray = {{1, 2, 3}, {0, 1, 0}};
-    Matrix transform = Translate(3, 4, 5);
+  fw->Run("Translate a ray", "Rays", []() -> bool {
+    Ray ray{{1, 2, 3}, {0, 1, 0}};
+    Matrix transform{Translate(3, 4, 5)};
 
-    Ray actual = ray.Transform(transform);
-    Ray expected = {{4, 6, 8}, {0, 1, 0}};
+    Ray actual{ray.Transform(transform)};
+    Ray expected{{4, 6, 8}, {0, 1, 0}};
 
     return ASSERT_EQUAL(Ray, actual, expected);
   });
 
-  fw.Add("Scale a ray", "Rays", []() -> bool {
-    Ray ray = {{1, 2, 3}, {0, 1, 0}};
+  fw->Run("Scale a ray", "Rays", []() -> bool {
+    Ray ray{{1, 2, 3}, {0, 1, 0}};
     Matrix transform = Scale(2, 3, 4);
 
-    Ray actual = ray.Transform(transform);
-    Ray expected = {{2, 6, 12}, {0, 3, 0}};
+    Ray actual{ray.Transform(transform)};
+    Ray expected{{2, 6, 12}, {0, 3, 0}};
 
     return ASSERT_EQUAL(Ray, actual, expected);
   });
 
-  fw.Add("Default sphere transformation", "Rays", []() -> bool {
+  fw->Run("Default sphere transformation", "Rays", []() -> bool {
     Sphere sphere;
-    Matrix expected = Identity();
-
-    return ASSERT_EQUAL(Matrix, sphere.transform_matrix, expected);
+    return ASSERT_EQUAL(Matrix, sphere.transform_matrix, Identity());
   });
 
-  fw.Add("Change sphere transformation", "Rays", []() -> bool {
+  fw->Run("Change sphere transformation", "Rays", []() -> bool {
     Sphere sphere;
-    Matrix transform = Translate(2, 3, 4);
-    sphere.Transform(transform);
+    Matrix transform{Translate(2, 3, 4)};
+    sphere.transform_matrix = transform;
 
     return ASSERT_EQUAL(Matrix, sphere.transform_matrix, transform);
   });
 
-  fw.Add("Intersect a scaled sphere with a ray", "Rays", []() -> bool {
-    Ray ray = {{0, 0, -5}, {0, 0, 1}};
+  fw->Run("Intersect a scaled sphere with a ray", "Rays", []() -> bool {
+    Ray ray{{0, 0, -5}, {0, 0, 1}};
 
     Sphere sphere;
-    sphere.Transform(Scale(2, 2, 2));
+    sphere.transform_matrix = Scale(2, 2, 2);
 
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
            ASSERT_EQUAL(double, hits[0].t, 3.0) &&
            ASSERT_EQUAL(double, hits[1].t, 7.0);
   });
 
-  fw.Add("Intersect a translated sphere with a ray", "Rays", []() -> bool {
-    Ray ray = {{0, 0, -5}, {0, 0, 1}};
+  fw->Run("Intersect a translated sphere with a ray", "Rays", []() -> bool {
+    Ray ray{{0, 0, -5}, {0, 0, 1}};
 
     Sphere sphere;
-    sphere.Transform(Translate(5, 0, 0));
+    sphere.transform_matrix = Translate(5, 0, 0);
 
-    Hits hits = ray.Intersect(sphere);
+    Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 0);
   });
 
-  fw.Add("Cast rays at a sphere", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at a sphere", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
-    Canvas canvas = {canvas_size, canvas_size};
+    Canvas canvas{canvas_size, canvas_size};
 
-    Point ray_origin = {0, 0, -5};
+    Point ray_origin{0, 0, -5};
     Sphere shape;
-    Color color = {.26, .96, .53};
+    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_sphere.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_sphere.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
 
-  fw.Add("Cast rays at an oval 1", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at an oval 1", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
-    Canvas canvas = {canvas_size, canvas_size};
+    Canvas canvas{canvas_size, canvas_size};
 
-    Point ray_origin = {0, 0, -5};
+    Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.Transform(Scale(1, .5, 1));
-    Color color = {.26, .96, .53};
+    shape.transform_matrix = Scale(1, .5, 1);
+    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_oval1.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_oval1.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
 
-  fw.Add("Cast rays at an oval 2", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at an oval 2", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
-    Canvas canvas = {canvas_size, canvas_size};
+    Canvas canvas{canvas_size, canvas_size};
 
-    Point ray_origin = {0, 0, -5};
+    Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.Transform(Scale(.5, 1, 1));
-    Color color = {.26, .96, .53};
+    shape.transform_matrix = Scale(.5, 1, 1);
+    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_oval2.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_oval2.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
 
-  fw.Add("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
     Canvas canvas = {canvas_size, canvas_size};
 
-    Point ray_origin = {0, 0, -5};
+    Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.Transform(Scale(.5, 1, 1).RotateZ(PI / 4));
-    Color color = {.26, .96, .53};
+    shape.transform_matrix = Scale(.5, 1, 1).RotateZ(PI / 4);
+    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_rotated_oval.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_rotated_oval.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
 
-  fw.Add("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
-    Canvas canvas = {canvas_size, canvas_size};
+    Canvas canvas{canvas_size, canvas_size};
 
-    Point ray_origin = {0, 0, -5};
+    Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.Transform(Shear(XY).Scale(.5, 1, 1));
-    Color color = {.26, .96, .53};
+    shape.transform_matrix = Shear(XY).Scale(.5, 1, 1);
+    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, &ray_origin, &shape, &color, wall_z, wall_size);
+    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw.root, "\\data\\casted_skewed_oval.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_skewed_oval.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
+}
 
-  fw.RunTests();
+static inline void TestShading(TestFramework* fw) {
+  fw->Run("Normal on a sphere at a point on X axis", "Shading", []() -> bool {
+    Sphere sphere;
+    Vector actual{sphere.NormalAt({1, 0, 0})};
+    Vector expected{1, 0, 0};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  fw->Run("Normal on a sphere at a point on Y axis", "Shading", []() -> bool {
+    Sphere sphere;
+    Vector actual{sphere.NormalAt({0, 1, 0})};
+    Vector expected{0, 1, 0};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  fw->Run("Normal on a sphere at a point on Z axis", "Shading", []() -> bool {
+    Sphere sphere;
+    Vector actual{sphere.NormalAt({0, 0, 1})};
+    Vector expected{0, 0, 1};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  fw->Run("Normal on a sphere at a nonaxial point", "Shading", []() -> bool {
+    Sphere sphere;
+    Vector actual{sphere.NormalAt(
+        {std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3})};
+    Vector expected{std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  fw->Run("Check that normal is normalized", "Shading", []() -> bool {
+    Sphere sphere;
+    Vector actual{sphere.NormalAt(
+        {std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3})};
+    Vector expected{std::sqrt(3) / 3, std::sqrt(3) / 3, std::sqrt(3) / 3};
+    Vector expected_normalized{actual.Normalize()};
+
+    return ASSERT_EQUAL(Vector, actual, expected) &&
+           ASSERT_EQUAL(Vector, actual, expected_normalized);
+  });
+
+  fw->Run("Compute the normal on translated sphere", "Shading", []() -> bool {
+    Sphere sphere;
+    sphere.transform_matrix = Translate(0, 1, 0);
+
+    Vector actual{
+        sphere.NormalAt({0, 1 + std::sqrt(2) / 2, -std::sqrt(2) / 2})};
+    Vector expected{0, std::sqrt(2) / 2, -std::sqrt(2) / 2};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
+
+  // fw.AddRun("Compute the normal on transformed sphere", "Shading", [fw]() ->
+  // bool {
+  //   Sphere sphere;
+  //   sphere.Transform(RotateZ(PI / 5).Scale(1, 0.5, 1));
+  //
+  //   Vector actual{sphere.NormalAt({0, std::sqrt(2) / 2, -std::sqrt(2) / 2})};
+  //   Vector expected{0, 0.97014, -0.24254};
+  //
+  //   return ASSERT_EQUAL(Vector, actual, expected);
+  // });
+}
+
+void RunTests(const char* root) {
+  TestFramework fw = TestFramework{root};
+
+  TestArray(&fw);
+  TestTuple(&fw);
+  TestColor(&fw);
+  TestCanvas(&fw);
+  TestMatrix(&fw);
+  TestRay(&fw);
+  TestShading(&fw);
+
+  fw.Summary();
 }

@@ -17,7 +17,7 @@ struct Ray {
   Vector direction;
 
   Ray() noexcept {}
-  Ray(Point origin_, Vector direction_) noexcept;
+  Ray(const Point& origin, const Vector& direction) noexcept;
   Ray(const Ray& other) noexcept;
   Ray& operator=(const Ray& other) noexcept;
 
@@ -38,7 +38,8 @@ struct Sphere {
   double radius;
 
   Sphere() noexcept;
-  Sphere(Point origin, Matrix transform, double radius) noexcept;
+  Sphere(const Point& origin, const Matrix& transform,
+         const double radius) noexcept;
   Sphere(const Sphere& other) noexcept;
   Sphere& operator=(const Sphere& other) noexcept;
 
@@ -47,7 +48,7 @@ struct Sphere {
 
   operator const char*() const noexcept;
 
-  void Transform(Matrix transform) noexcept;
+  Vector NormalAt(const Point& point) noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere);
@@ -75,7 +76,7 @@ struct Hit {
   double t;
 
   Hit() noexcept;
-  Hit(Object object, double t) noexcept;
+  Hit(const Object& object, double t) noexcept;
   Hit(const Hit& other) noexcept;
   Hit& operator=(const Hit& other) noexcept;
 
@@ -114,13 +115,14 @@ struct Hits {
 
   operator const char*() const noexcept;
 
-  void Push(Hit hit) noexcept;
+  void Push(const Hit& hit) noexcept;
   int32_t FirstHitIdx() noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
 
-void CastShape(Canvas* canvas, Point* ray_origin, Sphere* shape, Color* color,
-               double wall_z, double wall_size) noexcept;
+void CastShape(const Canvas& canvas, const Point& ray_origin,
+               const Sphere& shape, const Color& color, double wall_z,
+               double wall_size) noexcept;
 
 #endif  // SRC_RAY_H_

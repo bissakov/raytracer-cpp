@@ -23,7 +23,6 @@ Canvas::Canvas(const size_t width_, const size_t height_) noexcept
       Pixel* pixel = &pixels[row * width + col];
       pixel->x = col;
       pixel->y = row;
-      pixel->color = {};
     }
   }
 }
@@ -53,8 +52,7 @@ Pixel Canvas::PixelAt(const size_t pos_x, const size_t pos_y) const noexcept {
 void Canvas::WritePixelColor(const size_t pos_x, const size_t pos_y,
                              const Color& color) const noexcept {
   assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  Pixel* pixel = &pixels[pos_y * width + pos_x];
-  pixel->color = color;
+  pixels[pos_y * width + pos_x].color = color;
 }
 
 bool Canvas::SaveToPPM(const Path& file_path) noexcept {
@@ -128,12 +126,10 @@ static inline void AdvanceUntil(char* file_content, uint32_t* idx,
 }
 
 static inline size_t StringToInt(char* start, const size_t length) {
-  char* str = new char[length + 1];
+  char str[50];
   std::copy(start, start + length, str);
   str[length] = '\0';
-
   size_t res = static_cast<size_t>(std::stoi(str));
-  delete[] str;
   return res;
 }
 
