@@ -109,8 +109,8 @@ Vector Vector::CrossProduct(const Vector &other) const {
 
 Vector::operator const char *() const noexcept {
   static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Vector{x=%.10f, y=%.10f, z=%.10f, w=%.10f}",
-           x, y, z, w);
+  snprintf(buffer, sizeof(buffer), "Vector{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
+           y, z, w);
   return buffer;
 }
 

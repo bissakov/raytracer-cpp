@@ -1456,16 +1456,15 @@ static inline void TestShading(TestFramework* fw) {
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
-  // fw.AddRun("Compute the normal on transformed sphere", "Shading", [fw]() ->
-  // bool {
-  //   Sphere sphere;
-  //   sphere.Transform(RotateZ(PI / 5).Scale(1, 0.5, 1));
-  //
-  //   Vector actual{sphere.NormalAt({0, std::sqrt(2) / 2, -std::sqrt(2) / 2})};
-  //   Vector expected{0, 0.97014, -0.24254};
-  //
-  //   return ASSERT_EQUAL(Vector, actual, expected);
-  // });
+  fw->Run("Compute the normal on transformed sphere", "Shading", []() -> bool {
+    Sphere sphere;
+    sphere.transform_matrix = RotateZ(PI / 5).Scale(1, 0.5, 1);
+
+    Vector actual{sphere.NormalAt({0, std::sqrt(2) / 2, -std::sqrt(2) / 2})};
+    Vector expected{0, 0.97014250014533, -0.24253562503633};
+
+    return ASSERT_EQUAL(Vector, actual, expected);
+  });
 }
 
 void RunTests(const char* root) {

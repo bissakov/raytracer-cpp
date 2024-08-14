@@ -116,9 +116,13 @@ std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
   return os;
 }
 
-Vector Sphere::NormalAt(const Point& point) noexcept {
-  Point object_point{transform_matrix.Inverse() * point};
-  return (object_point - origin).Normalize();
+Vector Sphere::NormalAt(const Point& world_point) noexcept {
+  Point object_point{transform_matrix.Inverse() * world_point};
+  Vector object_normal{object_point - origin};
+  Vector world_normal{
+      (transform_matrix.Inverse().Transpose() * object_normal).Normalize()};
+  world_normal.w = 0.0;
+  return world_normal;
 }
 
 Object::Object() noexcept : data(nullptr), type(SPHERE) {}
