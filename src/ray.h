@@ -3,6 +3,7 @@
 
 #include <src/arr.h>
 #include <src/canvas.h>
+#include <src/material.h>
 #include <src/matrix.h>
 #include <src/point.h>
 #include <src/vector.h>
@@ -36,10 +37,14 @@ struct Sphere {
   Point origin;
   Matrix transform_matrix;
   double radius;
+  Material material;
 
   Sphere() noexcept;
   Sphere(const Point& origin, const Matrix& transform,
          const double radius) noexcept;
+  Sphere(const Point& origin, const Matrix& transform, const double radius,
+         const Material& material) noexcept;
+  explicit Sphere(const Material& material) noexcept;
   Sphere(const Sphere& other) noexcept;
   Sphere& operator=(const Sphere& other) noexcept;
 

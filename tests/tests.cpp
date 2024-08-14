@@ -1,7 +1,9 @@
 #include <src/arr.h>
 #include <src/canvas.h>
 #include <src/file_io.h>
+#include <src/light.h>
 #include <src/main.h>
+#include <src/material.h>
 #include <src/matrix.h>
 #include <src/pixel.h>
 #include <src/ray.h>
@@ -1482,6 +1484,35 @@ static inline void TestShading(TestFramework* fw) {
     Vector expected{1, 0, 0};
 
     return ASSERT_EQUAL(Vector, reflect, expected);
+  });
+
+  fw->Run("Initialize point light", "Shading", []() -> bool {
+    PointLight point_light{{1, 1, 1}, {0, 0, 0}};
+    Color expected_intensity = {1, 1, 1};
+    Point expected_position = {0, 0, 0};
+
+    return ASSERT_EQUAL(Color, point_light.intensity, expected_intensity) &&
+           ASSERT_EQUAL(Point, point_light.position, expected_position);
+  });
+
+  fw->Run("Initialize material", "Shading", []() -> bool {
+    Material material{{1, 1, 1}, .1, .9, .9, 200};
+
+    Color expected_color{1, 1, 1};
+
+    return ASSERT_EQUAL(Color, material.color, expected_color) &&
+           ASSERT_EQUAL(double, material.ambient, .1) &&
+           ASSERT_EQUAL(double, material.diffuse, .9) &&
+           ASSERT_EQUAL(double, material.specular, .9) &&
+           ASSERT_EQUAL(double, material.shininess, 200.0);
+  });
+
+  fw->Run("Initialize sphere with default material", "Shading", []() -> bool {
+    Material material{{1, 1, 1}, 0, 0, 0, 0};
+    Sphere sphere1{material};
+    Sphere sphere2;
+
+    return ASSERT_EQUAL(Material, sphere1.material, sphere2.material);
   });
 }
 

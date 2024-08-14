@@ -77,26 +77,39 @@ Ray Ray::Transform(Matrix transform) noexcept {
 
 Sphere::Sphere() noexcept
     : origin({0, 0, 0}), transform_matrix(Identity()), radius(1.0) {}
+
 Sphere::Sphere(const Point& origin, const Matrix& transform,
                const double radius) noexcept
     : origin(origin), transform_matrix(transform), radius(radius) {}
+
+Sphere::Sphere(const Point& origin, const Matrix& transform,
+               const double radius, const Material& material) noexcept
+    : origin(origin),
+      transform_matrix(transform),
+      radius(radius),
+      material(material) {}
+
+Sphere::Sphere(const Material& material) noexcept : material(material) {}
+
 Sphere::Sphere(const Sphere& other) noexcept
     : origin(other.origin),
       transform_matrix(other.transform_matrix),
-      radius(other.radius) {}
+      radius(other.radius),
+      material(other.material) {}
 
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
   if (this != &other) {
     origin = other.origin;
     transform_matrix = other.transform_matrix;
     radius = other.radius;
+    material = other.material;
   }
   return *this;
 }
 
 bool Sphere::operator==(const Sphere& other) const {
   return origin == other.origin && transform_matrix == other.transform_matrix &&
-         radius == other.radius;
+         radius == other.radius && material == other.material;
 }
 
 bool Sphere::operator!=(const Sphere& other) const {
@@ -106,8 +119,9 @@ bool Sphere::operator!=(const Sphere& other) const {
 Sphere::operator const char*() const noexcept {
   static char buffer[200];
   snprintf(buffer, sizeof(buffer),
-           "Sphere{origin=%s, transform=%s, radius=%.2f}", (const char*)origin,
-           (const char*)transform_matrix, radius);
+           "Sphere{origin=%s, transform=%s, radius=%.2f, material=%s}",
+           (const char*)origin, (const char*)transform_matrix, radius,
+           (const char*)material);
   return buffer;
 }
 
