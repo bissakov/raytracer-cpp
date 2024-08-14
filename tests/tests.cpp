@@ -1465,6 +1465,24 @@ static inline void TestShading(TestFramework* fw) {
 
     return ASSERT_EQUAL(Vector, actual, expected);
   });
+
+  fw->Run("Reflect a vector approaching at 45o", "Shading", []() -> bool {
+    Vector vector{1, -1, 0};
+    Vector normal{0, 1, 0};
+    Vector reflect{vector.Reflect(normal)};
+    Vector expected{1, 1, 0};
+
+    return ASSERT_EQUAL(Vector, reflect, expected);
+  });
+
+  fw->Run("Reflect a vector off a slanted surface", "Shading", []() -> bool {
+    Vector vector{0, -1, 0};
+    Vector normal{std::sqrt(2) / 2, std::sqrt(2) / 2, 0};
+    Vector reflect{vector.Reflect(normal)};
+    Vector expected{1, 0, 0};
+
+    return ASSERT_EQUAL(Vector, reflect, expected);
+  });
 }
 
 void RunTests(const char* root) {

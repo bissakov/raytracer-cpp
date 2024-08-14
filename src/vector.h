@@ -35,6 +35,7 @@ struct Vector {
   Vector Normalize() const;
   double DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
+  Vector Reflect(const Vector& normal) const;
 
   operator const char*() const noexcept;
 };

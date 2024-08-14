@@ -107,6 +107,10 @@ Vector Vector::CrossProduct(const Vector &other) const {
   return ::CrossProduct(*this, other);
 }
 
+Vector Vector::Reflect(const Vector &normal) const {
+  return *this - normal * 2 * DotProduct(normal);
+}
+
 Vector::operator const char *() const noexcept {
   static char buffer[100];
   snprintf(buffer, sizeof(buffer), "Vector{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
