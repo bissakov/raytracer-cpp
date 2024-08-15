@@ -1508,7 +1508,7 @@ static inline void TestShading(TestFramework* fw) {
   });
 
   fw->Run("Initialize sphere with default material", "Shading", []() -> bool {
-    Material material{{1, 1, 1}, 0, 0, 0, 0};
+    Material material{{1, 1, 1}, .1, .9, .9, 200.0};
     Sphere sphere1{material};
     Sphere sphere2;
 

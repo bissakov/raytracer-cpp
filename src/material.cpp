@@ -2,7 +2,11 @@
 #include <src/test_suite.h>
 
 Material::Material() noexcept
-    : color({1, 1, 1}), ambient(0), diffuse(0), specular(0), shininess(0) {}
+    : color({1, 1, 1}),
+      ambient(.1),
+      diffuse(.9),
+      specular(.9),
+      shininess(200.0) {}
 
 Material::Material(const Color &color, double ambient, double diffuse,
                    double specular, double shininess) noexcept
