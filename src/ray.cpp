@@ -1,10 +1,10 @@
+#include <src/light.h>
 #include <src/point.h>
 #include <src/ray.h>
 #include <src/test_suite.h>
 #include <src/vector.h>
 
 #include <cstdio>
-#include <memory>
 #include <thread>
 
 Ray::Ray(const Point& origin, const Vector& direction) noexcept
@@ -333,7 +333,7 @@ int32_t Hits::FirstHitIdx() noexcept {
   return -1;
 }
 
-struct DrawRegionContext {
+struct DrawRegionUnshadedContext {
   const Point& ray_origin;
   const Sphere& shape;
   double wall_z;
@@ -343,8 +343,8 @@ struct DrawRegionContext {
   size_t end;
 };
 
-static inline void DrawRegion(Canvas* canvas,
-                              const DrawRegionContext& context) {
+static inline void DrawRegionUnshaded(
+    Canvas* canvas, const DrawRegionUnshadedContext& context) {
   for (size_t y = context.start; y < context.end; ++y) {
     double world_y = context.half_wall_size - context.pixel_size * y;
     for (size_t x = 0; x < canvas->width; ++x) {
@@ -363,8 +363,9 @@ static inline void DrawRegion(Canvas* canvas,
 
 #define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
 
-void CastShape(Canvas* canvas, const Point& ray_origin, const Sphere& shape,
-               double wall_z, double wall_size) noexcept {
+void CastShapeUnshaded(Canvas* canvas, const Point& ray_origin,
+                       const Sphere& shape, double wall_z,
+                       double wall_size) noexcept {
   double pixel_size = wall_size / static_cast<double>(canvas->width);
   double half_wall_size = wall_size / 2;
 
@@ -377,10 +378,75 @@ void CastShape(Canvas* canvas, const Point& ray_origin, const Sphere& shape,
     size_t end =
         (worker_idx == workers_count - 1) ? canvas->height : start + chunk_size;
 
-    DrawRegionContext context = {ray_origin,     shape, wall_z, pixel_size,
-                                 half_wall_size, start, end};
+    DrawRegionUnshadedContext context = {
+        ray_origin, shape, wall_z, pixel_size, half_wall_size, start, end};
 
-    workers[worker_idx] = std::thread(DrawRegion, canvas, context);
+    workers[worker_idx] = std::thread(DrawRegionUnshaded, canvas, context);
+  }
+
+  for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {
+    workers[worker_idx].join();
+  }
+}
+
+struct DrawRegionShadedContext {
+  const Point& ray_origin;
+  const Sphere& shape;
+  const PointLight& light;
+  double wall_z;
+  double pixel_size;
+  double half_wall_size;
+  size_t start;
+  size_t end;
+};
+
+static inline void DrawRegionShaded(Canvas* canvas,
+                                    const DrawRegionShadedContext& context) {
+  for (size_t y = context.start; y < context.end; ++y) {
+    double world_y = context.half_wall_size - context.pixel_size * y;
+    for (size_t x = 0; x < canvas->width; ++x) {
+      double world_x = -context.half_wall_size + context.pixel_size * x;
+
+      Point position{world_x, world_y, context.wall_z};
+      Ray ray{context.ray_origin, (position - context.ray_origin).Normalize()};
+      Hits hits{ray.Intersect(context.shape)};
+
+      if (hits.count > 0) {
+        Hit hit{hits[0]};
+        Sphere* object = reinterpret_cast<Sphere*>(hit.object.data);
+
+        Point point{ray.Position(hit.t)};
+        Vector normal{object->NormalAt(point)};
+        Vector eye{-ray.direction};
+
+        Color color =
+            Lighting(object->material, context.light, point, eye, normal);
+        canvas->WritePixelColor(x, y, color);
+      }
+    }
+  }
+}
+
+void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
+                     const Sphere& shape, const PointLight& light,
+                     double wall_z, double wall_size) noexcept {
+  double pixel_size = wall_size / static_cast<double>(canvas->width);
+  double half_wall_size = wall_size / 2;
+
+  std::thread workers[20];
+  size_t workers_count = ArraySize(workers);
+  size_t chunk_size = canvas->height / workers_count;
+
+  for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {
+    size_t start = chunk_size * worker_idx;
+    size_t end =
+        (worker_idx == workers_count - 1) ? canvas->height : start + chunk_size;
+
+    DrawRegionShadedContext context = {ray_origin, shape,      light,
+                                       wall_z,     pixel_size, half_wall_size,
+                                       start,      end};
+
+    workers[worker_idx] = std::thread(DrawRegionShaded, canvas, context);
   }
 
   for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {

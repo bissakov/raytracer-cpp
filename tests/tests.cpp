@@ -1318,7 +1318,7 @@ static inline void TestRay(TestFramework* fw) {
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
+    CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
     canvas.SaveToPPM(Join(fw->root, "/data/casted_sphere.ppm"));
 
@@ -1337,7 +1337,7 @@ static inline void TestRay(TestFramework* fw) {
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
+    CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
     canvas.SaveToPPM(Join(fw->root, "/data/casted_oval1.ppm"));
 
@@ -1356,7 +1356,7 @@ static inline void TestRay(TestFramework* fw) {
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
+    CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
     canvas.SaveToPPM(Join(fw->root, "/data/casted_oval2.ppm"));
 
@@ -1375,7 +1375,7 @@ static inline void TestRay(TestFramework* fw) {
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
+    CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
     canvas.SaveToPPM(Join(fw->root, "/data/casted_rotated_oval.ppm"));
 
@@ -1394,7 +1394,7 @@ static inline void TestRay(TestFramework* fw) {
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
+    CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
     canvas.SaveToPPM(Join(fw->root, "/data/casted_skewed_oval.ppm"));
 
@@ -1597,6 +1597,26 @@ static inline void TestShading(TestFramework* fw) {
     Color expected{.1, .1, .1};
 
     return ASSERT_EQUAL(Color, actual, expected);
+  });
+
+  fw->Run("Cast rays at a sphere (shaded)", "Shading", [fw]() -> bool {
+    size_t canvas_size = 100;
+    Canvas canvas{canvas_size, canvas_size};
+
+    Point ray_origin{0, 0, -5};
+    Sphere shape;
+    shape.material.color = {1, .2, 1};
+
+    PointLight light{Color{1, 1, 1}, Point{-10, 10, -10}};
+
+    double wall_z = 10.0;
+    double wall_size = 7.0;
+
+    CastShapeShaded(&canvas, ray_origin, shape, light, wall_z, wall_size);
+
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_shaded_sphere.ppm"));
+
+    return ASSERT_EQUAL(bool, true, true);
   });
 }
 

@@ -3,6 +3,7 @@
 
 #include <src/arr.h>
 #include <src/canvas.h>
+#include <src/light.h>
 #include <src/material.h>
 #include <src/matrix.h>
 #include <src/point.h>
@@ -10,28 +11,9 @@
 
 #define HITS_BUFFER_SIZE 10240
 
-typedef struct Sphere Sphere;
 typedef struct Hits Hits;
 
-struct Ray {
-  Point origin;
-  Vector direction;
-
-  Ray() noexcept {}
-  Ray(const Point& origin, const Vector& direction) noexcept;
-  Ray(const Ray& other) noexcept;
-  Ray& operator=(const Ray& other) noexcept;
-
-  bool operator==(const Ray& other) const;
-  bool operator!=(const Ray& other) const;
-  operator const char*() const noexcept;
-
-  Point Position(double t) noexcept;
-  Hits Intersect(Sphere sphere) noexcept;
-  Ray Transform(Matrix transform) noexcept;
-};
-
-std::ostream& operator<<(std::ostream& os, const Ray& ray);
+enum ObjectType { SPHERE = 1 };
 
 struct Sphere {
   Point origin;
@@ -58,8 +40,6 @@ struct Sphere {
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere);
 
-enum ObjectType { SPHERE = 1 };
-
 struct Object {
   void* data;
   ObjectType type;
@@ -75,6 +55,26 @@ struct Object {
 };
 
 std::ostream& operator<<(std::ostream& os, const Object& object);
+
+struct Ray {
+  Point origin;
+  Vector direction;
+
+  Ray() noexcept {}
+  Ray(const Point& origin, const Vector& direction) noexcept;
+  Ray(const Ray& other) noexcept;
+  Ray& operator=(const Ray& other) noexcept;
+
+  bool operator==(const Ray& other) const;
+  bool operator!=(const Ray& other) const;
+  operator const char*() const noexcept;
+
+  Point Position(double t) noexcept;
+  Hits Intersect(Sphere sphere) noexcept;
+  Ray Transform(Matrix transform) noexcept;
+};
+
+std::ostream& operator<<(std::ostream& os, const Ray& ray);
 
 struct Hit {
   Object object;
@@ -126,7 +126,12 @@ struct Hits {
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
 
-void CastShape(Canvas* canvas, const Point& ray_origin, const Sphere& shape,
-               double wall_z, double wall_size) noexcept;
+void CastShapeUnshaded(Canvas* canvas, const Point& ray_origin,
+                       const Sphere& shape, double wall_z,
+                       double wall_size) noexcept;
+
+void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
+                     const Sphere& shape, const PointLight& light,
+                     double wall_z, double wall_size) noexcept;
 
 #endif  // SRC_RAY_H_
