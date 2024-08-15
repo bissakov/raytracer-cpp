@@ -1521,6 +1521,83 @@ static inline void TestShading(TestFramework* fw) {
 
     return ASSERT_EQUAL(Material, sphere1.material, material);
   });
+
+  fw->Run("Eye between light and surface", "Shading", []() -> bool {
+    Material material;
+    Point position = {0, 0, 0};
+
+    Vector eye_vector{0, 0, -1};
+    Vector normal_vector{0, 0, -1};
+    PointLight light{Color(1, 1, 1), Point{0, 0, -10}};
+
+    Color actual =
+        Lighting(material, light, position, eye_vector, normal_vector);
+    Color expected{1.9, 1.9, 1.9};
+
+    return ASSERT_EQUAL(Color, actual, expected);
+  });
+
+  fw->Run("Eye (offset 45o) between light, surface", "Shading", []() -> bool {
+    Material material;
+    Point position = {0, 0, 0};
+
+    Vector eye_vector{0, std::sqrt(2) / 2, -std::sqrt(2) / 2};
+    Vector normal_vector{0, 0, -1};
+    PointLight light{Color(1, 1, 1), Point{0, 0, -10}};
+
+    Color actual =
+        Lighting(material, light, position, eye_vector, normal_vector);
+    Color expected{1.0, 1.0, 1.0};
+
+    return ASSERT_EQUAL(Color, actual, expected);
+  });
+
+  fw->Run("Lighting with light offset 45o", "Shading", []() -> bool {
+    Material material;
+    Point position = {0, 0, 0};
+
+    Vector eye_vector{0, 0, -1};
+    Vector normal_vector{0, 0, -1};
+    PointLight light{Color(1, 1, 1), Point{0, 10, -10}};
+
+    Color actual =
+        Lighting(material, light, position, eye_vector, normal_vector);
+    Color expected{(.1 + .9 * std::sqrt(2) / 2), (.1 + .9 * std::sqrt(2) / 2),
+                   (.1 + .9 * std::sqrt(2) / 2)};
+
+    return ASSERT_EQUAL(Color, actual, expected);
+  });
+
+  fw->Run("Eye in the path of the reflection vector", "Shading", []() -> bool {
+    Material material;
+    Point position = {0, 0, 0};
+
+    Vector eye_vector{0, -std::sqrt(2) / 2, -std::sqrt(2) / 2};
+    Vector normal_vector{0, 0, -1};
+    PointLight light{Color(1, 1, 1), Point{0, 10, -10}};
+
+    Color actual =
+        Lighting(material, light, position, eye_vector, normal_vector);
+    Color expected{(1 + .9 * std::sqrt(2) / 2), (1 + .9 * std::sqrt(2) / 2),
+                   (1 + .9 * std::sqrt(2) / 2)};
+
+    return ASSERT_EQUAL(Color, actual, expected);
+  });
+
+  fw->Run("Light behind the surface", "Shading", []() -> bool {
+    Material material;
+    Point position = {0, 0, 0};
+
+    Vector eye_vector{0, 0, -1};
+    Vector normal_vector{0, 0, -1};
+    PointLight light{Color(1, 1, 1), Point{0, 0, 10}};
+
+    Color actual =
+        Lighting(material, light, position, eye_vector, normal_vector);
+    Color expected{.1, .1, .1};
+
+    return ASSERT_EQUAL(Color, actual, expected);
+  });
 }
 
 void RunTests(const char* root) {

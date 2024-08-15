@@ -22,4 +22,8 @@ struct PointLight {
 
 std::ostream &operator<<(std::ostream &os, const PointLight &point_light);
 
+Color Lighting(const Material &material, const PointLight &light,
+               const Point &position, const Vector &eye_vector,
+               const Vector &normal_vector) noexcept;
+
 #endif  // SRC_LIGHT_H_

@@ -1,5 +1,9 @@
 #include <src/light.h>
 #include <src/material.h>
+#include <src/point.h>
+#include <src/vector.h>
+
+#include <cmath>
 
 PointLight::PointLight() noexcept {}
 
@@ -35,4 +39,31 @@ PointLight::operator const char *() const noexcept {
 std::ostream &operator<<(std::ostream &os, const PointLight &point_light) {
   os << (const char *)point_light;
   return os;
+}
+
+Color Lighting(const Material &material, const PointLight &light,
+               const Point &position, const Vector &eye_vector,
+               const Vector &normal_vector) noexcept {
+  Color effective_color{material.color * light.intensity};
+  Vector light_vector{(light.position - position).Normalize()};
+  Color ambient_color{effective_color * material.ambient};
+
+  double light_dot_normal = DotProduct(light_vector, normal_vector);
+
+  Color diffuse_color{0, 0, 0};
+  Color specular_color{0, 0, 0};
+
+  if (light_dot_normal >= 0.0) {
+    diffuse_color = effective_color * material.diffuse * light_dot_normal;
+
+    Vector reflect_vector = -light_vector.Reflect(normal_vector);
+    double reflect_dot_eye = DotProduct(reflect_vector, eye_vector);
+
+    if (reflect_dot_eye > 0.0) {
+      double factor = std::pow(reflect_dot_eye, material.shininess);
+      specular_color = light.intensity * material.specular * factor;
+    }
+  }
+
+  return ambient_color + diffuse_color + specular_color;
 }
