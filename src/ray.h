@@ -126,8 +126,7 @@ struct Hits {
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
 
-void CastShape(const Canvas& canvas, const Point& ray_origin,
-               const Sphere& shape, const Color& color, double wall_z,
-               double wall_size) noexcept;
+void CastShape(Canvas* canvas, const Point& ray_origin, const Sphere& shape,
+               double wall_z, double wall_size) noexcept;
 
 #endif  // SRC_RAY_H_

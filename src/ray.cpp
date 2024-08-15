@@ -4,6 +4,8 @@
 #include <src/vector.h>
 
 #include <cstdio>
+#include <memory>
+#include <thread>
 
 Ray::Ray(const Point& origin, const Vector& direction) noexcept
     : origin(origin), direction(direction) {}
@@ -331,24 +333,57 @@ int32_t Hits::FirstHitIdx() noexcept {
   return -1;
 }
 
-void CastShape(const Canvas& canvas, const Point& ray_origin,
-               const Sphere& shape, const Color& color, double wall_z,
-               double wall_size) noexcept {
-  double pixel_size = wall_size / static_cast<double>(canvas.width);
-  double half_wall_size = wall_size / 2;
+struct DrawRegionContext {
+  const Point& ray_origin;
+  const Sphere& shape;
+  double wall_z;
+  double pixel_size;
+  double half_wall_size;
+  size_t start;
+  size_t end;
+};
 
-  for (size_t y = 0; y < canvas.height; ++y) {
-    double world_y = half_wall_size - pixel_size * y;
-    for (size_t x = 0; x < canvas.width; ++x) {
-      double world_x = -half_wall_size + pixel_size * x;
+static inline void DrawRegion(Canvas* canvas,
+                              const DrawRegionContext& context) {
+  for (size_t y = context.start; y < context.end; ++y) {
+    double world_y = context.half_wall_size - context.pixel_size * y;
+    for (size_t x = 0; x < canvas->width; ++x) {
+      double world_x = -context.half_wall_size + context.pixel_size * x;
 
-      Point position{world_x, world_y, wall_z};
-      Ray ray{ray_origin, (position - ray_origin).Normalize()};
-      Hits hits{ray.Intersect(shape)};
+      Point position{world_x, world_y, context.wall_z};
+      Ray ray{context.ray_origin, (position - context.ray_origin).Normalize()};
+      Hits hits{ray.Intersect(context.shape)};
 
       if (hits.count > 0) {
-        canvas.WritePixelColor(x, y, color);
+        canvas->WritePixelColor(x, y, context.shape.material.color);
       }
     }
+  }
+}
+
+#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+void CastShape(Canvas* canvas, const Point& ray_origin, const Sphere& shape,
+               double wall_z, double wall_size) noexcept {
+  double pixel_size = wall_size / static_cast<double>(canvas->width);
+  double half_wall_size = wall_size / 2;
+
+  std::thread workers[10];
+  size_t workers_count = ArraySize(workers);
+  size_t chunk_size = canvas->height / workers_count;
+
+  for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {
+    size_t start = chunk_size * worker_idx;
+    size_t end =
+        (worker_idx == workers_count - 1) ? canvas->height : start + chunk_size;
+
+    DrawRegionContext context = {ray_origin,     shape, wall_z, pixel_size,
+                                 half_wall_size, start, end};
+
+    workers[worker_idx] = std::thread(DrawRegion, canvas, context);
+  }
+
+  for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {
+    workers[worker_idx].join();
   }
 }

@@ -374,7 +374,7 @@ static inline void TestCanvas(TestFramework* fw) {
       }
     }
 
-    Path file_path = Join(fw->root, "\\data\\canvas.ppm");
+    Path file_path = Join(fw->root, "/data/canvas.ppm");
     bool res = canvas.SaveToPPM(file_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -383,10 +383,10 @@ static inline void TestCanvas(TestFramework* fw) {
   fw->Run("Load canvas from PPM", "Canvas", [fw]() -> bool {
     Canvas canvas{0, 0};
 
-    Path input_path = Join(fw->root, "\\data\\canvas.ppm");
+    Path input_path = Join(fw->root, "/data/canvas.ppm");
     bool res1 = canvas.LoadFromPPM(input_path);
 
-    Path output_path = Join(fw->root, "\\data\\canvas_output.ppm");
+    Path output_path = Join(fw->root, "/data/canvas_output.ppm");
     bool res2 = canvas.SaveToPPM(output_path);
 
     bool actual =
@@ -419,7 +419,7 @@ static inline void TestCanvas(TestFramework* fw) {
       proj.velocity = proj.velocity + env.gravity + env.wind;
     }
 
-    Path output_path = Join(fw->root, "\\data\\projectile.ppm");
+    Path output_path = Join(fw->root, "/data/projectile.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -1079,7 +1079,7 @@ static inline void TestMatrix(TestFramework* fw) {
       canvas.WritePixelColor(pos_x, pos_y, green);
     }
 
-    Path output_path = Join(fw->root, "\\data\\clock.ppm");
+    Path output_path = Join(fw->root, "/data/clock.ppm");
     bool res = canvas.SaveToPPM(output_path);
 
     return ASSERT_EQUAL(bool, res, true);
@@ -1313,14 +1313,14 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    Color color{.26, .96, .53};
+    shape.material.color = {.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
+    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_sphere.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_sphere.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
@@ -1331,15 +1331,15 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
+    shape.material.color = {.26, .96, .53};
     shape.transform_matrix = Scale(1, .5, 1);
-    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
+    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_oval1.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_oval1.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
@@ -1350,15 +1350,15 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
+    shape.material.color = {.26, .96, .53};
     shape.transform_matrix = Scale(.5, 1, 1);
-    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
+    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_oval2.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_oval2.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
@@ -1369,34 +1369,34 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
+    shape.material.color = {.26, .96, .53};
     shape.transform_matrix = Scale(.5, 1, 1).RotateZ(PI / 4);
-    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
+    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_rotated_oval.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_rotated_oval.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
 
-  fw->Run("Cast rays at a rotated oval", "Rays", [fw]() -> bool {
+  fw->Run("Cast rays at a skewed oval", "Rays", [fw]() -> bool {
     size_t canvas_size = 100;
     Canvas canvas{canvas_size, canvas_size};
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
+    shape.material.color = {.26, .96, .53};
     shape.transform_matrix = Shear(XY).Scale(.5, 1, 1);
-    Color color{.26, .96, .53};
 
     double wall_z = 10.0;
     double wall_size = 7.0;
 
-    CastShape(canvas, ray_origin, shape, color, wall_z, wall_size);
+    CastShape(&canvas, ray_origin, shape, wall_z, wall_size);
 
-    canvas.SaveToPPM(Join(fw->root, "\\data\\casted_skewed_oval.ppm"));
+    canvas.SaveToPPM(Join(fw->root, "/data/casted_skewed_oval.ppm"));
 
     return ASSERT_EQUAL(bool, true, true);
   });
@@ -1513,6 +1513,13 @@ static inline void TestShading(TestFramework* fw) {
     Sphere sphere2;
 
     return ASSERT_EQUAL(Material, sphere1.material, sphere2.material);
+  });
+
+  fw->Run("Assign a material to a sphere", "Shading", []() -> bool {
+    Material material{{1, 0, 1}, 0, 0, 0, 0};
+    Sphere sphere1{material};
+
+    return ASSERT_EQUAL(Material, sphere1.material, material);
   });
 }
 
