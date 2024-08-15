@@ -27,8 +27,8 @@ Path Join(const char* left, const char* right) noexcept {
   size_t length1 = strlen(left);
   size_t length2 = strlen(right);
 
-  bool leftHasSeparator = (length1 > 0 && left[length1 - 1] == '\\');
-  bool rightHasSeparator = (length2 > 0 && right[0] == '\\');
+  bool leftHasSeparator = (length1 > 0 && left[length1 - 1] == '/');
+  bool rightHasSeparator = (length2 > 0 && right[0] == '/');
   assert(leftHasSeparator || rightHasSeparator || "No separator specified");
 
   size_t length = length1 + length2 + 1;
