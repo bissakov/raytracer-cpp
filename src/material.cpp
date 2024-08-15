@@ -46,7 +46,7 @@ bool Material::operator!=(const Material &other) const noexcept {
 }
 
 Material::operator const char *() const noexcept {
-  static char buffer[100];
+  static char buffer[200];
   snprintf(buffer, sizeof(buffer),
            "Material{color=%s, ambient=%.2f, diffuse=%.2f, specular=%.2f, "
            "shininess=%.2f}",
