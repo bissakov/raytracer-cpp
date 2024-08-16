@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <string>
 
 struct Color {
   double r;
@@ -21,7 +22,8 @@ struct Color {
 
   bool IsColorInRange() const;
   const char* ToHex() const;
-  operator const char*() const noexcept;
+
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Color& c);
@@ -34,7 +36,7 @@ struct Pixel {
   bool operator==(const Pixel& other) const;
   bool operator!=(const Pixel& other) const;
 
-  operator const char*() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Pixel& p);

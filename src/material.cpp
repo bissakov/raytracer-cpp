@@ -1,6 +1,8 @@
 #include <src/material.h>
 #include <src/test_suite.h>
 
+#include <format>
+
 Material::Material() noexcept
     : color({1, 1, 1}),
       ambient(.1),
@@ -45,16 +47,14 @@ bool Material::operator!=(const Material &other) const noexcept {
   return !(*this == other);
 }
 
-Material::operator const char *() const noexcept {
-  static char buffer[200];
-  snprintf(buffer, sizeof(buffer),
-           "Material{color=%s, ambient=%.2f, diffuse=%.2f, specular=%.2f, "
-           "shininess=%.2f}",
-           (const char *)color, ambient, diffuse, specular, shininess);
-  return buffer;
+Material::operator std::string() const noexcept {
+  return std::format(
+      "Material(color={}, ambient={:.2f}, diffuse={:.2f}, specular={:.2f}, "
+      "shininess={:.2f})",
+      std::string(color), ambient, diffuse, specular, shininess);
 }
 
 std::ostream &operator<<(std::ostream &os, const Material &material) {
-  os << (const char *)material;
+  os << std::string(material);
   return os;
 }

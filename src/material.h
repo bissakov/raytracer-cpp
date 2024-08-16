@@ -3,6 +3,8 @@
 
 #include <src/pixel.h>
 
+#include <string>
+
 struct Material {
   Color color;
   double ambient;
@@ -19,7 +21,7 @@ struct Material {
   bool operator==(const Material &other) const noexcept;
   bool operator!=(const Material &other) const noexcept;
 
-  operator const char *() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream &operator<<(std::ostream &os, const Material &material);

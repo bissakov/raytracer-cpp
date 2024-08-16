@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <memory>
+#include <string>
 
 struct Canvas {
   size_t width;
@@ -24,7 +25,11 @@ struct Canvas {
                        const Color &color) const noexcept;
   bool SaveToPPM(const Path &file_path) noexcept;
   bool LoadFromPPM(const Path &file_path) noexcept;
+
+  operator std::string() const noexcept;
 };
+
+std::ostream &operator<<(std::ostream &os, const Canvas &c);
 
 constexpr bool Canvas::IsPixelInRange(const size_t pos_x,
                                       const size_t pos_y) const noexcept {

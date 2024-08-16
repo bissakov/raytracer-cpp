@@ -5,6 +5,8 @@
 #include <src/vector.h>
 
 #include <cstdio>
+#include <format>
+#include <string>
 #include <thread>
 
 Ray::Ray(const Point& origin, const Vector& direction) noexcept
@@ -27,18 +29,6 @@ bool Ray::operator==(const Ray& other) const {
 
 bool Ray::operator!=(const Ray& other) const {
   return !(*this == other);
-}
-
-Ray::operator const char*() const noexcept {
-  static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Ray{origin=%s, direction=%s}",
-           (const char*)origin, (const char*)direction);
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Ray& ray) {
-  os << (const char*)ray;
-  return os;
 }
 
 Point Ray::Position(double t) noexcept {
@@ -118,20 +108,6 @@ bool Sphere::operator!=(const Sphere& other) const {
   return !(*this == other);
 }
 
-Sphere::operator const char*() const noexcept {
-  static char buffer[200];
-  snprintf(buffer, sizeof(buffer),
-           "Sphere{origin=%s, transform=%s, radius=%.2f, material=%s}",
-           (const char*)origin, (const char*)transform_matrix, radius,
-           (const char*)material);
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
-  os << (const char*)sphere;
-  return os;
-}
-
 Vector Sphere::NormalAt(const Point& world_point) noexcept {
   Point object_point{transform_matrix.Inverse() * world_point};
   Vector object_normal{object_point - origin};
@@ -160,24 +136,6 @@ bool Object::operator==(const Object& other) const {
 
 bool Object::operator!=(const Object& other) const {
   return !(*this == other);
-}
-
-Object::operator const char*() const noexcept {
-  static char buffer[100];
-
-  switch (type) {
-    case (1): {
-      snprintf(buffer, sizeof(buffer), "Object{type=SPHERE, data=%s}",
-               (const char*)(*reinterpret_cast<Sphere*>(data)));
-      break;
-    }
-  }
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Object& object) {
-  os << (const char*)object;
-  return os;
 }
 
 Hit::Hit() noexcept : t(0.0) {}
@@ -216,18 +174,6 @@ bool Hit::operator>(const Hit& other) const {
 
 bool Hit::operator>=(const Hit& other) const {
   return t >= other.t;
-}
-
-Hit::operator const char*() const noexcept {
-  static char buffer[200];
-  snprintf(buffer, sizeof(buffer), "Hit{t=%.2f, object=%s}", t,
-           (const char*)object);
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Hit& hit) {
-  os << (const char*)hit;
-  return os;
 }
 
 Hits::Hits() noexcept : count(0) {}
@@ -270,39 +216,6 @@ bool Hits::operator==(const Hits& other) const {
 
 bool Hits::operator!=(const Hits& other) const {
   return !(*this == other);
-}
-
-Hits::operator const char*() const noexcept {
-  static char buffer[HITS_BUFFER_SIZE];
-
-  if (count == 0) {
-    snprintf(buffer, sizeof(buffer), "Hits{count=%zu}", count);
-    return buffer;
-  }
-
-  size_t buffer_pos =
-      snprintf(buffer, sizeof(buffer), "Hits{count=%zu, ", count);
-
-  for (size_t i = 0; i < count; ++i) {
-    int written = snprintf(buffer + buffer_pos, HITS_BUFFER_SIZE - buffer_pos,
-                           "%s", (const char*)hits[i]);
-    buffer_pos += written;
-
-    if (i < count - 1) {
-      buffer[buffer_pos++] = ',';
-      buffer[buffer_pos++] = ' ';
-    }
-  }
-
-  buffer[buffer_pos++] = '}';
-  buffer[buffer_pos] = '\0';
-
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Hits& hits) {
-  os << (const char*)hits;
-  return os;
 }
 
 void Hits::Push(const Hit& hit) noexcept {
@@ -452,4 +365,79 @@ void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
   for (size_t worker_idx = 0; worker_idx < workers_count; ++worker_idx) {
     workers[worker_idx].join();
   }
+}
+
+Ray::operator std::string() const noexcept {
+  return std::format("Ray(origin={}, direction={})", std::string(origin),
+                     std::string(direction));
+}
+
+std::ostream& operator<<(std::ostream& os, const Ray& ray) {
+  os << std::string(ray);
+  return os;
+}
+
+Sphere::operator std::string() const noexcept {
+  return std::format(
+      "Sphere(origin={}, transform={}, radius={:.2f}, material={})",
+      std::string(origin), std::string(transform_matrix), radius,
+      std::string(material));
+}
+
+std::ostream& operator<<(std::ostream& os, const Sphere& sphere) {
+  os << std::string(sphere);
+  return os;
+}
+
+Object::operator std::string() const noexcept {
+  switch (type) {
+    case (1): {
+      Sphere sphere = *reinterpret_cast<Sphere*>(data);
+      return std::format("Object(type=SPHERE, data={})", std::string(sphere));
+    }
+    default: {
+      return "Object(type=UNKNOWN)";
+    }
+  }
+}
+
+std::ostream& operator<<(std::ostream& os, const Object& object) {
+  os << std::string(object);
+  return os;
+}
+
+Hit::operator std::string() const noexcept {
+  return std::format("Hit(t={:.2f}, object={})", t, std::string(object));
+}
+
+std::ostream& operator<<(std::ostream& os, const Hit& hit) {
+  os << std::string(hit);
+  return os;
+}
+
+Hits::operator std::string() const noexcept {
+  std::string str = std::format("Hits(count={}", count);
+
+  if (count == 0) {
+    str += "}";
+    return str;
+  }
+
+  str += ", ";
+
+  for (size_t i = 0; i < count; ++i) {
+    str += std::string(hits[i]);
+    if (i < count - 1) {
+      str += ", ";
+    }
+  }
+
+  str += ')';
+
+  return str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Hits& hits) {
+  os << std::string(hits);
+  return os;
 }

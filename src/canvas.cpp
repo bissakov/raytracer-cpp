@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
+#include <format>
 #include <memory>
 #include <string>
 
@@ -218,3 +219,8 @@ bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
 
   return height > 0 && width > 0;
 }
+Canvas::operator std::string() const noexcept {
+  return std::format("Canvas(width={}, height={})", width, height);
+}
+
+std::ostream& operator<<(std::ostream& os, const Canvas& c);

@@ -5,6 +5,8 @@
 #include <src/pixel.h>
 #include <src/point.h>
 
+#include <string>
+
 struct PointLight {
   Color intensity;
   Point position;
@@ -17,7 +19,7 @@ struct PointLight {
   bool operator==(const PointLight &other) const noexcept;
   bool operator!=(const PointLight &other) const noexcept;
 
-  operator const char *() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream &operator<<(std::ostream &os, const PointLight &point_light);

@@ -2,6 +2,7 @@
 #define SRC_POINT_H_
 
 #include <iostream>
+#include <string>
 
 typedef struct Vector Vector;
 
@@ -26,7 +27,7 @@ struct Point {
   bool operator==(const Point& other) const;
   bool operator!=(const Point& other) const;
 
-  operator const char*() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Point& p);

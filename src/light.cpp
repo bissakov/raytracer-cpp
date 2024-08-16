@@ -4,6 +4,7 @@
 #include <src/vector.h>
 
 #include <cmath>
+#include <format>
 
 PointLight::PointLight() noexcept {}
 
@@ -27,18 +28,6 @@ bool PointLight::operator==(const PointLight &other) const noexcept {
 
 bool PointLight::operator!=(const PointLight &other) const noexcept {
   return !(*this == other);
-}
-
-PointLight::operator const char *() const noexcept {
-  static char buffer[200];
-  snprintf(buffer, sizeof(buffer), "PointLight{intensity=%s, position=%s}",
-           (const char *)intensity, (const char *)position);
-  return buffer;
-}
-
-std::ostream &operator<<(std::ostream &os, const PointLight &point_light) {
-  os << (const char *)point_light;
-  return os;
 }
 
 Color Lighting(const Material &material, const PointLight &light,
@@ -66,4 +55,14 @@ Color Lighting(const Material &material, const PointLight &light,
   }
 
   return ambient_color + diffuse_color + specular_color;
+}
+
+PointLight::operator std::string() const noexcept {
+  return std::format("PointLight(intensity={}, position={})",
+                     std::string(intensity), std::string(position));
+}
+
+std::ostream &operator<<(std::ostream &os, const PointLight &point_light) {
+  os << std::string(point_light);
+  return os;
 }

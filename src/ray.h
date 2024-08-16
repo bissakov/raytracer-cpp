@@ -9,6 +9,8 @@
 #include <src/point.h>
 #include <src/vector.h>
 
+#include <string>
+
 #define HITS_BUFFER_SIZE 10240
 
 typedef struct Hits Hits;
@@ -33,9 +35,9 @@ struct Sphere {
   bool operator==(const Sphere& other) const;
   bool operator!=(const Sphere& other) const;
 
-  operator const char*() const noexcept;
-
   Vector NormalAt(const Point& point) noexcept;
+
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Sphere& sphere);
@@ -51,7 +53,8 @@ struct Object {
 
   bool operator==(const Object& other) const;
   bool operator!=(const Object& other) const;
-  operator const char*() const noexcept;
+
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Object& object);
@@ -67,11 +70,12 @@ struct Ray {
 
   bool operator==(const Ray& other) const;
   bool operator!=(const Ray& other) const;
-  operator const char*() const noexcept;
 
   Point Position(double t) noexcept;
   Hits Intersect(Sphere sphere) noexcept;
   Ray Transform(Matrix transform) noexcept;
+
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Ray& ray);
@@ -92,7 +96,7 @@ struct Hit {
   bool operator>(const Hit& other) const;
   bool operator>=(const Hit& other) const;
 
-  operator const char*() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Hit& hit);
@@ -118,10 +122,10 @@ struct Hits {
   bool operator==(const Hits& other) const;
   bool operator!=(const Hits& other) const;
 
-  operator const char*() const noexcept;
-
   void Push(const Hit& hit) noexcept;
   int32_t FirstHitIdx() noexcept;
+
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Hits& hits);

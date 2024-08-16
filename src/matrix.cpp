@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <string>
 
 Matrix::Matrix() noexcept : rows(0), cols(0) {}
 
@@ -156,34 +157,6 @@ Matrix Matrix::Inverse() noexcept {
   return inversed_matrix;
 }
 
-Matrix::operator const char*() const noexcept {
-  static char buffer[BUFFER_SIZE];
-  size_t buffer_pos = snprintf(
-      buffer, sizeof(buffer), "Matrix{\n  rows=%zu, cols=%zu,\n  ", rows, cols);
-
-  for (size_t row = 0; row < rows; ++row) {
-    for (size_t col = 0; col < cols; ++col) {
-      int written = snprintf(buffer + buffer_pos, BUFFER_SIZE - buffer_pos,
-                             "%.2f ", At(row, col));
-      buffer_pos += written;
-    }
-    buffer[buffer_pos++] = '\n';
-    if (row < rows - 1) {
-      buffer[buffer_pos++] = ' ';
-      buffer[buffer_pos++] = ' ';
-    }
-  }
-  buffer[buffer_pos++] = '}';
-  buffer[buffer_pos] = '\0';
-
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Matrix& m) {
-  os << (const char*)m;
-  return os;
-}
-
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
   if (a.rows != b.rows || a.cols != b.cols) {
     return false;
@@ -319,4 +292,27 @@ Matrix Shear(ShearType shear_type) {
   }
 
   return matrix;
+}
+
+Matrix::operator std::string() const noexcept {
+  std::string str = "Matrix{\n  rows=" + std::to_string(rows) +
+                    ", cols=" + std::to_string(cols) + ",\n  ";
+
+  for (size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < cols; ++col) {
+      str += std::to_string(At(row, col));
+    }
+    str += "\n";
+    if (row < rows - 1) {
+      str += "  ";
+    }
+  }
+  str += "}";
+
+  return str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+  os << std::string(m);
+  return os;
 }

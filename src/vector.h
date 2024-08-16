@@ -2,6 +2,7 @@
 #define SRC_VECTOR_H_
 
 #include <iostream>
+#include <string>
 
 typedef struct Point Point;
 
@@ -37,7 +38,7 @@ struct Vector {
   Vector CrossProduct(const Vector& other) const;
   Vector Reflect(const Vector& normal) const;
 
-  operator const char*() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);

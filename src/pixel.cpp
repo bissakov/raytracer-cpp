@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <cstdio>
+#include <format>
 
 Color Color::operator+(const Color& other) const {
   return {r + other.r, g + other.g, b + other.b};
@@ -43,7 +44,7 @@ bool Color::IsColorInRange() const {
 const char* Color::ToHex() const {
   assert(IsColorInRange() && "Color out of range");
 
-  const char* hex_chars = "0123456789abcdef";
+  std::string hex_chars = "0123456789abcdef";
   static char hex[7];
 
   size_t red = Clamp(static_cast<size_t>(r * 255.0f), 0, 255);
@@ -61,17 +62,6 @@ const char* Color::ToHex() const {
   return hex;
 }
 
-Color::operator const char*() const noexcept {
-  static char buffer[30];
-  snprintf(buffer, sizeof(buffer), "Color{r=%.02f, g=%.02f, b=%.02f}", r, g, b);
-  return buffer;
-}
-
-std::ostream& operator<<(std::ostream& os, const Color& c) {
-  os << (const char*)c;
-  return os;
-}
-
 bool Pixel::operator==(const Pixel& other) const {
   return IsEqualDouble(color.r, other.color.r) &&
          IsEqualDouble(color.g, other.color.g) &&
@@ -83,14 +73,20 @@ bool Pixel::operator!=(const Pixel& other) const {
          !IsEqualDouble(color.b, other.color.b);
 }
 
-Pixel::operator const char*() const noexcept {
-  static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Pixel{x=%zu, y=%zu, color={%f, %f, %f}}", x,
-           y, color.r, color.g, color.b);
-  return buffer;
+Color::operator std::string() const noexcept {
+  return std::format("Color(r={:.2f}, g={:.2f}, b={:.2f})", r, g, b);
+}
+
+std::ostream& operator<<(std::ostream& os, const Color& c) {
+  os << std::string(c);
+  return os;
+}
+
+Pixel::operator std::string() const noexcept {
+  return std::format("Pixel(x={}, y={}, color={})", x, y, std::string(color));
 }
 
 std::ostream& operator<<(std::ostream& os, const Pixel& p) {
-  os << (const char*)p;
+  os << std::string(p);
   return os;
 }

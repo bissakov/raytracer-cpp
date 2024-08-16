@@ -2,6 +2,7 @@
 #include <src/test_suite.h>
 
 #include <cassert>
+#include <format>
 
 Point::Point() noexcept : x(0.0), y(0.0), z(0.0), w(1.0) {}
 
@@ -70,14 +71,12 @@ bool Point::operator!=(const Point &p) const {
   return !(*this == p);
 }
 
-Point::operator const char *() const noexcept {
-  static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Point{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
-           y, z, w);
-  return buffer;
+Point::operator std::string() const noexcept {
+  return std::format("Point(x={:.2f}, y={:.2f}, z={:.2f}, w={:.2f})", x, y, z,
+                     w);
 }
 
 std::ostream &operator<<(std::ostream &os, const Point &p) {
-  os << (const char *)p;
+  os << std::string(p);
   return os;
 }

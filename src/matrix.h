@@ -5,6 +5,7 @@
 #include <src/vector.h>
 
 #include <cassert>
+#include <string>
 
 #define MAX_MATRIX_SIZE 16
 #define BUFFER_SIZE 300
@@ -52,7 +53,7 @@ struct Matrix {
   constexpr void Set(const size_t row, const size_t col,
                      const double value) noexcept;
 
-  operator const char*() const noexcept;
+  operator std::string() const noexcept;
 };
 
 std::ostream& operator<<(std::ostream& os, const Matrix& m);

@@ -3,7 +3,9 @@
 
 #include <cassert>
 #include <cmath>
+#include <format>
 #include <iostream>
+#include <string>
 
 Vector::Vector() noexcept : x(0.0), y(0.0), z(0.0), w(0.0) {}
 
@@ -111,14 +113,12 @@ Vector Vector::Reflect(const Vector &normal) const {
   return *this - normal * 2 * DotProduct(normal);
 }
 
-Vector::operator const char *() const noexcept {
-  static char buffer[100];
-  snprintf(buffer, sizeof(buffer), "Vector{x=%.2f, y=%.2f, z=%.2f, w=%.2f}", x,
-           y, z, w);
-  return buffer;
+Vector::operator std::string() const noexcept {
+  return std::format("Vector(x={:.2f}, y={:.2f}, z={:.2f},w={:.2f})", x, y, z,
+                     w);
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &v) {
-  os << (const char *)v;
+  os << std::string(v);
   return os;
 }
