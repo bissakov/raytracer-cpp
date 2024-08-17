@@ -1,20 +1,25 @@
 #ifndef SRC_POINT_H_
 #define SRC_POINT_H_
 
+#include <immintrin.h>
+
 #include <iostream>
 #include <string>
 
 typedef struct Vector Vector;
 
 struct Point {
-  double x;
-  double y;
-  double z;
-  double w;
+  union {
+    __m256d vec;
+    struct {
+      double x, y, z, w;
+    };
+  };
 
   Point() noexcept;
   Point(const double x, const double y, const double z) noexcept;
   Point(const Point& other) noexcept;
+  explicit Point(const __m256d vec) noexcept;
   Point& operator=(const Point& other) noexcept;
 
   double& operator[](const size_t index);

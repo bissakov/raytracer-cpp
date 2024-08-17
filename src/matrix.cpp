@@ -1,3 +1,4 @@
+#include <immintrin.h>
 #include <src/matrix.h>
 #include <src/test_suite.h>
 
@@ -8,26 +9,29 @@
 Matrix::Matrix() noexcept : rows(0), cols(0) {}
 
 Matrix::Matrix(const size_t rows, const size_t cols) noexcept
-    : rows(rows), cols(cols) {
-  for (size_t i = 0; i < MAX_MATRIX_SIZE; ++i) {
-    values[i] = 0.0;
-  }
-}
+    : rows(rows),
+      cols(cols),
+      row0(_mm256_setzero_pd()),
+      row1(_mm256_setzero_pd()),
+      row2(_mm256_setzero_pd()),
+      row3(_mm256_setzero_pd()) {}
 
 Matrix::Matrix(const Matrix& other) noexcept
-    : rows(other.rows), cols(other.cols) {
-  for (size_t i = 0; i < rows * cols; ++i) {
-    values[i] = other.values[i];
-  }
-}
+    : rows(other.rows),
+      cols(other.cols),
+      row0(other.row0),
+      row1(other.row1),
+      row2(other.row2),
+      row3(other.row3) {}
 
 Matrix& Matrix::operator=(const Matrix& other) noexcept {
   if (this != &other) {
     rows = other.rows;
     cols = other.cols;
-    for (size_t i = 0; i < rows * cols; ++i) {
-      values[i] = other.values[i];
-    }
+    row0 = other.row0;
+    row1 = other.row1;
+    row2 = other.row2;
+    row3 = other.row3;
   }
   return *this;
 }
@@ -63,7 +67,7 @@ Point Matrix::operator*(const Point& point) noexcept {
 Matrix Matrix::operator/(const double scalar) noexcept {
   Matrix res = {rows, cols};
   for (size_t i = 0; i < rows * cols; ++i) {
-    res.values[i] /= scalar;
+    res[i] /= scalar;
   }
   return res;
 }
@@ -80,7 +84,7 @@ void Matrix::Populate(double* elements, size_t element_count) noexcept {
   assert(element_count == rows * cols &&
          "Invalid number of elements to populate matrix");
   for (size_t i = 0; i < rows * cols; ++i) {
-    values[i] = elements[i];
+    (*this)[i] = elements[i];
   }
 }
 
@@ -163,7 +167,7 @@ bool IsEqual(const Matrix& a, const Matrix& b) noexcept {
   }
 
   for (size_t i = 0; i < a.rows * a.cols; ++i) {
-    if (!IsEqualDouble(a.values[i], b.values[i])) {
+    if (!IsEqualDouble(a[i], b[i])) {
       return false;
     }
   }
@@ -186,31 +190,31 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   return res;
 }
 
-Matrix Matrix::Translate(double x, double y, double z) {
+Matrix Matrix::Translate(double x, double y, double z) noexcept {
   return ::Translate(x, y, z) * (*this);
 }
 
-Matrix Matrix::Scale(double x, double y, double z) {
+Matrix Matrix::Scale(double x, double y, double z) noexcept {
   return ::Scale(x, y, z) * (*this);
 }
 
-Matrix Matrix::RotateX(double radians) {
+Matrix Matrix::RotateX(double radians) noexcept {
   return ::RotateX(radians) * (*this);
 }
 
-Matrix Matrix::RotateY(double radians) {
+Matrix Matrix::RotateY(double radians) noexcept {
   return ::RotateY(radians) * (*this);
 }
 
-Matrix Matrix::RotateZ(double radians) {
+Matrix Matrix::RotateZ(double radians) noexcept {
   return ::RotateZ(radians) * (*this);
 }
 
-Matrix Matrix::Shear(ShearType shear_type) {
+Matrix Matrix::Shear(ShearType shear_type) noexcept {
   return ::Shear(shear_type) * (*this);
 }
 
-Matrix Identity() {
+Matrix Identity() noexcept {
   Matrix identity_matrix = {4, 4};
   double elements[] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
   identity_matrix.Populate(elements,
@@ -218,7 +222,7 @@ Matrix Identity() {
   return identity_matrix;
 }
 
-Matrix Translate(double x, double y, double z) {
+Matrix Translate(double x, double y, double z) noexcept {
   Matrix matrix = Identity();
   matrix.Set(0, 3, x);
   matrix.Set(1, 3, y);
@@ -226,7 +230,7 @@ Matrix Translate(double x, double y, double z) {
   return matrix;
 }
 
-Matrix Scale(double x, double y, double z) {
+Matrix Scale(double x, double y, double z) noexcept {
   Matrix matrix = Identity();
   matrix.Set(0, 0, x);
   matrix.Set(1, 1, y);
@@ -234,7 +238,7 @@ Matrix Scale(double x, double y, double z) {
   return matrix;
 }
 
-Matrix RotateX(double radians) {
+Matrix RotateX(double radians) noexcept {
   Matrix matrix = Identity();
   matrix.Set(1, 1, std::cos(radians));
   matrix.Set(1, 2, -std::sin(radians));
@@ -243,7 +247,7 @@ Matrix RotateX(double radians) {
   return matrix;
 }
 
-Matrix RotateY(double radians) {
+Matrix RotateY(double radians) noexcept {
   Matrix matrix = Identity();
   matrix.Set(0, 0, std::cos(radians));
   matrix.Set(0, 2, std::sin(radians));
@@ -252,7 +256,7 @@ Matrix RotateY(double radians) {
   return matrix;
 }
 
-Matrix RotateZ(double radians) {
+Matrix RotateZ(double radians) noexcept {
   Matrix matrix = Identity();
   matrix.Set(0, 0, std::cos(radians));
   matrix.Set(0, 1, -std::sin(radians));
@@ -261,7 +265,7 @@ Matrix RotateZ(double radians) {
   return matrix;
 }
 
-Matrix Shear(ShearType shear_type) {
+Matrix Shear(ShearType shear_type) noexcept {
   Matrix matrix = Identity();
 
   switch (shear_type) {

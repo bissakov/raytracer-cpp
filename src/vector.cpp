@@ -1,3 +1,5 @@
+#include <emmintrin.h>
+#include <immintrin.h>
 #include <src/test_suite.h>
 #include <src/vector.h>
 
@@ -7,20 +9,18 @@
 #include <iostream>
 #include <string>
 
-Vector::Vector() noexcept : x(0.0), y(0.0), z(0.0), w(0.0) {}
+Vector::Vector() noexcept : vec(_mm256_setzero_pd()) {}
 
 Vector::Vector(const double x, const double y, const double z) noexcept
-    : x(x), y(y), z(z), w(0.0) {}
+    : vec(_mm256_set_pd(0.0, z, y, x)) {}
 
-Vector::Vector(const Vector &other) noexcept
-    : x(other.x), y(other.y), z(other.z), w(other.w) {}
+Vector::Vector(const Vector &other) noexcept : vec(other.vec) {}
+
+Vector::Vector(const __m256d vec) noexcept : vec(vec) {}
 
 Vector &Vector::operator=(const Vector &other) noexcept {
   if (this != &other) {
-    x = other.x;
-    y = other.y;
-    z = other.z;
-    w = other.w;
+    vec = other.vec;
   }
   return *this;
 }
@@ -54,22 +54,23 @@ const double &Vector::operator[](const size_t index) const {
 }
 
 Vector Vector::operator+(const Vector &other) const {
-  return {x + other.x, y + other.y, z + other.z};
+  return Vector{_mm256_add_pd(vec, other.vec)};
 }
 
 Vector Vector::operator-(const Vector &other) const {
-  return {x - other.x, y - other.y, z - other.z};
+  return Vector{_mm256_sub_pd(vec, other.vec)};
 }
 
 Vector Vector::operator*(const double scalar) const {
-  return {x * scalar, y * scalar, z * scalar};
+  return Vector{_mm256_mul_pd(vec, _mm256_set1_pd(scalar))};
 }
 
 Vector Vector::operator/(const double scalar) const {
-  return {x / scalar, y / scalar, z / scalar};
+  return Vector{_mm256_div_pd(vec, _mm256_set1_pd(scalar))};
 }
 
 bool Vector::operator==(const Vector &other) const {
+  // TODO(bissakov): use AVX instructions
   return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
          IsEqualDouble(z, other.z);
 }
@@ -79,19 +80,20 @@ bool Vector::operator!=(const Vector &other) const {
 }
 
 Vector Vector::operator-() const {
-  return {-x, -y, -z};
+  return Vector{_mm256_mul_pd(vec, _mm256_set1_pd(-1))};
 }
 
 double Vector::Magnitude() const {
+  // TODO(bissakov): use AVX instructions
   return std::sqrt(x * x + y * y + z * z);
 }
 
 Vector Vector::Normalize() const {
-  double magnitude = Magnitude();
-  return {x / magnitude, y / magnitude, z / magnitude};
+  return Vector{_mm256_div_pd(vec, _mm256_set1_pd(Magnitude()))};
 }
 
 double DotProduct(const Vector &left, const Vector &right) {
+  // TODO(bissakov): use AVX instructions
   return left.x * right.x + left.y * right.y + left.z * right.z;
 }
 
@@ -100,6 +102,7 @@ double Vector::DotProduct(const Vector &other) const {
 }
 
 Vector CrossProduct(const Vector &left, const Vector &right) {
+  // TODO(bissakov): use AVX instructions
   return {left.y * right.z - left.z * right.y,
           left.z * right.x - left.x * right.z,
           left.x * right.y - left.y * right.x};

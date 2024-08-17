@@ -1,23 +1,22 @@
+#include <immintrin.h>
 #include <src/point.h>
 #include <src/test_suite.h>
 
 #include <cassert>
 #include <format>
 
-Point::Point() noexcept : x(0.0), y(0.0), z(0.0), w(1.0) {}
+Point::Point() noexcept : vec(_mm256_setzero_pd()) {}
 
 Point::Point(const double x, const double y, const double z) noexcept
-    : x(x), y(y), z(z), w(1.0) {}
+    : vec(_mm256_set_pd(1.0, z, y, x)) {}
 
-Point::Point(const Point &other) noexcept
-    : x(other.x), y(other.y), z(other.z), w(other.w) {}
+Point::Point(const Point &other) noexcept : vec(other.vec) {}
+
+Point::Point(const __m256d vec) noexcept : vec(vec) {}
 
 Point &Point::operator=(const Point &other) noexcept {
   if (this != &other) {
-    x = other.x;
-    y = other.y;
-    z = other.z;
-    w = other.w;
+    vec = other.vec;
   }
   return *this;
 }
@@ -51,18 +50,19 @@ const double &Point::operator[](const size_t index) const {
 }
 
 Point Point::operator+(const Vector &other) const {
-  return {x + other.x, y + other.y, z + other.z};
+  return Point{_mm256_add_pd(vec, other.vec)};
 }
 
 Point Point::operator-(const Vector &other) const {
-  return {x - other.x, y - other.y, z - other.z};
+  return Point{_mm256_sub_pd(vec, other.vec)};
 }
 
 Vector Point::operator-(const Point &other) const {
-  return {x - other.x, y - other.y, z - other.z};
+  return Vector{_mm256_sub_pd(vec, other.vec)};
 }
 
 bool Point::operator==(const Point &other) const {
+  // TODO(bissakov): use AVX instructions
   return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
          IsEqualDouble(z, other.z);
 }
