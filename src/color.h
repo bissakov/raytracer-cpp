@@ -1,5 +1,5 @@
-#ifndef SRC_PIXEL_H_
-#define SRC_PIXEL_H_
+#ifndef SRC_COLOR_H_
+#define SRC_COLOR_H_
 
 #include <immintrin.h>
 
@@ -22,18 +22,18 @@ struct Color {
   Color(const Color& other) noexcept;
   Color& operator=(const Color& other) noexcept;
 
-  Color operator+(const Color& other) const;
-  Color operator-(const Color& other) const;
-  Color operator*(const Color& other) const;
+  Color operator+(const Color& other) const noexcept;
+  Color operator-(const Color& other) const noexcept;
+  Color operator*(const Color& other) const noexcept;
 
-  bool operator==(const Color& other) const;
-  bool operator!=(const Color& other) const;
+  bool operator==(const Color& other) const noexcept;
+  bool operator!=(const Color& other) const noexcept;
 
-  Color operator*(const float scalar) const;
-  Color operator/(const float scalar) const;
+  Color operator*(const float scalar) const noexcept;
+  Color operator/(const float scalar) const noexcept;
 
-  bool IsColorInRange() const;
-  const char* ToHex() const;
+  bool IsColorInRange() const noexcept;
+  const char* ToHex() const noexcept;
 
   operator std::string() const noexcept;
 };
@@ -46,4 +46,4 @@ struct ColorRGB {
   size_t b = SIZE_MAX;
 };
 
-#endif  // SRC_PIXEL_H_
+#endif  // SRC_COLOR_H_

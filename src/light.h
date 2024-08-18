@@ -1,8 +1,8 @@
 #ifndef SRC_LIGHT_H_
 #define SRC_LIGHT_H_
 
+#include <src/color.h>
 #include <src/material.h>
-#include <src/pixel.h>
 #include <src/point.h>
 
 #include <string>

@@ -1,7 +1,7 @@
 #ifndef SRC_CANVAS_H_
 #define SRC_CANVAS_H_
 
-#include <src/pixel.h>
+#include <src/color.h>
 #include <src/utils.h>
 
 #include <cassert>

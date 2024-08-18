@@ -1,7 +1,7 @@
 #ifndef SRC_MATERIAL_H_
 #define SRC_MATERIAL_H_
 
-#include <src/pixel.h>
+#include <src/color.h>
 
 #include <string>
 

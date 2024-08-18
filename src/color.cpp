@@ -1,5 +1,5 @@
 #include <immintrin.h>
-#include <src/pixel.h>
+#include <src/color.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
 
@@ -27,41 +27,41 @@ Color& Color::operator=(const Color& other) noexcept {
   return *this;
 }
 
-Color Color::operator+(const Color& other) const {
+Color Color::operator+(const Color& other) const noexcept {
   return Color{_mm_add_ps(vec, other.vec)};
 }
 
-Color Color::operator-(const Color& other) const {
+Color Color::operator-(const Color& other) const noexcept {
   return Color{_mm_sub_ps(vec, other.vec)};
 }
 
-Color Color::operator*(const Color& other) const {
+Color Color::operator*(const Color& other) const noexcept {
   return Color{_mm_mul_ps(vec, other.vec)};
 }
 
-bool Color::operator==(const Color& other) const {
+bool Color::operator==(const Color& other) const noexcept {
   return IsEqualFloat(r, other.r) && IsEqualFloat(g, other.g) &&
          IsEqualFloat(b, other.b);
 }
 
-bool Color::operator!=(const Color& other) const {
+bool Color::operator!=(const Color& other) const noexcept {
   return !(*this == other);
 }
 
-Color Color::operator*(const float scalar) const {
+Color Color::operator*(const float scalar) const noexcept {
   return Color{_mm_mul_ps(vec, _mm_set1_ps(scalar))};
 }
 
-Color Color::operator/(const float scalar) const {
+Color Color::operator/(const float scalar) const noexcept {
   return Color{_mm_div_ps(vec, _mm_set1_ps(scalar))};
 }
 
-bool Color::IsColorInRange() const {
+bool Color::IsColorInRange() const noexcept {
   return (r >= 0.0f && r <= 1.0f) && (g >= 0.0f && g <= 1.0f) &&
          (b >= 0.0f && b <= 1.0f);
 }
 
-const char* Color::ToHex() const {
+const char* Color::ToHex() const noexcept {
   assert(IsColorInRange() && "Color out of range");
 
   std::string hex_chars = "0123456789abcdef";

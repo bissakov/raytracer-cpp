@@ -25,7 +25,7 @@ Vector &Vector::operator=(const Vector &other) noexcept {
   return *this;
 }
 
-float &Vector::operator[](const size_t index) {
+float &Vector::operator[](const size_t index) noexcept {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -39,7 +39,7 @@ float &Vector::operator[](const size_t index) {
   }
 }
 
-const float &Vector::operator[](const size_t index) const {
+const float &Vector::operator[](const size_t index) const noexcept {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -53,23 +53,7 @@ const float &Vector::operator[](const size_t index) const {
   }
 }
 
-Vector Vector::operator+(const Vector &other) const {
-  return Vector{_mm_add_ps(vec, other.vec)};
-}
-
-Vector Vector::operator-(const Vector &other) const {
-  return Vector{_mm_sub_ps(vec, other.vec)};
-}
-
-Vector Vector::operator*(const float scalar) const {
-  return Vector{_mm_mul_ps(vec, _mm_set1_ps(scalar))};
-}
-
-Vector Vector::operator/(const float scalar) const {
-  return Vector{_mm_div_ps(vec, _mm_set1_ps(scalar))};
-}
-
-bool Vector::operator==(const Vector &other) const {
+bool Vector::operator==(const Vector &other) const noexcept {
   __m128 diff = _mm_sub_ps(vec, other.vec);
   diff = _mm_andnot_ps(_mm_set1_ps(-0.0), diff);
 
@@ -79,33 +63,48 @@ bool Vector::operator==(const Vector &other) const {
   return _mm_testc_ps(cmp, _mm_set1_ps(-1.0));
 }
 
-bool Vector::operator!=(const Vector &other) const {
+bool Vector::operator!=(const Vector &other) const noexcept {
   return !(*this == other);
 }
 
-Vector Vector::operator-() const {
+Vector Vector::operator+(const Vector &other) const noexcept {
+  return Vector{_mm_add_ps(vec, other.vec)};
+}
+
+Vector Vector::operator-(const Vector &other) const noexcept {
+  return Vector{_mm_sub_ps(vec, other.vec)};
+}
+
+Vector Vector::operator*(const float scalar) const noexcept {
+  return Vector{_mm_mul_ps(vec, _mm_set1_ps(scalar))};
+}
+
+Vector Vector::operator/(const float scalar) const noexcept {
+  return Vector{_mm_div_ps(vec, _mm_set1_ps(scalar))};
+}
+
+Vector Vector::operator-() const noexcept {
   return Vector{_mm_mul_ps(vec, _mm_set1_ps(-1))};
 }
 
-float Vector::Magnitude() const {
-  // TODO(bissakov): use AVX instructions
+float Vector::Magnitude() const noexcept {
   return sqrt(x * x + y * y + z * z);
 }
 
-Vector Vector::Normalize() const {
+Vector Vector::Normalize() const noexcept {
   return Vector{_mm_div_ps(vec, _mm_set1_ps(Magnitude()))};
 }
 
-float DotProduct(const Vector &left, const Vector &right) {
+float DotProduct(const Vector &left, const Vector &right) noexcept {
   Vector res{Vector{_mm_mul_ps(left.vec, right.vec)}};
   return res.x + res.y + res.w + res.z;
 }
 
-float Vector::DotProduct(const Vector &other) const {
+float Vector::DotProduct(const Vector &other) const noexcept {
   return ::DotProduct(*this, other);
 }
 
-Vector CrossProduct(const Vector &left, const Vector &right) {
+Vector CrossProduct(const Vector &left, const Vector &right) noexcept {
   __m128 left1 = _mm_set_ps(0.f, left.x, left.z, left.y);
   __m128 left2 = _mm_set_ps(0.f, left.y, left.x, left.z);
   __m128 right1 = _mm_set_ps(0.f, right.x, right.z, right.y);
@@ -115,11 +114,11 @@ Vector CrossProduct(const Vector &left, const Vector &right) {
       _mm_sub_ps(_mm_mul_ps(left1, right2), _mm_mul_ps(left2, right1))};
 }
 
-Vector Vector::CrossProduct(const Vector &other) const {
+Vector Vector::CrossProduct(const Vector &other) const noexcept {
   return ::CrossProduct(*this, other);
 }
 
-Vector Vector::Reflect(const Vector &normal) const {
+Vector Vector::Reflect(const Vector &normal) const noexcept {
   return *this - normal * 2 * DotProduct(normal);
 }
 

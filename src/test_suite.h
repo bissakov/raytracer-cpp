@@ -2,8 +2,8 @@
 #define SRC_TEST_SUITE_H_
 
 #include <src/arr.h>
+#include <src/color.h>
 #include <src/matrix.h>
-#include <src/pixel.h>
 #include <src/point.h>
 #include <src/vector.h>
 

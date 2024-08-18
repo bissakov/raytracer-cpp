@@ -1,11 +1,11 @@
 #include <src/arr.h>
 #include <src/canvas.h>
+#include <src/color.h>
 #include <src/file_io.h>
 #include <src/light.h>
 #include <src/main.h>
 #include <src/material.h>
 #include <src/matrix.h>
-#include <src/pixel.h>
 #include <src/ray.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
