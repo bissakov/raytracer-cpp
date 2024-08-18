@@ -12,7 +12,7 @@ mkdir .\build\batch\debug > nul 2>&1
 pushd .\build\batch\debug 
 
 set entry=%src_dir%\main.cpp
-set src_files=%src_dir%\point.cpp %src_dir%\vector.cpp %src_dir%\pixel.cpp ^
+set src_files=%src_dir%\point.cpp %src_dir%\vector.cpp %src_dir%\color.cpp ^
 	%src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\ray.cpp ^
 	%src_dir%\light.cpp %src_dir%\material.cpp ^
 	%src_dir%\file_io.cpp %src_dir%\arr.cpp %src_dir%\test_suite.cpp ^
