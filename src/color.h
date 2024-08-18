@@ -41,9 +41,18 @@ struct Color {
 std::ostream& operator<<(std::ostream& os, const Color& c);
 
 struct ColorRGB {
-  size_t r = SIZE_MAX;
-  size_t g = SIZE_MAX;
-  size_t b = SIZE_MAX;
+  union {
+    __m128i vec;
+    struct {
+      int32_t r;
+      int32_t g;
+      int32_t b;
+      int32_t a;
+    };
+  };
+
+  ColorRGB() noexcept;
+  explicit ColorRGB(const __m128i vec) noexcept;
 };
 
 #endif  // SRC_COLOR_H_

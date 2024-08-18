@@ -48,6 +48,17 @@ void Canvas::WriteColor(const size_t pos_x, const size_t pos_y,
   colors[pos_y * width + pos_x] = color;
 }
 
+static inline ColorRGB NormalizedToRGB(Color* color) noexcept {
+  __m128 color_vec = _mm_set_ps(0.f, color->b, color->g, color->r);
+  color_vec = _mm_mul_ps(color_vec, _mm_set1_ps(255.f));
+  color_vec = _mm_max_ps(color_vec, _mm_set1_ps(0));
+  color_vec = _mm_min_ps(color_vec, _mm_set1_ps(255));
+
+  __m128i i32_vec = _mm_cvtps_epi32(color_vec);
+  ColorRGB rgb{i32_vec};
+  return rgb;
+}
+
 bool Canvas::SaveToPPM(const Path& file_path) noexcept {
   HANDLE file_handle =
       CreateFile(file_path.value, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
@@ -77,12 +88,10 @@ bool Canvas::SaveToPPM(const Path& file_path) noexcept {
 
     for (size_t col = 0; col < width; ++col) {
       Color* color = &colors[row * width + col];
-      size_t red = Clamp(static_cast<size_t>(color->r * 255.0), 0, 255);
-      size_t green = Clamp(static_cast<size_t>(color->g * 255.0), 0, 255);
-      size_t blue = Clamp(static_cast<size_t>(color->b * 255.0), 0, 255);
+      ColorRGB rgb{NormalizedToRGB(color)};
 
       int written = snprintf(buffer + buffer_pos, buffer_size - buffer_pos,
-                             "%zu %zu %zu", red, green, blue);
+                             "%d %d %d", rgb.r, rgb.g, rgb.b);
       if (written < 0 || written >= buffer_size - buffer_pos) {
         delete[] buffer;
         CloseHandle(file_handle);
@@ -118,11 +127,11 @@ static inline void AdvanceUntil(char* file_content, uint32_t* idx,
   (*idx)++;
 }
 
-static inline size_t StringToInt(char* start, const size_t length) {
+static inline int32_t StringToInt(char* start, const size_t length) {
   char str[50];
   std::copy(start, start + length, str);
   str[length] = '\0';
-  size_t res = static_cast<size_t>(std::stoi(str));
+  int32_t res = static_cast<int32_t>(std::stoi(str));
   return res;
 }
 
@@ -181,13 +190,13 @@ bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
         continue;
       }
 
-      if (rgb_color.r == SIZE_MAX) {
+      if (rgb_color.r == INT_MAX) {
         rgb_color.r = StringToInt(source + start, current - start);
         start = current;
-      } else if (rgb_color.g == SIZE_MAX) {
+      } else if (rgb_color.g == INT_MAX) {
         rgb_color.g = StringToInt(source + start, current - start);
         start = current;
-      } else if (rgb_color.b == SIZE_MAX) {
+      } else if (rgb_color.b == INT_MAX) {
         rgb_color.b = StringToInt(source + start, current - start);
         start = current;
 

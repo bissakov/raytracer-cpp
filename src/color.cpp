@@ -2,6 +2,7 @@
 #include <src/color.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
+#include <windef.h>
 
 #include <cassert>
 #include <cstdio>
@@ -90,3 +91,7 @@ std::ostream& operator<<(std::ostream& os, const Color& c) {
   os << std::string(c);
   return os;
 }
+
+ColorRGB::ColorRGB() noexcept
+    : r(INT_MAX), g(INT_MAX), b(INT_MAX), a(INT_MAX) {}
+ColorRGB::ColorRGB(const __m128i vec) noexcept : vec(vec) {}
