@@ -268,7 +268,7 @@ static inline void DrawRegionUnshaded(
       Hits hits{ray.Intersect(context.shape)};
 
       if (hits.count > 0) {
-        canvas->WritePixelColor(x, y, context.shape.material.color);
+        canvas->WriteColor(x, y, context.shape.material.color);
       }
     }
   }
@@ -333,7 +333,7 @@ static inline void DrawRegionShaded(Canvas* canvas,
 
         Color color =
             Lighting(object->material, context.light, point, eye, normal);
-        canvas->WritePixelColor(x, y, color);
+        canvas->WriteColor(x, y, color);
       }
     }
   }

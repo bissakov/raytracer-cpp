@@ -1,3 +1,4 @@
+#include <immintrin.h>
 #include <src/pixel.h>
 #include <src/test_suite.h>
 #include <src/utils.h>
@@ -6,16 +7,36 @@
 #include <cstdio>
 #include <format>
 
+Color::Color() noexcept : vec(_mm_set_ps(1.f, 0.f, 0.f, 0.f)) {}
+
+Color::Color(const float r, const float g, const float b,
+             const float a) noexcept
+    : vec(_mm_set_ps(a, b, g, r)) {}
+
+Color::Color(const float r, const float g, const float b) noexcept
+    : vec(_mm_set_ps(1.f, b, g, r)) {}
+
+Color::Color(const __m128 vec) noexcept : vec(vec) {}
+
+Color::Color(const Color& other) noexcept : vec(other.vec) {}
+
+Color& Color::operator=(const Color& other) noexcept {
+  if (this != &other) {
+    vec = other.vec;
+  }
+  return *this;
+}
+
 Color Color::operator+(const Color& other) const {
-  return {r + other.r, g + other.g, b + other.b};
+  return Color{_mm_add_ps(vec, other.vec)};
 }
 
 Color Color::operator-(const Color& other) const {
-  return {r - other.r, g - other.g, b - other.b};
+  return Color{_mm_sub_ps(vec, other.vec)};
 }
 
 Color Color::operator*(const Color& other) const {
-  return {r * other.r, g * other.g, b * other.b};
+  return Color{_mm_mul_ps(vec, other.vec)};
 }
 
 bool Color::operator==(const Color& other) const {
@@ -24,16 +45,15 @@ bool Color::operator==(const Color& other) const {
 }
 
 bool Color::operator!=(const Color& other) const {
-  return !IsEqualFloat(r, other.r) || !IsEqualFloat(g, other.g) ||
-         !IsEqualFloat(b, other.b);
+  return !(*this == other);
 }
 
 Color Color::operator*(const float scalar) const {
-  return {r * scalar, g * scalar, b * scalar};
+  return Color{_mm_mul_ps(vec, _mm_set1_ps(scalar))};
 }
 
 Color Color::operator/(const float scalar) const {
-  return {r / scalar, g / scalar, b / scalar};
+  return Color{_mm_div_ps(vec, _mm_set1_ps(scalar))};
 }
 
 bool Color::IsColorInRange() const {
@@ -62,31 +82,11 @@ const char* Color::ToHex() const {
   return hex;
 }
 
-bool Pixel::operator==(const Pixel& other) const {
-  return IsEqualFloat(color.r, other.color.r) &&
-         IsEqualFloat(color.g, other.color.g) &&
-         IsEqualFloat(color.b, other.color.b);
-}
-bool Pixel::operator!=(const Pixel& other) const {
-  return !IsEqualFloat(color.r, other.color.r) ||
-         !IsEqualFloat(color.g, other.color.g) ||
-         !IsEqualFloat(color.b, other.color.b);
-}
-
 Color::operator std::string() const noexcept {
   return std::format("Color(r={:.10f}, g={:.10f}, b={:.10f})", r, g, b);
 }
 
 std::ostream& operator<<(std::ostream& os, const Color& c) {
   os << std::string(c);
-  return os;
-}
-
-Pixel::operator std::string() const noexcept {
-  return std::format("Pixel(x={}, y={}, color={})", x, y, std::string(color));
-}
-
-std::ostream& operator<<(std::ostream& os, const Pixel& p) {
-  os << std::string(p);
   return os;
 }

@@ -106,10 +106,13 @@ float Vector::DotProduct(const Vector &other) const {
 }
 
 Vector CrossProduct(const Vector &left, const Vector &right) {
-  // TODO(bissakov): use AVX instructions
-  return {left.y * right.z - left.z * right.y,
-          left.z * right.x - left.x * right.z,
-          left.x * right.y - left.y * right.x};
+  __m128 left1 = _mm_set_ps(0.f, left.x, left.z, left.y);
+  __m128 left2 = _mm_set_ps(0.f, left.y, left.x, left.z);
+  __m128 right1 = _mm_set_ps(0.f, right.x, right.z, right.y);
+  __m128 right2 = _mm_set_ps(0.f, right.y, right.x, right.z);
+
+  return Vector{
+      _mm_sub_ps(_mm_mul_ps(left1, right2), _mm_mul_ps(left2, right1))};
 }
 
 Vector Vector::CrossProduct(const Vector &other) const {

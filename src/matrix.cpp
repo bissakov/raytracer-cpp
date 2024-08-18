@@ -7,7 +7,13 @@
 #include <cmath>
 #include <string>
 
-Matrix::Matrix() noexcept : rows(0), cols(0) {}
+Matrix::Matrix() noexcept
+    : rows(0),
+      cols(0),
+      row0(_mm_setzero_ps()),
+      row1(_mm_setzero_ps()),
+      row2(_mm_setzero_ps()),
+      row3(_mm_setzero_ps()) {}
 
 Matrix::Matrix(const size_t rows, const size_t cols) noexcept
     : rows(rows),

@@ -13,47 +13,39 @@
 #include <memory>
 #include <string>
 
-Canvas::Canvas() noexcept : width(0), height(0), pixels(nullptr) {}
+Canvas::Canvas() noexcept : width(0), height(0), colors(nullptr) {}
 
-Canvas::Canvas(const size_t width_, const size_t height_) noexcept
-    : width(width_),
-      height(height_),
-      pixels(std::make_unique<Pixel[]>(width_ * height_)) {
-  for (size_t row = 0; row < height; ++row) {
-    for (size_t col = 0; col < width; ++col) {
-      Pixel* pixel = &pixels[row * width + col];
-      pixel->x = col;
-      pixel->y = row;
-    }
-  }
-}
+Canvas::Canvas(const size_t width, const size_t height) noexcept
+    : width(width),
+      height(height),
+      colors(std::make_unique<Color[]>(width * height)) {}
 
 Canvas::Canvas(const Canvas& other) noexcept
     : width(other.width),
       height(other.height),
-      pixels(std::make_unique<Pixel[]>(other.width * other.height)) {
-  std::copy(other.pixels.get(), other.pixels.get() + other.width * other.height,
-            pixels.get());
+      colors(std::make_unique<Color[]>(other.width * other.height)) {
+  std::copy(other.colors.get(), other.colors.get() + other.width * other.height,
+            colors.get());
 }
 
 Canvas& Canvas::operator=(const Canvas& other) noexcept {
   if (this != &other) {
-    pixels = std::make_unique<Pixel[]>(other.width * other.height);
-    std::copy(other.pixels.get(),
-              other.pixels.get() + other.width * other.height, pixels.get());
+    colors = std::make_unique<Color[]>(other.width * other.height);
+    std::copy(other.colors.get(),
+              other.colors.get() + other.width * other.height, colors.get());
   }
   return *this;
 }
 
-Pixel Canvas::PixelAt(const size_t pos_x, const size_t pos_y) const noexcept {
-  assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  return pixels[pos_y * width + pos_x];
+Color Canvas::ColorAt(const size_t pos_x, const size_t pos_y) const noexcept {
+  assert(IsInRange(pos_x, pos_y) && "Color out of bounds.");
+  return colors[pos_y * width + pos_x];
 }
 
-void Canvas::WritePixelColor(const size_t pos_x, const size_t pos_y,
-                             const Color& color) const noexcept {
-  assert(IsPixelInRange(pos_x, pos_y) && "Pixel out of bounds.");
-  pixels[pos_y * width + pos_x].color = color;
+void Canvas::WriteColor(const size_t pos_x, const size_t pos_y,
+                        const Color& color) const noexcept {
+  assert(IsInRange(pos_x, pos_y) && "Color out of bounds.");
+  colors[pos_y * width + pos_x] = color;
 }
 
 bool Canvas::SaveToPPM(const Path& file_path) noexcept {
@@ -84,7 +76,7 @@ bool Canvas::SaveToPPM(const Path& file_path) noexcept {
     size_t buffer_pos = 0;
 
     for (size_t col = 0; col < width; ++col) {
-      Color* color = &pixels[row * width + col].color;
+      Color* color = &colors[row * width + col];
       size_t red = Clamp(static_cast<size_t>(color->r * 255.0), 0, 255);
       size_t green = Clamp(static_cast<size_t>(color->g * 255.0), 0, 255);
       size_t blue = Clamp(static_cast<size_t>(color->b * 255.0), 0, 255);
@@ -174,7 +166,7 @@ bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
 
   start = current;
 
-  pixels = std::make_unique<Pixel[]>(width * height);
+  colors = std::make_unique<Color[]>(width * height);
   for (size_t row = 0; row < height; ++row) {
     size_t col = 0;
     ColorRGB rgb_color = {};
@@ -199,14 +191,10 @@ bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
         rgb_color.b = StringToInt(source + start, current - start);
         start = current;
 
-        Pixel* current_pixel = &pixels[row * width + col];
-        current_pixel->x = col;
-        current_pixel->y = row;
-
-        current_pixel->color = {};
-        current_pixel->color.r = static_cast<float>(rgb_color.r) / 255.0f;
-        current_pixel->color.g = static_cast<float>(rgb_color.g) / 255.0f;
-        current_pixel->color.b = static_cast<float>(rgb_color.b) / 255.0f;
+        Color* current_pixel = &colors[row * width + col];
+        current_pixel->r = static_cast<float>(rgb_color.r) / 255.0f;
+        current_pixel->g = static_cast<float>(rgb_color.g) / 255.0f;
+        current_pixel->b = static_cast<float>(rgb_color.b) / 255.0f;
 
         col++;
         rgb_color = {};

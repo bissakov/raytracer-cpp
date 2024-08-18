@@ -28,7 +28,6 @@ struct Vector {
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;
 
-  Vector& operator+=(const Vector& other);
   bool operator==(const Vector& other) const;
   bool operator!=(const Vector& other) const;
 

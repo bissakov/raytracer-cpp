@@ -335,8 +335,8 @@ static inline void TestCanvas(TestFramework* fw) {
     bool res = true;
     for (size_t i = 0; i < canvas.height; ++i) {
       for (size_t j = 0; j < canvas.width; ++j) {
-        Pixel current_pixel = canvas.PixelAt(j, i);
-        res = res && ASSERT_EQUAL(bool, current_pixel.color == black, true);
+        Color current_color = canvas.ColorAt(j, i);
+        res = res && ASSERT_EQUAL(bool, current_color == black, true);
       }
     }
 
@@ -349,12 +349,10 @@ static inline void TestCanvas(TestFramework* fw) {
 
     size_t x = 2;
     size_t y = 3;
-    canvas.WritePixelColor(x, y, red);
-    Pixel pixel = canvas.PixelAt(x, y);
-    Color actual_color = pixel.color;
+    canvas.WriteColor(x, y, red);
+    Color color = canvas.ColorAt(x, y);
 
-    return ASSERT_EQUAL(Color, actual_color, red) &&
-           ASSERT_EQUAL(size_t, pixel.x, x) && ASSERT_EQUAL(size_t, pixel.y, y);
+    return ASSERT_EQUAL(Color, color, red);
   });
 
   fw->Run("Save canvas to PPM", "Canvas", [fw]() -> bool {
@@ -368,9 +366,9 @@ static inline void TestCanvas(TestFramework* fw) {
     for (size_t j = 0; j < canvas.height; ++j) {
       for (size_t i = 0; i < canvas.width; ++i) {
         if ((i / stripe_thickness + j / stripe_thickness) % 2 == 0) {
-          canvas.WritePixelColor(i, j, blue);
+          canvas.WriteColor(i, j, blue);
         } else {
-          canvas.WritePixelColor(i, j, yellow);
+          canvas.WriteColor(i, j, yellow);
         }
       }
     }
@@ -412,8 +410,8 @@ static inline void TestCanvas(TestFramework* fw) {
       pos_y = static_cast<size_t>(
           abs(static_cast<float>(canvas.height) - floor(proj.position.y)));
 
-      if (canvas.IsPixelInRange(pos_x, pos_y)) {
-        canvas.WritePixelColor(pos_x, pos_y, red);
+      if (canvas.IsInRange(pos_x, pos_y)) {
+        canvas.WriteColor(pos_x, pos_y, red);
       }
 
       proj.position = proj.position + proj.velocity;
@@ -429,19 +427,19 @@ static inline void TestCanvas(TestFramework* fw) {
 
 static inline void TestMatrix(TestFramework* fw) {
   fw->Run("Initialize 4x4 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     return ASSERT_EQUAL(size_t, matrix.rows, 4) &&
            ASSERT_EQUAL(size_t, matrix.cols, 4);
   });
 
   fw->Run("Initialize 3x3 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     return ASSERT_EQUAL(size_t, matrix.rows, 3) &&
            ASSERT_EQUAL(size_t, matrix.cols, 3);
   });
 
   fw->Run("Initialize 2x2 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {2, 2};
+    Matrix matrix{2, 2};
     return ASSERT_EQUAL(size_t, matrix.rows, 2) &&
            ASSERT_EQUAL(size_t, matrix.cols, 2);
   });
@@ -464,7 +462,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Check 3x3 matrix values", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -476,7 +474,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Check 2x2 matrix values", "Matrix", []() -> bool {
-    Matrix matrix = {2, 2};
+    Matrix matrix{2, 2};
     float elements[] = {-3, 5, 1, -2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -564,7 +562,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Multiply a matrix by an identity matrix", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements1[] = {0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32};
     matrix.Populate(elements1, matrix.rows * matrix.cols);
 
@@ -575,7 +573,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Transpose a 4x4 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements1[] = {0, 9, 3, 0, 9, 8, 0, 8, 1, 8, 5, 3, 0, 0, 5, 8};
     matrix.Populate(elements1, matrix.rows * matrix.cols);
 
@@ -601,7 +599,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Determinant of a 2x2 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {2, 2};
+    Matrix matrix{2, 2};
     float elements[] = {1, 5, -3, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -612,7 +610,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Submatrix of a 3x3 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {1, 5, 0, -3, 2, 7, 0, 6, -3};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -626,7 +624,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Submatrix of a 4x4 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {-6, 1, 1, 6, -8, 5, 8, 6, -1, 0, 8, 2, -7, 1, -1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -640,7 +638,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Minor of a 3x3 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -651,7 +649,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Cofactor of a 3x3 matrix 1", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -662,7 +660,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Cofactor of a 3x3 matrix 2", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {3, 5, 0, 2, -1, -7, 6, -1, 5};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -673,7 +671,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Determinant of a 3x3 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {3, 3};
+    Matrix matrix{3, 3};
     float elements[] = {1, 2, 6, -5, 8, -4, 2, 6, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -684,7 +682,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Determinant of a 4x4 matrix", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -695,7 +693,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Test a matrix for invertibility 1", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -707,7 +705,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Test a matrix for invertibility 2", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -719,7 +717,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Inverse a 4x4 matrix 1", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {-5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -740,7 +738,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Inverse a 4x4 matrix 2", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {8, -5, 9, 2, 7, 5, 6, 1, -6, 0, 9, 6, -3, 0, -9, -4};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -760,7 +758,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Inverse a 4x4 matrix 3", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -786,7 +784,7 @@ static inline void TestMatrix(TestFramework* fw) {
   });
 
   fw->Run("Multiply a matrix by its inverse", "Matrix", []() -> bool {
-    Matrix matrix = {4, 4};
+    Matrix matrix{4, 4};
     float elements[] = {9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
@@ -798,7 +796,7 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Compare inverse of transpose and vice versa", "Matrix",
           []() -> bool {
-            Matrix matrix = {4, 4};
+            Matrix matrix{4, 4};
             float elements[] = {9,  3, 0, 9, -5, -2, -6, -3,
                                 -4, 9, 6, 4, -7, 6,  6,  2};
             matrix.Populate(elements, matrix.rows * matrix.cols);
@@ -1081,7 +1079,7 @@ static inline void TestMatrix(TestFramework* fw) {
 
       size_t pos_x = static_cast<size_t>(origin.x + points[i].x * radius);
       size_t pos_y = static_cast<size_t>(origin.z + points[i].z * radius);
-      canvas.WritePixelColor(pos_x, pos_y, green);
+      canvas.WriteColor(pos_x, pos_y, green);
     }
 
     Path output_path = Join(fw->root, "/data/clock.ppm");
