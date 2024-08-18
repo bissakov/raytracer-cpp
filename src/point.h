@@ -10,20 +10,20 @@ typedef struct Vector Vector;
 
 struct Point {
   union {
-    __m256d vec;
+    __m128 vec;
     struct {
-      double x, y, z, w;
+      float x, y, z, w;
     };
   };
 
   Point() noexcept;
-  Point(const double x, const double y, const double z) noexcept;
+  Point(const float x, const float y, const float z) noexcept;
   Point(const Point& other) noexcept;
-  explicit Point(const __m256d vec) noexcept;
+  explicit Point(const __m128 vec) noexcept;
   Point& operator=(const Point& other) noexcept;
 
-  double& operator[](const size_t index);
-  const double& operator[](const size_t index) const;
+  float& operator[](const size_t index);
+  const float& operator[](const size_t index) const;
 
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;

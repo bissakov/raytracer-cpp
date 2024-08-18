@@ -7,14 +7,14 @@
 
 struct Material {
   Color color;
-  double ambient;
-  double diffuse;
-  double specular;
-  double shininess;
+  float ambient;
+  float diffuse;
+  float specular;
+  float shininess;
 
   Material() noexcept;
-  Material(const Color &color, double ambient, double diffuse, double specular,
-           double shininess) noexcept;
+  Material(const Color &color, float ambient, float diffuse, float specular,
+           float shininess) noexcept;
   Material(const Material &other) noexcept;
   Material &operator=(const Material &other) noexcept;
 

@@ -5,13 +5,13 @@
 
 Material::Material() noexcept
     : color({1, 1, 1}),
-      ambient(.1),
-      diffuse(.9),
-      specular(.9),
-      shininess(200.0) {}
+      ambient(.1f),
+      diffuse(.9f),
+      specular(.9f),
+      shininess(200.f) {}
 
-Material::Material(const Color &color, double ambient, double diffuse,
-                   double specular, double shininess) noexcept
+Material::Material(const Color &color, float ambient, float diffuse,
+                   float specular, float shininess) noexcept
     : color(color),
       ambient(ambient),
       diffuse(diffuse),
@@ -37,10 +37,10 @@ Material &Material::operator=(const Material &other) noexcept {
 }
 
 bool Material::operator==(const Material &other) const noexcept {
-  return color == other.color && IsEqualDouble(ambient, other.ambient) &&
-         IsEqualDouble(diffuse, other.diffuse) &&
-         IsEqualDouble(specular, other.specular) &&
-         IsEqualDouble(shininess, other.shininess);
+  return color == other.color && IsEqualFloat(ambient, other.ambient) &&
+         IsEqualFloat(diffuse, other.diffuse) &&
+         IsEqualFloat(specular, other.specular) &&
+         IsEqualFloat(shininess, other.shininess);
 }
 
 bool Material::operator!=(const Material &other) const noexcept {
@@ -49,8 +49,8 @@ bool Material::operator!=(const Material &other) const noexcept {
 
 Material::operator std::string() const noexcept {
   return std::format(
-      "Material(color={}, ambient={:.2f}, diffuse={:.2f}, specular={:.2f}, "
-      "shininess={:.2f})",
+      "Material(color={}, ambient={:.10f}, diffuse={:.10f}, specular={:.10f}, "
+      "shininess={:.10f})",
       std::string(color), ambient, diffuse, specular, shininess);
 }
 

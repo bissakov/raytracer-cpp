@@ -10,20 +10,20 @@ typedef struct Point Point;
 
 struct Vector {
   union {
-    __m256d vec;
+    __m128 vec;
     struct {
-      double x, y, z, w;
+      float x, y, z, w;
     };
   };
 
   Vector() noexcept;
-  Vector(const double x, const double y, const double z) noexcept;
+  Vector(const float x, const float y, const float z) noexcept;
   Vector(const Vector& other) noexcept;
-  explicit Vector(const __m256d vec) noexcept;
+  explicit Vector(const __m128 vec) noexcept;
   Vector& operator=(const Vector& other) noexcept;
 
-  double& operator[](const size_t index);
-  const double& operator[](const size_t index) const;
+  float& operator[](const size_t index);
+  const float& operator[](const size_t index) const;
 
   Vector operator+(const Vector& other) const;
   Vector operator-(const Vector& other) const;
@@ -32,14 +32,14 @@ struct Vector {
   bool operator==(const Vector& other) const;
   bool operator!=(const Vector& other) const;
 
-  Vector operator*(const double scalar) const;
-  Vector operator/(const double scalar) const;
+  Vector operator*(const float scalar) const;
+  Vector operator/(const float scalar) const;
 
   Vector operator-() const;
 
-  double Magnitude() const;
+  float Magnitude() const;
   Vector Normalize() const;
-  double DotProduct(const Vector& other) const;
+  float DotProduct(const Vector& other) const;
   Vector CrossProduct(const Vector& other) const;
   Vector Reflect(const Vector& normal) const;
 
@@ -48,7 +48,7 @@ struct Vector {
 
 std::ostream& operator<<(std::ostream& os, const Vector& v);
 
-double DotProduct(const Vector& left, const Vector& right);
+float DotProduct(const Vector& left, const Vector& right);
 Vector CrossProduct(const Vector& left, const Vector& right);
 
 #endif  // SRC_VECTOR_H_

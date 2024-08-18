@@ -20,13 +20,13 @@ enum ObjectType { SPHERE = 1 };
 struct Sphere {
   Point origin;
   Matrix transform_matrix;
-  double radius;
+  float radius;
   Material material;
 
   Sphere() noexcept;
   Sphere(const Point& origin, const Matrix& transform,
-         const double radius) noexcept;
-  Sphere(const Point& origin, const Matrix& transform, const double radius,
+         const float radius) noexcept;
+  Sphere(const Point& origin, const Matrix& transform, const float radius,
          const Material& material) noexcept;
   explicit Sphere(const Material& material) noexcept;
   Sphere(const Sphere& other) noexcept;
@@ -71,7 +71,7 @@ struct Ray {
   bool operator==(const Ray& other) const;
   bool operator!=(const Ray& other) const;
 
-  Point Position(double t) noexcept;
+  Point Position(float t) noexcept;
   Hits Intersect(Sphere sphere) noexcept;
   Ray Transform(Matrix transform) noexcept;
 
@@ -82,10 +82,10 @@ std::ostream& operator<<(std::ostream& os, const Ray& ray);
 
 struct Hit {
   Object object;
-  double t;
+  float t;
 
   Hit() noexcept;
-  Hit(const Object& object, double t) noexcept;
+  Hit(const Object& object, float t) noexcept;
   Hit(const Hit& other) noexcept;
   Hit& operator=(const Hit& other) noexcept;
 
@@ -131,11 +131,11 @@ struct Hits {
 std::ostream& operator<<(std::ostream& os, const Hits& hits);
 
 void CastShapeUnshaded(Canvas* canvas, const Point& ray_origin,
-                       const Sphere& shape, double wall_z,
-                       double wall_size) noexcept;
+                       const Sphere& shape, float wall_z,
+                       float wall_size) noexcept;
 
 void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
-                     const Sphere& shape, const PointLight& light,
-                     double wall_z, double wall_size) noexcept;
+                     const Sphere& shape, const PointLight& light, float wall_z,
+                     float wall_size) noexcept;
 
 #endif  // SRC_RAY_H_

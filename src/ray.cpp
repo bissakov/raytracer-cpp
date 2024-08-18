@@ -31,7 +31,7 @@ bool Ray::operator!=(const Ray& other) const {
   return !(*this == other);
 }
 
-Point Ray::Position(double t) noexcept {
+Point Ray::Position(float t) noexcept {
   return origin + direction * t;
 }
 
@@ -42,20 +42,20 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
 
   Vector sphere_to_ray{ray.origin - sphere.origin};
 
-  double a = DotProduct(ray.direction, ray.direction);
-  double b = 2 * DotProduct(ray.direction, sphere_to_ray);
-  double c = DotProduct(sphere_to_ray, sphere_to_ray) - 1;
+  float a = DotProduct(ray.direction, ray.direction);
+  float b = 2 * DotProduct(ray.direction, sphere_to_ray);
+  float c = DotProduct(sphere_to_ray, sphere_to_ray) - 1;
 
-  double discriminant = (b * b) - (4 * a * c);
+  float discriminant = (b * b) - (4 * a * c);
 
   Object object{&sphere, SPHERE};
 
-  if (IsEqualDouble(discriminant, 0.0)) {
-    double t = -b / (2 * a);
+  if (IsEqualFloat(discriminant, 0.0)) {
+    float t = -b / (2 * a);
     hits.Push({object, t});
   } else if (discriminant > 0.0) {
-    double t1 = (-b - std::sqrt(discriminant)) / (2 * a);
-    double t2 = (-b + std::sqrt(discriminant)) / (2 * a);
+    float t1 = (-b - std::sqrt(discriminant)) / (2 * a);
+    float t2 = (-b + std::sqrt(discriminant)) / (2 * a);
     hits.Push({object, t1});
     hits.Push({object, t2});
   }
@@ -71,11 +71,11 @@ Sphere::Sphere() noexcept
     : origin({0, 0, 0}), transform_matrix(Identity()), radius(1.0) {}
 
 Sphere::Sphere(const Point& origin, const Matrix& transform,
-               const double radius) noexcept
+               const float radius) noexcept
     : origin(origin), transform_matrix(transform), radius(radius) {}
 
-Sphere::Sphere(const Point& origin, const Matrix& transform,
-               const double radius, const Material& material) noexcept
+Sphere::Sphere(const Point& origin, const Matrix& transform, const float radius,
+               const Material& material) noexcept
     : origin(origin),
       transform_matrix(transform),
       radius(radius),
@@ -140,7 +140,7 @@ bool Object::operator!=(const Object& other) const {
 
 Hit::Hit() noexcept : t(0.0) {}
 
-Hit::Hit(const Object& object, double t) noexcept : object(object), t(t) {}
+Hit::Hit(const Object& object, float t) noexcept : object(object), t(t) {}
 
 Hit::Hit(const Hit& other) noexcept : object(other.object), t(other.t) {}
 
@@ -153,7 +153,7 @@ Hit& Hit::operator=(const Hit& other) noexcept {
 }
 
 bool Hit::operator==(const Hit& other) const {
-  return IsEqualDouble(t, other.t) && object == other.object;
+  return IsEqualFloat(t, other.t) && object == other.object;
 }
 
 bool Hit::operator!=(const Hit& other) const {
@@ -249,9 +249,9 @@ int32_t Hits::FirstHitIdx() noexcept {
 struct DrawRegionUnshadedContext {
   const Point& ray_origin;
   const Sphere& shape;
-  double wall_z;
-  double pixel_size;
-  double half_wall_size;
+  float wall_z;
+  float pixel_size;
+  float half_wall_size;
   size_t start;
   size_t end;
 };
@@ -259,9 +259,9 @@ struct DrawRegionUnshadedContext {
 static inline void DrawRegionUnshaded(
     Canvas* canvas, const DrawRegionUnshadedContext& context) {
   for (size_t y = context.start; y < context.end; ++y) {
-    double world_y = context.half_wall_size - context.pixel_size * y;
+    float world_y = context.half_wall_size - context.pixel_size * y;
     for (size_t x = 0; x < canvas->width; ++x) {
-      double world_x = -context.half_wall_size + context.pixel_size * x;
+      float world_x = -context.half_wall_size + context.pixel_size * x;
 
       Point position{world_x, world_y, context.wall_z};
       Ray ray{context.ray_origin, (position - context.ray_origin).Normalize()};
@@ -273,14 +273,13 @@ static inline void DrawRegionUnshaded(
     }
   }
 }
-
 #define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 void CastShapeUnshaded(Canvas* canvas, const Point& ray_origin,
-                       const Sphere& shape, double wall_z,
-                       double wall_size) noexcept {
-  double pixel_size = wall_size / static_cast<double>(canvas->width);
-  double half_wall_size = wall_size / 2;
+                       const Sphere& shape, float wall_z,
+                       float wall_size) noexcept {
+  float pixel_size = wall_size / static_cast<float>(canvas->width);
+  float half_wall_size = wall_size / 2;
 
   std::thread workers[10];
   size_t workers_count = ArraySize(workers);
@@ -306,9 +305,9 @@ struct DrawRegionShadedContext {
   const Point& ray_origin;
   const Sphere& shape;
   const PointLight& light;
-  double wall_z;
-  double pixel_size;
-  double half_wall_size;
+  float wall_z;
+  float pixel_size;
+  float half_wall_size;
   size_t start;
   size_t end;
 };
@@ -316,9 +315,9 @@ struct DrawRegionShadedContext {
 static inline void DrawRegionShaded(Canvas* canvas,
                                     const DrawRegionShadedContext& context) {
   for (size_t y = context.start; y < context.end; ++y) {
-    double world_y = context.half_wall_size - context.pixel_size * y;
+    float world_y = context.half_wall_size - context.pixel_size * y;
     for (size_t x = 0; x < canvas->width; ++x) {
-      double world_x = -context.half_wall_size + context.pixel_size * x;
+      float world_x = -context.half_wall_size + context.pixel_size * x;
 
       Point position{world_x, world_y, context.wall_z};
       Ray ray{context.ray_origin, (position - context.ray_origin).Normalize()};
@@ -341,10 +340,10 @@ static inline void DrawRegionShaded(Canvas* canvas,
 }
 
 void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
-                     const Sphere& shape, const PointLight& light,
-                     double wall_z, double wall_size) noexcept {
-  double pixel_size = wall_size / static_cast<double>(canvas->width);
-  double half_wall_size = wall_size / 2;
+                     const Sphere& shape, const PointLight& light, float wall_z,
+                     float wall_size) noexcept {
+  float pixel_size = wall_size / static_cast<float>(canvas->width);
+  float half_wall_size = wall_size / 2;
 
   std::thread workers[20];
   size_t workers_count = ArraySize(workers);
@@ -379,7 +378,7 @@ std::ostream& operator<<(std::ostream& os, const Ray& ray) {
 
 Sphere::operator std::string() const noexcept {
   return std::format(
-      "Sphere(origin={}, transform={}, radius={:.2f}, material={})",
+      "Sphere(origin={}, transform={}, radius={:.10f}, material={})",
       std::string(origin), std::string(transform_matrix), radius,
       std::string(material));
 }
@@ -407,7 +406,7 @@ std::ostream& operator<<(std::ostream& os, const Object& object) {
 }
 
 Hit::operator std::string() const noexcept {
-  return std::format("Hit(t={:.2f}, object={})", t, std::string(object));
+  return std::format("Hit(t={:.10f}, object={})", t, std::string(object));
 }
 
 std::ostream& operator<<(std::ostream& os, const Hit& hit) {

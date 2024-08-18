@@ -37,19 +37,19 @@ Color Lighting(const Material &material, const PointLight &light,
   Vector light_vector{(light.position - position).Normalize()};
   Color ambient_color{effective_color * material.ambient};
 
-  double light_dot_normal = DotProduct(light_vector, normal_vector);
+  float light_dot_normal = DotProduct(light_vector, normal_vector);
 
   Color diffuse_color{0, 0, 0};
   Color specular_color{0, 0, 0};
 
-  if (light_dot_normal >= 0.0) {
+  if (light_dot_normal >= 0.f) {
     diffuse_color = effective_color * material.diffuse * light_dot_normal;
 
     Vector reflect_vector = -light_vector.Reflect(normal_vector);
-    double reflect_dot_eye = DotProduct(reflect_vector, eye_vector);
+    float reflect_dot_eye = DotProduct(reflect_vector, eye_vector);
 
-    if (reflect_dot_eye > 0.0) {
-      double factor = std::pow(reflect_dot_eye, material.shininess);
+    if (reflect_dot_eye > 0.f) {
+      float factor = std::pow(reflect_dot_eye, material.shininess);
       specular_color = light.intensity * material.specular * factor;
     }
   }

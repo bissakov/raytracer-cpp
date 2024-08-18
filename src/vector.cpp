@@ -9,14 +9,14 @@
 #include <iostream>
 #include <string>
 
-Vector::Vector() noexcept : vec(_mm256_setzero_pd()) {}
+Vector::Vector() noexcept : vec(_mm_setzero_ps()) {}
 
-Vector::Vector(const double x, const double y, const double z) noexcept
-    : vec(_mm256_set_pd(0.0, z, y, x)) {}
+Vector::Vector(const float x, const float y, const float z) noexcept
+    : vec(_mm_set_ps(0, z, y, x)) {}
 
 Vector::Vector(const Vector &other) noexcept : vec(other.vec) {}
 
-Vector::Vector(const __m256d vec) noexcept : vec(vec) {}
+Vector::Vector(const __m128 vec) noexcept : vec(vec) {}
 
 Vector &Vector::operator=(const Vector &other) noexcept {
   if (this != &other) {
@@ -25,7 +25,7 @@ Vector &Vector::operator=(const Vector &other) noexcept {
   return *this;
 }
 
-double &Vector::operator[](const size_t index) {
+float &Vector::operator[](const size_t index) {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -39,7 +39,7 @@ double &Vector::operator[](const size_t index) {
   }
 }
 
-const double &Vector::operator[](const size_t index) const {
+const float &Vector::operator[](const size_t index) const {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -54,25 +54,29 @@ const double &Vector::operator[](const size_t index) const {
 }
 
 Vector Vector::operator+(const Vector &other) const {
-  return Vector{_mm256_add_pd(vec, other.vec)};
+  return Vector{_mm_add_ps(vec, other.vec)};
 }
 
 Vector Vector::operator-(const Vector &other) const {
-  return Vector{_mm256_sub_pd(vec, other.vec)};
+  return Vector{_mm_sub_ps(vec, other.vec)};
 }
 
-Vector Vector::operator*(const double scalar) const {
-  return Vector{_mm256_mul_pd(vec, _mm256_set1_pd(scalar))};
+Vector Vector::operator*(const float scalar) const {
+  return Vector{_mm_mul_ps(vec, _mm_set1_ps(scalar))};
 }
 
-Vector Vector::operator/(const double scalar) const {
-  return Vector{_mm256_div_pd(vec, _mm256_set1_pd(scalar))};
+Vector Vector::operator/(const float scalar) const {
+  return Vector{_mm_div_ps(vec, _mm_set1_ps(scalar))};
 }
 
 bool Vector::operator==(const Vector &other) const {
-  // TODO(bissakov): use AVX instructions
-  return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
-         IsEqualDouble(z, other.z);
+  __m128 diff = _mm_sub_ps(vec, other.vec);
+  diff = _mm_andnot_ps(_mm_set1_ps(-0.0), diff);
+
+  __m128 tolerance = _mm_set1_ps(static_cast<float>(ABSOLUTE_TOLERANCE));
+  __m128 cmp = _mm_cmp_ps(diff, tolerance, _CMP_LE_OQ);
+
+  return _mm_testc_ps(cmp, _mm_set1_ps(-1.0));
 }
 
 bool Vector::operator!=(const Vector &other) const {
@@ -80,24 +84,24 @@ bool Vector::operator!=(const Vector &other) const {
 }
 
 Vector Vector::operator-() const {
-  return Vector{_mm256_mul_pd(vec, _mm256_set1_pd(-1))};
+  return Vector{_mm_mul_ps(vec, _mm_set1_ps(-1))};
 }
 
-double Vector::Magnitude() const {
+float Vector::Magnitude() const {
   // TODO(bissakov): use AVX instructions
-  return std::sqrt(x * x + y * y + z * z);
+  return sqrt(x * x + y * y + z * z);
 }
 
 Vector Vector::Normalize() const {
-  return Vector{_mm256_div_pd(vec, _mm256_set1_pd(Magnitude()))};
+  return Vector{_mm_div_ps(vec, _mm_set1_ps(Magnitude()))};
 }
 
-double DotProduct(const Vector &left, const Vector &right) {
-  // TODO(bissakov): use AVX instructions
-  return left.x * right.x + left.y * right.y + left.z * right.z;
+float DotProduct(const Vector &left, const Vector &right) {
+  Vector res{Vector{_mm_mul_ps(left.vec, right.vec)}};
+  return res.x + res.y + res.w + res.z;
 }
 
-double Vector::DotProduct(const Vector &other) const {
+float Vector::DotProduct(const Vector &other) const {
   return ::DotProduct(*this, other);
 }
 
@@ -117,8 +121,8 @@ Vector Vector::Reflect(const Vector &normal) const {
 }
 
 Vector::operator std::string() const noexcept {
-  return std::format("Vector(x={:.2f}, y={:.2f}, z={:.2f},w={:.2f})", x, y, z,
-                     w);
+  return std::format("Vector(x={:.10f}, y={:.10f}, z={:.10f},w={:.10f})", x, y,
+                     z, w);
 }
 
 std::ostream &operator<<(std::ostream &os, const Vector &v) {

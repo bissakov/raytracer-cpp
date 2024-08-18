@@ -7,9 +7,6 @@
 #include <functional>
 #include <string>
 
-// NOTE: The lowest passing value so far - 3.553 * 10^-15
-#define ABSOLUTE_TOLERANCE 1e-14  // 10^-14
-
 #define NORMAL "\033[0m"
 #define ITALIC "\033[3m"
 #define UNDERLINE "\033[4m"
@@ -59,4 +56,22 @@ bool IsEqualDouble(const double a, const double b) noexcept {
   return a == b || (std::fabs(a - b) <=
                     std::max(DBL_EPSILON * std::max(std::abs(a), std::abs(b)),
                              ABSOLUTE_TOLERANCE));
+}
+
+bool IsEqualFloat(const float a, const float b) noexcept {
+  return a == b || (std::fabs(a - b) <= static_cast<float>(ABSOLUTE_TOLERANCE));
+}
+
+bool AssertEqFloat(const float& actual, const float& expected,
+                   const char* actual_name, const char* expected_name,
+                   const char* file, int line) noexcept {
+  if (!IsEqualFloat(actual, expected)) {
+    std::cerr << "\nError: " << file << ":" << line
+              << ":Assertion failed: " << actual_name << " == " << expected_name
+              << "\n";
+    std::cerr << "Actual: " << actual << "\n";
+    std::cerr << "Expected: " << expected << "\n";
+    return false;
+  }
+  return true;
 }

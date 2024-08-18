@@ -5,14 +5,14 @@
 #include <cassert>
 #include <format>
 
-Point::Point() noexcept : vec(_mm256_setzero_pd()) {}
+Point::Point() noexcept : vec(_mm_set_ps(1, 0, 0, 0)) {}
 
-Point::Point(const double x, const double y, const double z) noexcept
-    : vec(_mm256_set_pd(1.0, z, y, x)) {}
+Point::Point(const float x, const float y, const float z) noexcept
+    : vec(_mm_set_ps(1, z, y, x)) {}
 
 Point::Point(const Point &other) noexcept : vec(other.vec) {}
 
-Point::Point(const __m256d vec) noexcept : vec(vec) {}
+Point::Point(const __m128 vec) noexcept : vec(vec) {}
 
 Point &Point::operator=(const Point &other) noexcept {
   if (this != &other) {
@@ -21,7 +21,7 @@ Point &Point::operator=(const Point &other) noexcept {
   return *this;
 }
 
-double &Point::operator[](const size_t index) {
+float &Point::operator[](const size_t index) {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -35,7 +35,7 @@ double &Point::operator[](const size_t index) {
   }
 }
 
-const double &Point::operator[](const size_t index) const {
+const float &Point::operator[](const size_t index) const {
   assert(index < 4);
   switch (index) {
     case 0:
@@ -50,21 +50,25 @@ const double &Point::operator[](const size_t index) const {
 }
 
 Point Point::operator+(const Vector &other) const {
-  return Point{_mm256_add_pd(vec, other.vec)};
+  return Point{_mm_add_ps(vec, other.vec)};
 }
 
 Point Point::operator-(const Vector &other) const {
-  return Point{_mm256_sub_pd(vec, other.vec)};
+  return Point{_mm_sub_ps(vec, other.vec)};
 }
 
 Vector Point::operator-(const Point &other) const {
-  return Vector{_mm256_sub_pd(vec, other.vec)};
+  return Vector{_mm_sub_ps(vec, other.vec)};
 }
 
 bool Point::operator==(const Point &other) const {
-  // TODO(bissakov): use AVX instructions
-  return IsEqualDouble(x, other.x) && IsEqualDouble(y, other.y) &&
-         IsEqualDouble(z, other.z);
+  __m128 diff = _mm_sub_ps(vec, other.vec);
+  diff = _mm_andnot_ps(_mm_set1_ps(-0.0), diff);
+
+  __m128 tolerance = _mm_set1_ps(static_cast<float>(ABSOLUTE_TOLERANCE));
+  __m128 cmp = _mm_cmp_ps(diff, tolerance, _CMP_LE_OQ);
+
+  return _mm_testc_ps(cmp, _mm_set1_ps(-1.0));
 }
 
 bool Point::operator!=(const Point &p) const {
@@ -72,8 +76,8 @@ bool Point::operator!=(const Point &p) const {
 }
 
 Point::operator std::string() const noexcept {
-  return std::format("Point(x={:.2f}, y={:.2f}, z={:.2f}, w={:.2f})", x, y, z,
-                     w);
+  return std::format("Point(x={:.10f}, y={:.10f}, z={:.10f}, w={:.10f})", x, y,
+                     z, w);
 }
 
 std::ostream &operator<<(std::ostream &os, const Point &p) {
