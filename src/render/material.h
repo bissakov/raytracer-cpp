@@ -1,7 +1,7 @@
-#ifndef SRC_MATERIAL_H_
-#define SRC_MATERIAL_H_
+#ifndef SRC_RENDER_MATERIAL_H_
+#define SRC_RENDER_MATERIAL_H_
 
-#include <src/color.h>
+#include <render/color.h>
 
 #include <string>
 
@@ -26,4 +26,4 @@ struct Material {
 
 std::ostream &operator<<(std::ostream &os, const Material &material);
 
-#endif  // SRC_MATERIAL_H_
+#endif  // SRC_RENDER_MATERIAL_H_

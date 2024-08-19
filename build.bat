@@ -3,6 +3,9 @@ setlocal
 
 set cwd=%cd%
 set src_dir=%cwd%\src
+set geometry_dir=%src_dir%\geometry
+set render_dir=%src_dir%\render
+set core_dir=%src_dir%\core
 set tests_dir=%cwd%\tests
 set lib_dir=%cwd%\lib
 set include_dir=%cwd%\include
@@ -12,15 +15,16 @@ mkdir .\build\batch\debug > nul 2>&1
 pushd .\build\batch\debug 
 
 set entry=%src_dir%\main.cpp
-set src_files=%src_dir%\point.cpp %src_dir%\vector.cpp %src_dir%\color.cpp ^
-	%src_dir%\canvas.cpp %src_dir%\matrix.cpp %src_dir%\ray.cpp ^
-	%src_dir%\light.cpp %src_dir%\material.cpp ^
-	%src_dir%\file_io.cpp %src_dir%\arr.cpp %src_dir%\test_suite.cpp ^
-	%src_dir%\utils.cpp
+set src_files=%geometry_dir%\point.cpp %geometry_dir%\vector.cpp %render_dir%\color.cpp ^
+	%render_dir%\canvas.cpp %geometry_dir%\matrix.cpp %geometry_dir%\ray.cpp ^
+	%render_dir%\light.cpp %render_dir%\material.cpp ^
+	%core_dir%\file_io.cpp %core_dir%\arr.cpp %core_dir%\test_suite.cpp ^
+	%core_dir%\utils.cpp
 set test_files=%tests_dir%\tests.cpp
 
 REM set third_party=User32.lib Gdi32.lib Shell32.lib
-set includes=-I%cwd% -Isrc -I%include_dir% %entry% %src_files% %test_files%
+set includes=-I%cwd% /I"%src_dir%" ^
+	-I%include_dir% %entry% %src_files% %test_files%
 
 set warnings=-W4 -WX -wd4201 -wd4127 -wd4100 -wd4514 -wd4668 -wd5045
 set exe_name=raytracer.exe

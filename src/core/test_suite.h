@@ -1,11 +1,11 @@
-#ifndef SRC_TEST_SUITE_H_
-#define SRC_TEST_SUITE_H_
+#ifndef SRC_CORE_TEST_SUITE_H_
+#define SRC_CORE_TEST_SUITE_H_
 
-#include <src/arr.h>
-#include <src/color.h>
-#include <src/matrix.h>
-#include <src/point.h>
-#include <src/vector.h>
+#include <core/arr.h>
+#include <geometry/matrix.h>
+#include <geometry/point.h>
+#include <geometry/vector.h>
+#include <render/color.h>
 
 #include <functional>
 
@@ -65,4 +65,4 @@ bool AssertEqFloat(const float& actual, const float& expected,
 #define ASSERT_EQUAL_FLOAT(actual, expected) \
   AssertEqFloat(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
-#endif  // SRC_TEST_SUITE_H_
+#endif  // SRC_CORE_TEST_SUITE_H_

@@ -1,9 +1,9 @@
-#ifndef SRC_LIGHT_H_
-#define SRC_LIGHT_H_
+#ifndef SRC_RENDER_LIGHT_H_
+#define SRC_RENDER_LIGHT_H_
 
-#include <src/color.h>
-#include <src/material.h>
-#include <src/point.h>
+#include <geometry/point.h>
+#include <render/color.h>
+#include <render/material.h>
 
 #include <string>
 
@@ -28,4 +28,4 @@ Color Lighting(const Material &material, const PointLight &light,
                const Point &position, const Vector &eye_vector,
                const Vector &normal_vector) noexcept;
 
-#endif  // SRC_LIGHT_H_
+#endif  // SRC_RENDER_LIGHT_H_

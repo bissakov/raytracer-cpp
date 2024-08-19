@@ -1,7 +1,6 @@
-#include <emmintrin.h>
+#include <core/test_suite.h>
+#include <geometry/vector.h>
 #include <immintrin.h>
-#include <src/test_suite.h>
-#include <src/vector.h>
 
 #include <cassert>
 #include <cmath>

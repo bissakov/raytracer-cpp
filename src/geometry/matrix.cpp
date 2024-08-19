@@ -1,7 +1,6 @@
+#include <core/test_suite.h>
+#include <geometry/matrix.h>
 #include <immintrin.h>
-#include <src/matrix.h>
-#include <src/test_suite.h>
-#include <xmmintrin.h>
 
 #include <cassert>
 #include <cmath>

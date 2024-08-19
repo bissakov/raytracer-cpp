@@ -1,6 +1,6 @@
+#include <core/test_suite.h>
+#include <geometry/point.h>
 #include <immintrin.h>
-#include <src/point.h>
-#include <src/test_suite.h>
 
 #include <cassert>
 #include <format>

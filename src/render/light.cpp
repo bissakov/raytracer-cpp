@@ -1,7 +1,7 @@
-#include <src/light.h>
-#include <src/material.h>
-#include <src/point.h>
-#include <src/vector.h>
+#include <geometry/point.h>
+#include <geometry/vector.h>
+#include <render/light.h>
+#include <render/material.h>
 
 #include <cmath>
 #include <format>

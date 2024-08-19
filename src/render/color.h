@@ -1,5 +1,5 @@
-#ifndef SRC_COLOR_H_
-#define SRC_COLOR_H_
+#ifndef SRC_RENDER_COLOR_H_
+#define SRC_RENDER_COLOR_H_
 
 #include <immintrin.h>
 
@@ -55,4 +55,4 @@ struct ColorRGB {
   explicit ColorRGB(const __m128i vec) noexcept;
 };
 
-#endif  // SRC_COLOR_H_
+#endif  // SRC_RENDER_COLOR_H_

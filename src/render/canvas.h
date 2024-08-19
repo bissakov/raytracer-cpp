@@ -1,8 +1,8 @@
-#ifndef SRC_CANVAS_H_
-#define SRC_CANVAS_H_
+#ifndef SRC_RENDER_CANVAS_H_
+#define SRC_RENDER_CANVAS_H_
 
-#include <src/color.h>
-#include <src/utils.h>
+#include <core/utils.h>
+#include <render/color.h>
 
 #include <cassert>
 #include <memory>
@@ -36,4 +36,4 @@ constexpr bool Canvas::IsInRange(const size_t pos_x,
   return (pos_x < width) && (pos_y < height);
 }
 
-#endif  // SRC_CANVAS_H_
+#endif  // SRC_RENDER_CANVAS_H_

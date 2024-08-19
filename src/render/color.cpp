@@ -1,7 +1,7 @@
+#include <core/test_suite.h>
+#include <core/utils.h>
 #include <immintrin.h>
-#include <src/color.h>
-#include <src/test_suite.h>
-#include <src/utils.h>
+#include <render/color.h>
 #include <windef.h>
 
 #include <cassert>

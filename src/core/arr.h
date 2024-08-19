@@ -1,5 +1,5 @@
-#ifndef SRC_ARR_H_
-#define SRC_ARR_H_
+#ifndef SRC_CORE_ARR_H_
+#define SRC_CORE_ARR_H_
 
 #include <algorithm>
 #include <cassert>
@@ -176,4 +176,4 @@ struct DyArray {
   }
 };
 
-#endif  // SRC_ARR_H_
+#endif  // SRC_CORE_ARR_H_

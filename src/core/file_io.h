@@ -1,7 +1,7 @@
-#ifndef SRC_FILE_IO_H_
-#define SRC_FILE_IO_H_
+#ifndef SRC_CORE_FILE_IO_H_
+#define SRC_CORE_FILE_IO_H_
 
-#include <src/utils.h>
+#include <core/utils.h>
 #include <windows.h>
 
 #include <cstdint>
@@ -21,4 +21,4 @@ bool WriteFileText(const Path& file_path, const std::string text) noexcept;
 bool WriteLineToFile(HANDLE file_handle, const char* line) noexcept;
 bool CompareFiles(const char* file_path1, const char* file_path2) noexcept;
 
-#endif  // SRC_FILE_IO_H_
+#endif  // SRC_CORE_FILE_IO_H_

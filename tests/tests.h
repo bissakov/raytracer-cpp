@@ -1,8 +1,8 @@
 #ifndef TESTS_TESTS_H_
 #define TESTS_TESTS_H_
 
-#include <src/point.h>
-#include <src/vector.h>
+#include <geometry/point.h>
+#include <geometry/vector.h>
 
 #include <numbers>  // IWYU pragma: keep
 

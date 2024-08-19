@@ -1,13 +1,13 @@
-#ifndef SRC_RAY_H_
-#define SRC_RAY_H_
+#ifndef SRC_GEOMETRY_RAY_H_
+#define SRC_GEOMETRY_RAY_H_
 
-#include <src/arr.h>
-#include <src/canvas.h>
-#include <src/light.h>
-#include <src/material.h>
-#include <src/matrix.h>
-#include <src/point.h>
-#include <src/vector.h>
+#include <core/arr.h>
+#include <geometry/matrix.h>
+#include <geometry/point.h>
+#include <geometry/vector.h>
+#include <render/canvas.h>
+#include <render/light.h>
+#include <render/material.h>
 
 #include <string>
 
@@ -138,4 +138,4 @@ void CastShapeShaded(Canvas* canvas, const Point& ray_origin,
                      const Sphere& shape, const PointLight& light, float wall_z,
                      float wall_size) noexcept;
 
-#endif  // SRC_RAY_H_
+#endif  // SRC_GEOMETRY_RAY_H_
