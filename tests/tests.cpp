@@ -1063,7 +1063,8 @@ static inline void TestMatrix(TestFramework* fw) {
   fw->Run("Clock", "Matrix", [fw]() -> bool {
     Canvas canvas{600, 600};
     size_t radius = (canvas.width - 100) / 2;
-    Point origin{canvas.width / 2.f, 0, canvas.height / 2.f};
+    Point origin{static_cast<float>(canvas.width) / 2.f, 0.f,
+                 static_cast<float>(canvas.height) / 2.f};
     Color green{0, 1, 0};
 
     size_t resolution = 12;
