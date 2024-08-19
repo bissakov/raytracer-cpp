@@ -1,5 +1,5 @@
-#ifndef SRC_VECTOR_H_
-#define SRC_VECTOR_H_
+#ifndef SRC_GEOMETRY_VECTOR_H_
+#define SRC_GEOMETRY_VECTOR_H_
 
 #include <immintrin.h>
 
@@ -48,4 +48,4 @@ std::ostream& operator<<(std::ostream& os, const Vector& v);
 float DotProduct(const Vector& left, const Vector& right) noexcept;
 Vector CrossProduct(const Vector& left, const Vector& right) noexcept;
 
-#endif  // SRC_VECTOR_H_
+#endif  // SRC_GEOMETRY_VECTOR_H_

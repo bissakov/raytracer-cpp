@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #include <cassert>
+#include <cstdio>
 #include <cstdlib>
 
 int main(int argc, char* argv[]) {

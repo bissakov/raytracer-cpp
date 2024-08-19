@@ -1,6 +1,5 @@
-
-#include <src/file_io.h>
-#include <src/utils.h>
+#include <core/file_io.h>
+#include <core/utils.h>
 #include <strsafe.h>
 #include <windows.h>
 

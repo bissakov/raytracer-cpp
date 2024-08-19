@@ -1,5 +1,5 @@
-#ifndef SRC_POINT_H_
-#define SRC_POINT_H_
+#ifndef SRC_GEOMETRY_POINT_H_
+#define SRC_GEOMETRY_POINT_H_
 
 #include <immintrin.h>
 
@@ -37,4 +37,4 @@ struct Point {
 
 std::ostream& operator<<(std::ostream& os, const Point& p);
 
-#endif  // SRC_POINT_H_
+#endif  // SRC_GEOMETRY_POINT_H_

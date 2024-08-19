@@ -1,5 +1,5 @@
-#include <src/matrix.h>
-#include <src/test_suite.h>
+#include <core/test_suite.h>
+#include <geometry/matrix.h>
 
 #include <algorithm>
 #include <cfloat>

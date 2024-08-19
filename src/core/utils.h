@@ -1,5 +1,5 @@
-#ifndef SRC_UTILS_H_
-#define SRC_UTILS_H_
+#ifndef SRC_CORE_UTILS_H_
+#define SRC_CORE_UTILS_H_
 
 #include <windows.h>
 
@@ -41,4 +41,4 @@ constexpr size_t Clamp(const size_t value, const size_t min_value,
 #define CLAMP(value, min_value, max_value) \
   (MAX(min_value, MIN(value, max_value)))
 
-#endif  // SRC_UTILS_H_
+#endif  // SRC_CORE_UTILS_H_

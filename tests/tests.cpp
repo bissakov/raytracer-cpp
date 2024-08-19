@@ -1,15 +1,14 @@
-#include <src/arr.h>
-#include <src/canvas.h>
-#include <src/color.h>
-#include <src/file_io.h>
-#include <src/light.h>
-#include <src/main.h>
-#include <src/material.h>
-#include <src/matrix.h>
-#include <src/ray.h>
-#include <src/test_suite.h>
-#include <src/utils.h>
-#include <src/vector.h>
+#include <core/arr.h>
+#include <core/file_io.h>
+#include <core/test_suite.h>
+#include <core/utils.h>
+#include <geometry/matrix.h>
+#include <geometry/ray.h>
+#include <geometry/vector.h>
+#include <render/canvas.h>
+#include <render/color.h>
+#include <render/light.h>
+#include <render/material.h>
 #include <tests/tests.h>
 
 #include <memory>

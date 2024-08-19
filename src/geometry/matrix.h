@@ -1,9 +1,9 @@
-#ifndef SRC_MATRIX_H_
-#define SRC_MATRIX_H_
+#ifndef SRC_GEOMETRY_MATRIX_H_
+#define SRC_GEOMETRY_MATRIX_H_
 
+#include <geometry/point.h>
+#include <geometry/vector.h>
 #include <immintrin.h>
-#include <src/point.h>
-#include <src/vector.h>
 
 #include <cassert>
 #include <string>
@@ -231,4 +231,4 @@ constexpr void Matrix::SetRow(const __m128 row, const size_t row_idx) noexcept {
 #define INDEX(row, col, matrix) ((row * (matrix).cols) + col)
 #define AT(row, col, matrix) ((matrix).values[INDEX(row, col, (matrix))])
 
-#endif  // SRC_MATRIX_H_
+#endif  // SRC_GEOMETRY_MATRIX_H_

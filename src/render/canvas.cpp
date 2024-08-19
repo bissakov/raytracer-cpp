@@ -1,7 +1,6 @@
-#include "src/canvas.h"
-
-#include <src/file_io.h>
-#include <src/utils.h>
+#include <core/file_io.h>
+#include <core/utils.h>
+#include <render/canvas.h>
 #include <string.h>
 #include <windows.h>
 

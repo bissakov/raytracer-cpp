@@ -1,5 +1,5 @@
-#include <src/material.h>
-#include <src/test_suite.h>
+#include <core/test_suite.h>
+#include <render/material.h>
 
 #include <format>
 

@@ -1,8 +1,8 @@
-#include <src/light.h>
-#include <src/point.h>
-#include <src/ray.h>
-#include <src/test_suite.h>
-#include <src/vector.h>
+#include <core/test_suite.h>
+#include <geometry/point.h>
+#include <geometry/ray.h>
+#include <geometry/vector.h>
+#include <render/light.h>
 
 #include <cstdio>
 #include <format>
