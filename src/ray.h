@@ -20,8 +20,8 @@ enum ObjectType { SPHERE = 1 };
 struct Sphere {
   Point origin;
   Matrix transform_matrix;
-  float radius;
   Material material;
+  float radius;
 
   Sphere() noexcept;
   Sphere(const Point& origin, const Matrix& transform,
