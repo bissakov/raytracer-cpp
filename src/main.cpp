@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #include <cassert>
+#include <cstdlib>
 
 int main(int argc, char* argv[]) {
   if (argc < 3 || argc > 4 || strcmp(argv[1], "--root") != 0) {
@@ -26,8 +27,6 @@ int main(int argc, char* argv[]) {
     }
 
     RunTests(root);
-
-    return EXIT_SUCCESS;
   }
 
   return EXIT_SUCCESS;
