@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <format>
 #include <string>
 
 Matrix::Matrix() noexcept
@@ -319,12 +320,11 @@ Matrix Shear(ShearType shear_type) noexcept {
 }
 
 Matrix::operator std::string() const noexcept {
-  std::string str = "Matrix{\n  rows=" + std::to_string(rows) +
-                    ", cols=" + std::to_string(cols) + ",\n  ";
+  std::string str = std::format("Matrix(\n  rows={}, cols={},\n  ", rows, cols);
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      str += std::to_string(At(row, col)) + " ";
+      str += std::format("{:.10f}", At(row, col));
     }
     str += "\n";
     if (row < rows - 1) {
