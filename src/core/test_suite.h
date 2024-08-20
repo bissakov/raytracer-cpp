@@ -55,12 +55,30 @@ bool AssertEq(const T& actual, const T& expected, const char* actual_name,
   return true;
 }
 
+template <typename T>
+bool AssertNotEq(const T& actual, const T& expected, const char* actual_name,
+                 const char* expected_name, const char* file,
+                 int line) noexcept {
+  if (actual == expected) {
+    std::cerr << "\nError: " << file << ":" << line
+              << ":Assertion failed: " << actual_name << " != " << expected_name
+              << "\n";
+    std::cerr << "Actual: " << actual << "\n";
+    std::cerr << "Expected: " << expected << "\n";
+    return false;
+  }
+  return true;
+}
+
 bool AssertEqFloat(const float& actual, const float& expected,
                    const char* actual_name, const char* expected_name,
                    const char* file, int line) noexcept;
 
 #define ASSERT_EQUAL(type, actual, expected) \
   AssertEq<type>(actual, expected, #actual, #expected, __FILE__, __LINE__)
+
+#define ASSERT_NOT_EQUAL(type, actual, expected) \
+  AssertNotEq<type>(actual, expected, #actual, #expected, __FILE__, __LINE__)
 
 #define ASSERT_EQUAL_FLOAT(actual, expected) \
   AssertEqFloat(actual, expected, #actual, #expected, __FILE__, __LINE__)

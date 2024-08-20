@@ -494,8 +494,7 @@ static inline void TestMatrix(TestFramework* fw) {
     float elements2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
-    bool res = matrix1 == matrix2;
-    return ASSERT_EQUAL(bool, res, true);
+    return ASSERT_EQUAL(Matrix, matrix1, matrix2);
   });
 
   fw->Run("Compare two different 4x4 matrices", "Matrix", []() -> bool {
@@ -507,8 +506,7 @@ static inline void TestMatrix(TestFramework* fw) {
     float elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
-    bool res = matrix1 != matrix2;
-    return ASSERT_EQUAL(bool, res, true);
+    return ASSERT_NOT_EQUAL(Matrix, matrix1, matrix2);
   });
 
   fw->Run("Compare two differently sized matrices", "Matrix", []() -> bool {
