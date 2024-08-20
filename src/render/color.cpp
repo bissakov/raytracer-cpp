@@ -57,26 +57,29 @@ Color Color::operator/(const float scalar) const noexcept {
 }
 
 bool Color::IsColorInRange() const noexcept {
-  return (r >= 0.0f && r <= 1.0f) && (g >= 0.0f && g <= 1.0f) &&
-         (b >= 0.0f && b <= 1.0f);
+  __m128 lower_bound = _mm_set1_ps(0.F);
+  __m128 upper_bound = _mm_set1_ps(1.F);
+
+  __m128 cmp = _mm_and_ps(_mm_cmpge_ps(vec, lower_bound),
+                          _mm_cmple_ps(vec, upper_bound));
+
+  return _mm_movemask_ps(cmp) == 0xF;
 }
 
 const char* Color::ToHex() const noexcept {
   assert(IsColorInRange() && "Color out of range");
 
-  std::string hex_chars = "0123456789abcdef";
+  const char* hex_chars = "0123456789abcdef";
   static char hex[7];
 
-  size_t red = Clamp(static_cast<size_t>(r * 255.0f), 0, 255);
-  size_t green = Clamp(static_cast<size_t>(g * 255.0f), 0, 255);
-  size_t blue = Clamp(static_cast<size_t>(b * 255.0f), 0, 255);
+  ColorRGB rgb{NormalizedToRGB(*this)};
 
-  hex[0] = hex_chars[static_cast<int>(red / 16)];
-  hex[1] = hex_chars[red % 16];
-  hex[2] = hex_chars[static_cast<int>(green / 16)];
-  hex[3] = hex_chars[green % 16];
-  hex[4] = hex_chars[static_cast<int>(blue / 16)];
-  hex[5] = hex_chars[blue % 16];
+  hex[0] = hex_chars[static_cast<int32_t>(rgb.r / 16)];
+  hex[1] = hex_chars[rgb.r % 16];
+  hex[2] = hex_chars[static_cast<int32_t>(rgb.g / 16)];
+  hex[3] = hex_chars[rgb.g % 16];
+  hex[4] = hex_chars[static_cast<int32_t>(rgb.b / 16)];
+  hex[5] = hex_chars[rgb.b % 16];
   hex[6] = '\0';
 
   return hex;
@@ -94,3 +97,14 @@ std::ostream& operator<<(std::ostream& os, const Color& c) {
 ColorRGB::ColorRGB() noexcept
     : r(INT_MAX), g(INT_MAX), b(INT_MAX), a(INT_MAX) {}
 ColorRGB::ColorRGB(const __m128i vec) noexcept : vec(vec) {}
+
+ColorRGB NormalizedToRGB(const Color& color) noexcept {
+  __m128 color_vec = _mm_set_ps(0.F, color.b, color.g, color.r);
+  color_vec = _mm_mul_ps(color_vec, _mm_set1_ps(255.F));
+  color_vec = _mm_max_ps(color_vec, _mm_set1_ps(0));
+  color_vec = _mm_min_ps(color_vec, _mm_set1_ps(255));
+
+  __m128i i32_vec = _mm_cvtps_epi32(color_vec);
+  ColorRGB rgb{i32_vec};
+  return rgb;
+}

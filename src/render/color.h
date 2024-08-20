@@ -55,4 +55,6 @@ struct ColorRGB {
   explicit ColorRGB(__m128i vec) noexcept;
 };
 
+ColorRGB NormalizedToRGB(const Color& color) noexcept;
+
 #endif  // SRC_RENDER_COLOR_H_

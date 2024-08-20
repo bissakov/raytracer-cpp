@@ -47,18 +47,7 @@ void Canvas::WriteColor(const size_t pos_x, const size_t pos_y,
   colors[pos_y * width + pos_x] = color;
 }
 
-static inline ColorRGB NormalizedToRGB(Color* color) noexcept {
-  __m128 color_vec = _mm_set_ps(0.f, color->b, color->g, color->r);
-  color_vec = _mm_mul_ps(color_vec, _mm_set1_ps(255.f));
-  color_vec = _mm_max_ps(color_vec, _mm_set1_ps(0));
-  color_vec = _mm_min_ps(color_vec, _mm_set1_ps(255));
-
-  __m128i i32_vec = _mm_cvtps_epi32(color_vec);
-  ColorRGB rgb{i32_vec};
-  return rgb;
-}
-
-bool Canvas::SaveToPPM(const Path& file_path) noexcept {
+bool Canvas::SaveToPPM(const Path& file_path) const noexcept {
   HANDLE file_handle =
       CreateFile(file_path.value, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
   if (file_handle == INVALID_HANDLE_VALUE) {
