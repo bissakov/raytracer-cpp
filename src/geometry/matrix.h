@@ -91,6 +91,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix& m);
 bool IsEqual(const Matrix& a, const Matrix& b) noexcept;
 Matrix Multiply(const Matrix& a, const Matrix& b) noexcept;
 
+static inline __m128 TupleMultiply() noexcept;
+
 Matrix Translate(float x, float y, float z) noexcept;
 Matrix Scale(float x, float y, float z) noexcept;
 Matrix RotateX(float radians) noexcept;

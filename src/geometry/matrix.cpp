@@ -1,9 +1,11 @@
 #include <core/test_suite.h>
 #include <geometry/matrix.h>
 #include <immintrin.h>
+#include <xmmintrin.h>
 
 #include <cassert>
 #include <cmath>
+#include <format>
 #include <string>
 
 Matrix::Matrix() noexcept
@@ -50,27 +52,28 @@ Matrix Matrix::operator*(const Matrix& other) const noexcept {
   return Multiply(*this, other);
 }
 
+static inline __m128 TupleMultiply(const __m128& row0, const __m128& row1,
+                                   const __m128& row2, const __m128& row3,
+                                   const __m128& vec) noexcept {
+  __m128 res0 = _mm_dp_ps(row0, vec, 0xF1);
+  __m128 res1 = _mm_dp_ps(row1, vec, 0xF2);
+  __m128 res2 = _mm_dp_ps(row2, vec, 0xF4);
+  __m128 res3 = _mm_dp_ps(row3, vec, 0xF8);
+  __m128 result = _mm_add_ps(_mm_add_ps(res0, res1), _mm_add_ps(res2, res3));
+  return result;
+}
+
 Vector Matrix::operator*(const Vector& vector) const noexcept {
   assert(rows == 4 && cols == 4);
-  Vector v;
-
-  for (size_t i = 0; i < 4; ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      v[i] += At(i, j) * vector[j];
-    }
-  }
-
-  return v;
+  __m128 result = TupleMultiply(row0, row1, row2, row3, vector.vec);
+  return Vector{result};
 }
 
 Point Matrix::operator*(const Point& point) const noexcept {
   assert(rows == 4 && cols == 4);
-  Point p;
-  for (size_t i = 0; i < 3; ++i) {
-    for (size_t j = 0; j < 4; ++j) {
-      p[i] += At(i, j) * point[j];
-    }
-  }
+  __m128 result = TupleMultiply(row0, row1, row2, row3, point.vec);
+  Point p{result};
+
   return p;
 }
 
@@ -87,13 +90,24 @@ bool Matrix::operator==(const Matrix& other) const noexcept {
     return false;
   }
 
-  for (size_t i = 0; i < rows * cols; ++i) {
-    if (!IsEqualFloat((*this)[i], other[i])) {
-      return false;
-    }
-  }
+  __m128 tolerance = _mm_set1_ps(static_cast<float>(ABSOLUTE_TOLERANCE));
+  __m128 sign_mask = _mm_set1_ps(-0.0F);
 
-  return true;
+  __m128 diff0 = _mm_sub_ps(row0, other.row0);
+  __m128 cmp0 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff0), tolerance);
+
+  __m128 diff1 = _mm_sub_ps(row1, other.row1);
+  __m128 cmp1 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff1), tolerance);
+
+  __m128 diff2 = _mm_sub_ps(row2, other.row2);
+  __m128 cmp2 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff2), tolerance);
+
+  __m128 diff3 = _mm_sub_ps(row3, other.row3);
+  __m128 cmp3 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff3), tolerance);
+
+  __m128 cmp = _mm_and_ps(_mm_and_ps(cmp0, cmp1), _mm_and_ps(cmp2, cmp3));
+
+  return _mm_movemask_ps(cmp) == 0xF;
 }
 
 bool Matrix::operator!=(const Matrix& other) const noexcept {
@@ -319,12 +333,11 @@ Matrix Shear(ShearType shear_type) noexcept {
 }
 
 Matrix::operator std::string() const noexcept {
-  std::string str = "Matrix{\n  rows=" + std::to_string(rows) +
-                    ", cols=" + std::to_string(cols) + ",\n  ";
+  std::string str = std::format("Matrix(\n  rows={}, cols={},\n  ", rows, cols);
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      str += std::to_string(At(row, col)) + " ";
+      str += std::format("{:.10f}", At(row, col));
     }
     str += "\n";
     if (row < rows - 1) {
