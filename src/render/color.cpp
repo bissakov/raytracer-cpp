@@ -5,17 +5,16 @@
 #include <windef.h>
 
 #include <cassert>
-#include <cstdio>
 #include <format>
 
-Color::Color() noexcept : vec(_mm_set_ps(1.f, 0.f, 0.f, 0.f)) {}
+Color::Color() noexcept : vec(_mm_set_ps(1.F, 0.F, 0.F, 0.F)) {}
 
 Color::Color(const float r, const float g, const float b,
              const float a) noexcept
     : vec(_mm_set_ps(a, b, g, r)) {}
 
 Color::Color(const float r, const float g, const float b) noexcept
-    : vec(_mm_set_ps(1.f, b, g, r)) {}
+    : vec(_mm_set_ps(1.F, b, g, r)) {}
 
 Color::Color(const __m128 vec) noexcept : vec(vec) {}
 

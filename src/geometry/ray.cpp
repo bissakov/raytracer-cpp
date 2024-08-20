@@ -23,19 +23,19 @@ Ray& Ray::operator=(const Ray& other) noexcept {
   return *this;
 }
 
-bool Ray::operator==(const Ray& other) const {
+bool Ray::operator==(const Ray& other) const noexcept {
   return origin == other.origin && direction == other.direction;
 }
 
-bool Ray::operator!=(const Ray& other) const {
+bool Ray::operator!=(const Ray& other) const noexcept {
   return !(*this == other);
 }
 
-Point Ray::Position(float t) noexcept {
+Point Ray::Position(float t) const noexcept {
   return origin + direction * t;
 }
 
-Hits Ray::Intersect(Sphere sphere) noexcept {
+Hits Ray::Intersect(Sphere sphere) const noexcept {
   Hits hits;
 
   Ray ray{Transform(sphere.transform_matrix.Inverse())};
@@ -63,7 +63,7 @@ Hits Ray::Intersect(Sphere sphere) noexcept {
   return hits;
 }
 
-Ray Ray::Transform(Matrix transform) noexcept {
+Ray Ray::Transform(Matrix transform) const noexcept {
   return {transform * origin, transform * direction};
 }
 
@@ -78,16 +78,16 @@ Sphere::Sphere(const Point& origin, const Matrix& transform, const float radius,
                const Material& material) noexcept
     : origin(origin),
       transform_matrix(transform),
-      radius(radius),
-      material(material) {}
+      material(material),
+      radius(radius) {}
 
 Sphere::Sphere(const Material& material) noexcept : material(material) {}
 
 Sphere::Sphere(const Sphere& other) noexcept
     : origin(other.origin),
       transform_matrix(other.transform_matrix),
-      radius(other.radius),
-      material(other.material) {}
+      material(other.material),
+      radius(other.radius) {}
 
 Sphere& Sphere::operator=(const Sphere& other) noexcept {
   if (this != &other) {
@@ -99,16 +99,16 @@ Sphere& Sphere::operator=(const Sphere& other) noexcept {
   return *this;
 }
 
-bool Sphere::operator==(const Sphere& other) const {
+bool Sphere::operator==(const Sphere& other) const noexcept {
   return origin == other.origin && transform_matrix == other.transform_matrix &&
          radius == other.radius && material == other.material;
 }
 
-bool Sphere::operator!=(const Sphere& other) const {
+bool Sphere::operator!=(const Sphere& other) const noexcept {
   return !(*this == other);
 }
 
-Vector Sphere::NormalAt(const Point& world_point) noexcept {
+Vector Sphere::NormalAt(const Point& world_point) const noexcept {
   Point object_point{transform_matrix.Inverse() * world_point};
   Vector object_normal{object_point - origin};
   Vector world_normal{

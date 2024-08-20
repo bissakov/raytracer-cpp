@@ -5,10 +5,10 @@
 
 Material::Material() noexcept
     : color({1, 1, 1}),
-      ambient(.1f),
-      diffuse(.9f),
-      specular(.9f),
-      shininess(200.f) {}
+      ambient(.1F),
+      diffuse(.9F),
+      specular(.9F),
+      shininess(200.F) {}
 
 Material::Material(const Color &color, float ambient, float diffuse,
                    float specular, float shininess) noexcept

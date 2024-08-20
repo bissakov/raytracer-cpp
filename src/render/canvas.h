@@ -14,16 +14,15 @@ struct Canvas {
   std::unique_ptr<Color[]> colors;
 
   Canvas() noexcept;
-  Canvas(const size_t width_, const size_t height_) noexcept;
+  Canvas(size_t width, size_t height) noexcept;
   Canvas(const Canvas &other) noexcept;
   Canvas &operator=(const Canvas &other) noexcept;
 
-  constexpr bool IsInRange(const size_t pos_x,
-                           const size_t pos_y) const noexcept;
-  Color ColorAt(const size_t pos_x, const size_t pos_y) const noexcept;
-  void WriteColor(const size_t pos_x, const size_t pos_y,
+  constexpr bool IsInRange(size_t pos_x, size_t pos_y) const noexcept;
+  Color ColorAt(size_t pos_x, size_t pos_y) const noexcept;
+  void WriteColor(size_t pos_x, size_t pos_y,
                   const Color &color) const noexcept;
-  bool SaveToPPM(const Path &file_path) noexcept;
+  bool SaveToPPM(const Path &file_path) const noexcept;
   bool LoadFromPPM(const Path &file_path) noexcept;
 
   operator std::string() const noexcept;

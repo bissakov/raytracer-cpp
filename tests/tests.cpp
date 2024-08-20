@@ -184,14 +184,14 @@ static inline void TestTuple(TestFramework* fw) {
   fw->Run("The magnitude of a vector 4", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     float actual = v.Magnitude();
-    float expected = sqrt(14.f);
+    float expected = sqrt(14.F);
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
 
   fw->Run("The magnitude of a vector 5", "Tuples", []() -> bool {
     Vector v = {-1, -2, -3};
     float actual = v.Magnitude();
-    float expected = sqrt(14.f);
+    float expected = sqrt(14.F);
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
 
@@ -205,7 +205,7 @@ static inline void TestTuple(TestFramework* fw) {
   fw->Run("Normalize vector 2", "Tuples", []() -> bool {
     Vector v = {1, 2, 3};
     Vector actual = v.Normalize();
-    Vector expected = {1 / sqrt(14.f), 2 / sqrt(14.f), 3 / sqrt(14.f)};
+    Vector expected = {1 / sqrt(14.F), 2 / sqrt(14.F), 3 / sqrt(14.F)};
     return ASSERT_EQUAL(Vector, actual, expected);
   });
 
@@ -213,7 +213,7 @@ static inline void TestTuple(TestFramework* fw) {
     Vector v = {1, 2, 3};
     Vector nv = v.Normalize();
     float actual = nv.Magnitude();
-    float expected = 1.f;
+    float expected = 1.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -271,47 +271,47 @@ static inline void TestTuple(TestFramework* fw) {
 
 static inline void TestColor(TestFramework* fw) {
   fw->Run("Add color to color", "Colors", []() -> bool {
-    Color left{0.9f, 0.6f, 0.75f};
-    Color right{0.7f, 0.1f, 0.25f};
+    Color left{0.9F, 0.6F, 0.75F};
+    Color right{0.7F, 0.1F, 0.25F};
     Color actual{left + right};
-    Color expected{1.6f, 0.7f, 1};
+    Color expected{1.6F, 0.7F, 1};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw->Run("Subtract color from color", "Colors", []() -> bool {
-    Color left{0.9f, 0.6f, 0.75f};
-    Color right{0.7f, 0.1f, 0.25f};
+    Color left{0.9F, 0.6F, 0.75F};
+    Color right{0.7F, 0.1F, 0.25F};
     Color actual{left - right};
-    Color expected{0.2f, 0.5f, 0.5f};
+    Color expected{0.2F, 0.5F, 0.5F};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw->Run("Multiply color by scalar", "Colors", []() -> bool {
-    Color c{0.2f, 0.3f, 0.4f};
-    Color actual{c * 2.f};
-    Color expected{0.4f, 0.6f, 0.8f};
+    Color c{0.2F, 0.3F, 0.4F};
+    Color actual{c * 2.F};
+    Color expected{0.4F, 0.6F, 0.8F};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw->Run("Divide color by multiplying by scalar", "Colors", []() -> bool {
-    Color c{0.2f, 0.3f, 0.4f};
-    Color actual{c * 0.5f};
-    Color expected{0.1f, 0.15f, 0.2f};
+    Color c{0.2F, 0.3F, 0.4F};
+    Color actual{c * 0.5F};
+    Color expected{0.1F, 0.15F, 0.2F};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw->Run("Divide color by scalar", "Colors", []() -> bool {
-    Color c{0.2f, 0.3f, 0.4f};
-    Color actual{c / 2.f};
-    Color expected{0.1f, 0.15f, 0.2f};
+    Color c{0.2F, 0.3F, 0.4F};
+    Color actual{c / 2.F};
+    Color expected{0.1F, 0.15F, 0.2F};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 
   fw->Run("Multiply colors", "Colors", []() -> bool {
-    Color left{1, 0.2f, 0.4f};
-    Color right{0.9f, 1, 0.1f};
+    Color left{1, 0.2F, 0.4F};
+    Color right{0.9F, 1, 0.1F};
     Color actual{left * right};
-    Color expected{0.9f, 0.2f, 0.04f};
+    Color expected{0.9F, 0.2F, 0.04F};
     return ASSERT_EQUAL(Color, actual, expected);
   });
 }
@@ -357,8 +357,8 @@ static inline void TestCanvas(TestFramework* fw) {
   fw->Run("Save canvas to PPM", "Canvas", [fw]() -> bool {
     Canvas canvas{500, 300};
 
-    Color blue{0, 0.34f, 0.72f};
-    Color yellow{1, 0.85f, 0};
+    Color blue{0, 0.34F, 0.72F};
+    Color yellow{1, 0.85F, 0};
 
     size_t stripe_thickness = 20;
 
@@ -396,10 +396,10 @@ static inline void TestCanvas(TestFramework* fw) {
   fw->Run("Map the trajectory of projectile", "Canvas", [fw]() -> bool {
     Canvas canvas{900, 550};
 
-    Projectile proj{{0, 1, 0}, {1, 1.8f, 0}};
-    proj.velocity = proj.velocity.Normalize() * 11.25f;
+    Projectile proj{{0, 1, 0}, {1, 1.8F, 0}};
+    proj.velocity = proj.velocity.Normalize() * 11.25F;
 
-    Environment env{{0, -0.1f, 0}, {-0.01f, 0, 0}};
+    Environment env{{0, -0.1F, 0}, {-0.01F, 0, 0}};
 
     Color red{1, 0, 0};
 
@@ -445,8 +445,8 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Check 4x4 matrix values", "Matrix", []() -> bool {
     Matrix matrix{4, 4};
-    float elements[] = {1, 2,  3,  4,  5.5,  6.5f,  7.5f,  8.5f,
-                        9, 10, 11, 12, 13.5, 14.5f, 15.5f, 16.5f};
+    float elements[] = {1, 2,  3,  4,  5.5,  6.5F,  7.5F,  8.5F,
+                        9, 10, 11, 12, 13.5, 14.5F, 15.5F, 16.5F};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     bool res = ASSERT_EQUAL_FLOAT(matrix.At(0, 0), 1) &&
@@ -603,7 +603,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Determinant();
-    float expected = 17.f;
+    float expected = 17.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -642,7 +642,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Minor(1, 0);
-    float expected = 25.f;
+    float expected = 25.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -653,7 +653,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Cofactor(0, 0);
-    float expected = -12.f;
+    float expected = -12.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -664,7 +664,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Cofactor(1, 0);
-    float expected = -25.f;
+    float expected = -25.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -675,7 +675,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Determinant();
-    float expected = -196.f;
+    float expected = -196.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -686,7 +686,7 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Determinant();
-    float expected = -4071.f;
+    float expected = -4071.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected);
   });
@@ -697,10 +697,10 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Determinant();
-    float expected = -2120.f;
+    float expected = -2120.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected) &&
-           ASSERT_EQUAL(bool, IsEqualFloat(actual, 0.f), false);
+           ASSERT_EQUAL(bool, IsEqualFloat(actual, 0.F), false);
   });
 
   fw->Run("Test a matrix for invertibility 2", "Matrix", []() -> bool {
@@ -709,10 +709,10 @@ static inline void TestMatrix(TestFramework* fw) {
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
     float actual = matrix.Determinant();
-    float expected = 0.f;
+    float expected = 0.F;
 
     return ASSERT_EQUAL_FLOAT(actual, expected) &&
-           ASSERT_EQUAL(bool, IsEqualFloat(actual, 0.f), true);
+           ASSERT_EQUAL(bool, IsEqualFloat(actual, 0.F), true);
   });
 
   fw->Run("Inverse a 4x4 matrix 1", "Matrix", []() -> bool {
@@ -723,12 +723,12 @@ static inline void TestMatrix(TestFramework* fw) {
     Matrix actual = matrix.Inverse();
     Matrix expected = {4, 4};
     float expected_elements[] = {
-        116.f, 240.f,  128.f, -24.f, -430.f, -775.f, -236.f, 277.f,
-        -42.f, -119.f, -28.f, 105.f, -278.f, -433.f, -160.f, 163.f,
+        116.F, 240.F,  128.F, -24.F, -430.F, -775.F, -236.F, 277.F,
+        -42.F, -119.F, -28.F, 105.F, -278.F, -433.F, -160.F, 163.F,
     };
 
     for (int i = 0; i < 16; ++i) {
-      expected_elements[i] /= 532.f;
+      expected_elements[i] /= 532.F;
     }
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
@@ -744,11 +744,11 @@ static inline void TestMatrix(TestFramework* fw) {
     Matrix actual = matrix.Inverse();
 
     Matrix expected = {4, 4};
-    float expected_elements[] = {90.f,  90.f,  165.f,  315.f,  45.f,   -72.f,
-                                 -15.f, -18.f, -210.f, -210.f, -255.f, -540.f,
-                                 405.f, 405.f, 450.f,  1125.f};
+    float expected_elements[] = {90.F,  90.F,  165.F,  315.F,  45.F,   -72.F,
+                                 -15.F, -18.F, -210.F, -210.F, -255.F, -540.F,
+                                 405.F, 405.F, 450.F,  1125.F};
     for (int i = 0; i < 16; ++i) {
-      expected_elements[i] /= -585.f;
+      expected_elements[i] /= -585.F;
     }
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
@@ -764,11 +764,11 @@ static inline void TestMatrix(TestFramework* fw) {
     Matrix actual = matrix.Inverse();
 
     Matrix expected = {4, 4};
-    float expected_elements[] = {-66.f, -126.f, 234.f,  -360.f, -126.f, 54.f,
-                                 594.f, -540.f, -47.f,  -237.f, -177.f, 210.f,
-                                 288.f, 108.f,  -432.f, 540.f};
+    float expected_elements[] = {-66.F, -126.F, 234.F,  -360.F, -126.F, 54.F,
+                                 594.F, -540.F, -47.F,  -237.F, -177.F, 210.F,
+                                 288.F, 108.F,  -432.F, 540.F};
     for (int i = 0; i < 16; ++i) {
-      expected_elements[i] /= 1620.f;
+      expected_elements[i] /= 1620.F;
     }
 
     expected.Populate(expected_elements, expected.rows * expected.cols);
@@ -880,12 +880,12 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Rotate a point around the x axis", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
-    Matrix half_quarter = RotateX(static_cast<float>(PI) / 4.f);
-    Matrix full_quarter = RotateX(static_cast<float>(PI) / 2.f);
+    Matrix half_quarter = RotateX(static_cast<float>(PI) / 4.F);
+    Matrix full_quarter = RotateX(static_cast<float>(PI) / 2.F);
 
     Point actual1 = half_quarter * p;
     Point actual2 = full_quarter * p;
-    Point expected1 = {0, sqrt(2.f) / 2.f, sqrt(2.f) / 2.f};
+    Point expected1 = {0, sqrt(2.F) / 2.F, sqrt(2.F) / 2.F};
     Point expected2 = {0, 0, 1};
 
     return ASSERT_EQUAL(Point, actual1, expected1) &&
@@ -894,23 +894,23 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Opposite inverse of X-rotation", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
-    Matrix half_quarter = RotateX(static_cast<float>(PI) / 4.f);
+    Matrix half_quarter = RotateX(static_cast<float>(PI) / 4.F);
     Matrix inverse = half_quarter.Inverse();
 
     Point actual = inverse * p;
-    Point expected = {0, sqrt(2.f) / 2.f, -sqrt(2.f) / 2.f};
+    Point expected = {0, sqrt(2.F) / 2.F, -sqrt(2.F) / 2.F};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw->Run("Rotate a point around the Y axis", "Matrix", []() -> bool {
     Point p = {0, 0, 1};
-    Matrix half_quarter = RotateY(static_cast<float>(PI) / 4.f);
-    Matrix full_quarter = RotateY(static_cast<float>(PI) / 2.f);
+    Matrix half_quarter = RotateY(static_cast<float>(PI) / 4.F);
+    Matrix full_quarter = RotateY(static_cast<float>(PI) / 2.F);
 
     Point actual1 = half_quarter * p;
     Point actual2 = full_quarter * p;
-    Point expected1 = {sqrt(2.f) / 2.f, 0, sqrt(2.f) / 2.f};
+    Point expected1 = {sqrt(2.F) / 2.F, 0, sqrt(2.F) / 2.F};
     Point expected2 = {1, 0, 0};
 
     return ASSERT_EQUAL(Point, actual1, expected1) &&
@@ -919,23 +919,23 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Opposite inverse of Y-rotation", "Matrix", []() -> bool {
     Point p = {0, 0, 1};
-    Matrix half_quarter = RotateY(static_cast<float>(PI) / 4.f);
+    Matrix half_quarter = RotateY(static_cast<float>(PI) / 4.F);
     Matrix inverse = half_quarter.Inverse();
 
     Point actual = inverse * p;
-    Point expected = {-sqrt(2.f) / 2.f, 0, sqrt(2.f) / 2.f};
+    Point expected = {-sqrt(2.F) / 2.F, 0, sqrt(2.F) / 2.F};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
 
   fw->Run("Rotate a point around the Z axis", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
-    Matrix half_quarter = RotateZ(static_cast<float>(PI) / 4.f);
-    Matrix full_quarter = RotateZ(static_cast<float>(PI) / 2.f);
+    Matrix half_quarter = RotateZ(static_cast<float>(PI) / 4.F);
+    Matrix full_quarter = RotateZ(static_cast<float>(PI) / 2.F);
 
     Point actual1 = half_quarter * p;
     Point actual2 = full_quarter * p;
-    Point expected1 = {-sqrt(2.f) / 2.f, sqrt(2.f) / 2.f, 0};
+    Point expected1 = {-sqrt(2.F) / 2.F, sqrt(2.F) / 2.F, 0};
     Point expected2 = {-1, 0, 0};
 
     return ASSERT_EQUAL(Point, actual1, expected1) &&
@@ -944,11 +944,11 @@ static inline void TestMatrix(TestFramework* fw) {
 
   fw->Run("Opposite inverse of Z-rotation", "Matrix", []() -> bool {
     Point p = {0, 1, 0};
-    Matrix half_quarter = RotateZ(static_cast<float>(PI) / 4.f);
+    Matrix half_quarter = RotateZ(static_cast<float>(PI) / 4.F);
     Matrix inverse = half_quarter.Inverse();
 
     Point actual = inverse * p;
-    Point expected = {sqrt(2.f) / 2.f, sqrt(2.f) / 2.f, 0};
+    Point expected = {sqrt(2.F) / 2.F, sqrt(2.F) / 2.F, 0};
 
     return ASSERT_EQUAL(Point, actual, expected);
   });
@@ -1062,8 +1062,8 @@ static inline void TestMatrix(TestFramework* fw) {
   fw->Run("Clock", "Matrix", [fw]() -> bool {
     Canvas canvas{600, 600};
     size_t radius = (canvas.width - 100) / 2;
-    Point origin{static_cast<float>(canvas.width) / 2.f, 0.f,
-                 static_cast<float>(canvas.height) / 2.f};
+    Point origin{static_cast<float>(canvas.width) / 2.F, 0.F,
+                 static_cast<float>(canvas.height) / 2.F};
     Color green{0, 1, 0};
 
     size_t resolution = 12;
@@ -1072,7 +1072,7 @@ static inline void TestMatrix(TestFramework* fw) {
 
     Point start{0, 0, 1};
     float turn =
-        static_cast<float>(PI) / (static_cast<float>(resolution) / 2.f);
+        static_cast<float>(PI) / (static_cast<float>(resolution) / 2.F);
     for (size_t i = 0; i < resolution; ++i) {
       float radians = i * turn;
       points[i] = RotateY(radians) * start;
@@ -1131,8 +1131,8 @@ static inline void TestRay(TestFramework* fw) {
     Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, 4.f) &&
-           ASSERT_EQUAL_FLOAT(hits[1].t, 6.f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, 4.F) &&
+           ASSERT_EQUAL_FLOAT(hits[1].t, 6.F);
   });
 
   fw->Run("Hit a sphere at a tangent with a ray", "Rays", []() -> bool {
@@ -1141,7 +1141,7 @@ static inline void TestRay(TestFramework* fw) {
     Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 1) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, 5.f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, 5.F);
   });
 
   fw->Run("Miss a sphere with a ray", "Rays", []() -> bool {
@@ -1158,8 +1158,8 @@ static inline void TestRay(TestFramework* fw) {
     Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, -1.f) &&
-           ASSERT_EQUAL_FLOAT(hits[1].t, 1.f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, -1.F) &&
+           ASSERT_EQUAL_FLOAT(hits[1].t, 1.F);
   });
 
   fw->Run("Hit a sphere with a ray behind it", "Rays", []() -> bool {
@@ -1168,8 +1168,8 @@ static inline void TestRay(TestFramework* fw) {
     Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, -6.f) &&
-           ASSERT_EQUAL_FLOAT(hits[1].t, -4.f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, -6.F) &&
+           ASSERT_EQUAL_FLOAT(hits[1].t, -4.F);
   });
 
   fw->Run("Initialize hit and hits", "Rays", []() -> bool {
@@ -1181,12 +1181,12 @@ static inline void TestRay(TestFramework* fw) {
 
     Hits hits_copy{Hits{hits}};
 
-    return ASSERT_EQUAL_FLOAT(hit.t, 3.5f) &&
+    return ASSERT_EQUAL_FLOAT(hit.t, 3.5F) &&
            ASSERT_EQUAL(Sphere, *reinterpret_cast<Sphere*>(hit.object.data),
                         sphere) &&
            ASSERT_EQUAL(Hits, hits, hits_copy) &&
            ASSERT_EQUAL(size_t, hits.count, 1) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, 3.5f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, 3.5F);
   });
 
   fw->Run("The hit with all positive t intersections", "Rays", []() -> bool {
@@ -1295,8 +1295,8 @@ static inline void TestRay(TestFramework* fw) {
     Hits hits{ray.Intersect(sphere)};
 
     return ASSERT_EQUAL(size_t, hits.count, 2) &&
-           ASSERT_EQUAL_FLOAT(hits[0].t, 3.f) &&
-           ASSERT_EQUAL_FLOAT(hits[1].t, 7.f);
+           ASSERT_EQUAL_FLOAT(hits[0].t, 3.F) &&
+           ASSERT_EQUAL_FLOAT(hits[1].t, 7.F);
   });
 
   fw->Run("Intersect a translated sphere with a ray", "Rays", []() -> bool {
@@ -1316,10 +1316,10 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {.26f, .96f, .53f};
+    shape.material.color = {.26F, .96F, .53F};
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
@@ -1334,11 +1334,11 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {.26f, .96f, .53f};
-    shape.transform_matrix = Scale(1, .5f, 1);
+    shape.material.color = {.26F, .96F, .53F};
+    shape.transform_matrix = Scale(1, .5F, 1);
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
@@ -1353,11 +1353,11 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {.26f, .96f, .53f};
-    shape.transform_matrix = Scale(.5f, 1, 1);
+    shape.material.color = {.26F, .96F, .53F};
+    shape.transform_matrix = Scale(.5F, 1, 1);
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
@@ -1372,12 +1372,12 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {.26f, .96f, .53f};
+    shape.material.color = {.26F, .96F, .53F};
     shape.transform_matrix =
-        Scale(.5f, 1, 1).RotateZ(static_cast<float>(PI) / 4.f);
+        Scale(.5F, 1, 1).RotateZ(static_cast<float>(PI) / 4.F);
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
@@ -1392,11 +1392,11 @@ static inline void TestRay(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {.26f, .96f, .53f};
-    shape.transform_matrix = Shear(XY).Scale(.5f, 1, 1);
+    shape.material.color = {.26F, .96F, .53F};
+    shape.transform_matrix = Shear(XY).Scale(.5F, 1, 1);
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeUnshaded(&canvas, ray_origin, shape, wall_z, wall_size);
 
@@ -1434,9 +1434,9 @@ static inline void TestShading(TestFramework* fw) {
   fw->Run("Normal on a sphere at a nonaxial point", "Shading", []() -> bool {
     Sphere sphere;
     Vector actual{sphere.NormalAt(
-        {std::sqrt(3.f) / 3.f, std::sqrt(3.f) / 3, std::sqrt(3.f) / 3.f})};
-    Vector expected{std::sqrt(3.f) / 3, std::sqrt(3.f) / 3.f,
-                    std::sqrt(3.f) / 3.f};
+        {std::sqrt(3.F) / 3.F, std::sqrt(3.F) / 3, std::sqrt(3.F) / 3.F})};
+    Vector expected{std::sqrt(3.F) / 3, std::sqrt(3.F) / 3.F,
+                    std::sqrt(3.F) / 3.F};
 
     return ASSERT_EQUAL(Vector, actual, expected);
   });
@@ -1444,9 +1444,9 @@ static inline void TestShading(TestFramework* fw) {
   fw->Run("Check that normal is normalized", "Shading", []() -> bool {
     Sphere sphere;
     Vector actual{sphere.NormalAt(
-        {std::sqrt(3.f) / 3.f, std::sqrt(3.f) / 3.f, std::sqrt(3.f) / 3.f})};
-    Vector expected{std::sqrt(3.f) / 3.f, std::sqrt(3.f) / 3.f,
-                    std::sqrt(3.f) / 3.f};
+        {std::sqrt(3.F) / 3.F, std::sqrt(3.F) / 3.F, std::sqrt(3.F) / 3.F})};
+    Vector expected{std::sqrt(3.F) / 3.F, std::sqrt(3.F) / 3.F,
+                    std::sqrt(3.F) / 3.F};
     Vector expected_normalized{actual.Normalize()};
 
     return ASSERT_EQUAL(Vector, actual, expected) &&
@@ -1458,8 +1458,8 @@ static inline void TestShading(TestFramework* fw) {
     sphere.transform_matrix = Translate(0, 1, 0);
 
     Vector actual{
-        sphere.NormalAt({0, 1 + std::sqrt(2.f) / 2.f, -std::sqrt(2.f) / 2.f})};
-    Vector expected{0, std::sqrt(2.f) / 2.f, -std::sqrt(2.f) / 2.f};
+        sphere.NormalAt({0, 1 + std::sqrt(2.F) / 2.F, -std::sqrt(2.F) / 2.F})};
+    Vector expected{0, std::sqrt(2.F) / 2.F, -std::sqrt(2.F) / 2.F};
 
     return ASSERT_EQUAL(Vector, actual, expected);
   });
@@ -1467,11 +1467,11 @@ static inline void TestShading(TestFramework* fw) {
   fw->Run("Compute the normal on transformed sphere", "Shading", []() -> bool {
     Sphere sphere;
     sphere.transform_matrix =
-        RotateZ(static_cast<float>(PI) / 5.f).Scale(1, 0.5f, 1);
+        RotateZ(static_cast<float>(PI) / 5.F).Scale(1, 0.5F, 1);
 
     Vector actual{
-        sphere.NormalAt({0, std::sqrt(2.f) / 2.f, -std::sqrt(2.f) / 2.f})};
-    Vector expected{0, 0.97014250014533f, -0.24253562503633f};
+        sphere.NormalAt({0, std::sqrt(2.F) / 2.F, -std::sqrt(2.F) / 2.F})};
+    Vector expected{0, 0.97014250014533F, -0.24253562503633F};
 
     return ASSERT_EQUAL(Vector, actual, expected);
   });
@@ -1487,7 +1487,7 @@ static inline void TestShading(TestFramework* fw) {
 
   fw->Run("Reflect a vector off a slanted surface", "Shading", []() -> bool {
     Vector vector{0, -1, 0};
-    Vector normal{std::sqrt(2.f) / 2.f, std::sqrt(2.f) / 2.f, 0};
+    Vector normal{std::sqrt(2.F) / 2.F, std::sqrt(2.F) / 2.F, 0};
     Vector reflect{vector.Reflect(normal)};
     Vector expected{1, 0, 0};
 
@@ -1504,19 +1504,19 @@ static inline void TestShading(TestFramework* fw) {
   });
 
   fw->Run("Initialize material", "Shading", []() -> bool {
-    Material material{{1, 1, 1}, .1f, .9f, .9f, 200.f};
+    Material material{{1, 1, 1}, .1F, .9F, .9F, 200.F};
 
     Color expected_color{1, 1, 1};
 
     return ASSERT_EQUAL(Color, material.color, expected_color) &&
-           ASSERT_EQUAL_FLOAT(material.ambient, .1f) &&
-           ASSERT_EQUAL_FLOAT(material.diffuse, .9f) &&
-           ASSERT_EQUAL_FLOAT(material.specular, .9f) &&
-           ASSERT_EQUAL_FLOAT(material.shininess, 200.f);
+           ASSERT_EQUAL_FLOAT(material.ambient, .1F) &&
+           ASSERT_EQUAL_FLOAT(material.diffuse, .9F) &&
+           ASSERT_EQUAL_FLOAT(material.specular, .9F) &&
+           ASSERT_EQUAL_FLOAT(material.shininess, 200.F);
   });
 
   fw->Run("Initialize sphere with default material", "Shading", []() -> bool {
-    Material material{{1, 1, 1}, .1f, .9f, .9f, 200.f};
+    Material material{{1, 1, 1}, .1F, .9F, .9F, 200.F};
     Sphere sphere1{material};
     Sphere sphere2;
 
@@ -1540,7 +1540,7 @@ static inline void TestShading(TestFramework* fw) {
 
     Color actual =
         Lighting(material, light, position, eye_vector, normal_vector);
-    Color expected{1.9f, 1.9f, 1.9f};
+    Color expected{1.9F, 1.9F, 1.9F};
 
     return ASSERT_EQUAL(Color, actual, expected);
   });
@@ -1549,13 +1549,13 @@ static inline void TestShading(TestFramework* fw) {
     Material material;
     Point position = {0, 0, 0};
 
-    Vector eye_vector{0, std::sqrt(2.f) / 2, -std::sqrt(2.f) / 2};
+    Vector eye_vector{0, std::sqrt(2.F) / 2, -std::sqrt(2.F) / 2};
     Vector normal_vector{0, 0, -1};
     PointLight light{Color(1, 1, 1), Point{0, 0, -10}};
 
     Color actual =
         Lighting(material, light, position, eye_vector, normal_vector);
-    Color expected{1.f, 1.f, 1.f};
+    Color expected{1.F, 1.F, 1.F};
 
     return ASSERT_EQUAL(Color, actual, expected);
   });
@@ -1570,9 +1570,9 @@ static inline void TestShading(TestFramework* fw) {
 
     Color actual =
         Lighting(material, light, position, eye_vector, normal_vector);
-    Color expected{(.1f + .9f * std::sqrt(2.f) / 2.f),
-                   (.1f + .9f * std::sqrt(2.f) / 2.f),
-                   (.1f + .9f * std::sqrt(2.f) / 2.f)};
+    Color expected{(.1F + .9F * std::sqrt(2.F) / 2.F),
+                   (.1F + .9F * std::sqrt(2.F) / 2.F),
+                   (.1F + .9F * std::sqrt(2.F) / 2.F)};
 
     return ASSERT_EQUAL(Color, actual, expected);
   });
@@ -1581,14 +1581,14 @@ static inline void TestShading(TestFramework* fw) {
     Material material;
     Point position = {0, 0, 0};
 
-    Vector eye_vector{0, -sqrt(2.f) / 2.f, -sqrt(2.f) / 2.f};
+    Vector eye_vector{0, -sqrt(2.F) / 2.F, -sqrt(2.F) / 2.F};
     Vector normal_vector{0, 0, -1};
     PointLight light{Color(1, 1, 1), Point{0, 10, -10}};
 
     Color actual =
         Lighting(material, light, position, eye_vector, normal_vector);
-    Color expected{(1.f + .9f * sqrt(2.f) / 2.f), (1.f + .9f * sqrt(2.f) / 2.f),
-                   (1.f + .9f * sqrt(2.f) / 2.f)};
+    Color expected{(1.F + .9F * sqrt(2.F) / 2.F), (1.F + .9F * sqrt(2.F) / 2.F),
+                   (1.F + .9F * sqrt(2.F) / 2.F)};
 
     return ASSERT_EQUAL(Color, actual, expected);
   });
@@ -1603,7 +1603,7 @@ static inline void TestShading(TestFramework* fw) {
 
     Color actual =
         Lighting(material, light, position, eye_vector, normal_vector);
-    Color expected{.1f, .1f, .1f};
+    Color expected{.1F, .1F, .1F};
 
     return ASSERT_EQUAL(Color, actual, expected);
   });
@@ -1614,12 +1614,12 @@ static inline void TestShading(TestFramework* fw) {
 
     Point ray_origin{0, 0, -5};
     Sphere shape;
-    shape.material.color = {1, .2f, 1};
+    shape.material.color = {1, .2F, 1};
 
     PointLight light{Color{1, 1, 1}, Point{-10, 10, -10}};
 
-    float wall_z = 10.f;
-    float wall_size = 7.f;
+    float wall_z = 10.F;
+    float wall_size = 7.F;
 
     CastShapeShaded(&canvas, ray_origin, shape, light, wall_z, wall_size);
 

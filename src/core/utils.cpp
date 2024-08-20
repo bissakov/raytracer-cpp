@@ -11,10 +11,10 @@ void ErrorExit(const LPCTSTR function) {
                     FORMAT_MESSAGE_IGNORE_INSERTS,
                 NULL, last_error_code,
                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                (LPTSTR)&message_buffer, 0, NULL);
+                reinterpret_cast<LPTSTR>(&message_buffer), 0, NULL);
 
   printf("\33[0;31m%s failed with error %lu:\033[0m %s", function,
-         last_error_code, (LPCTSTR)message_buffer);
+         last_error_code, static_cast<LPCTSTR>(message_buffer));
 
   LocalFree(message_buffer);
   ExitProcess(last_error_code);

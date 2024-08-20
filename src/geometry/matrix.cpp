@@ -46,11 +46,11 @@ Matrix& Matrix::operator=(const Matrix& other) noexcept {
   return *this;
 }
 
-Matrix Matrix::operator*(const Matrix& other) noexcept {
+Matrix Matrix::operator*(const Matrix& other) const noexcept {
   return Multiply(*this, other);
 }
 
-Vector Matrix::operator*(const Vector& vector) noexcept {
+Vector Matrix::operator*(const Vector& vector) const noexcept {
   assert(rows == 4 && cols == 4);
   Vector v;
 
@@ -63,7 +63,7 @@ Vector Matrix::operator*(const Vector& vector) noexcept {
   return v;
 }
 
-Point Matrix::operator*(const Point& point) noexcept {
+Point Matrix::operator*(const Point& point) const noexcept {
   assert(rows == 4 && cols == 4);
   Point p;
   for (size_t i = 0; i < 3; ++i) {
@@ -76,7 +76,7 @@ Point Matrix::operator*(const Point& point) noexcept {
 
 Matrix Matrix::operator/(const float scalar) noexcept {
   Matrix res = {rows, cols};
-  for (size_t row = 0; row < rows; ++row) {
+  for (size_t row = 0; row < res.rows; ++row) {
     res.SetRow(_mm_div_ps(Row(row), _mm_set1_ps(scalar)), row);
   }
   return res;
@@ -100,7 +100,7 @@ bool Matrix::operator!=(const Matrix& other) const noexcept {
   return !(*this == other);
 }
 
-void Matrix::Populate(float* elements, size_t element_count) noexcept {
+void Matrix::Populate(float* elements, const size_t element_count) noexcept {
   assert(element_count == rows * cols &&
          "Invalid number of elements to populate matrix");
   size_t i = 0;
@@ -118,7 +118,7 @@ Matrix Matrix::Transpose() noexcept {
   return matrix;
 }
 
-float Matrix::Determinant() noexcept {
+float Matrix::Determinant() const noexcept {
   if (rows == 2 && cols == 2) {
     return At(0, 0) * At(1, 1) - At(0, 1) * At(1, 0);
   }
@@ -130,7 +130,8 @@ float Matrix::Determinant() noexcept {
   return determinant;
 }
 
-Matrix Matrix::SubMatrix(size_t excluded_row, size_t excluded_col) noexcept {
+Matrix Matrix::SubMatrix(size_t excluded_row,
+                         size_t excluded_col) const noexcept {
   assert(excluded_row <= rows && excluded_col <= cols);
 
   Matrix submatrix = {rows - 1, cols - 1};
@@ -139,9 +140,13 @@ Matrix Matrix::SubMatrix(size_t excluded_row, size_t excluded_col) noexcept {
   size_t current_col = 0;
 
   for (size_t row = 0; row < rows; ++row) {
-    if (row == excluded_row) continue;
+    if (row == excluded_row) {
+      continue;
+    }
     for (size_t col = 0; col < cols; ++col) {
-      if (col == excluded_col) continue;
+      if (col == excluded_col) {
+        continue;
+      }
 
       submatrix.Set(current_row, current_col, At(row, col));
       current_col = (current_col + 1) % submatrix.cols;
@@ -152,19 +157,19 @@ Matrix Matrix::SubMatrix(size_t excluded_row, size_t excluded_col) noexcept {
   return submatrix;
 }
 
-float Matrix::Minor(size_t row, size_t col) noexcept {
+float Matrix::Minor(size_t row, size_t col) const noexcept {
   Matrix submatrix = SubMatrix(row, col);
   float determinant = submatrix.Determinant();
   return determinant;
 }
 
-float Matrix::Cofactor(size_t row, size_t col) noexcept {
+float Matrix::Cofactor(size_t row, size_t col) const noexcept {
   float minor = Minor(row, col);
   float cofactor = ((row + col) % 2 == 0) ? minor : -minor;
   return cofactor;
 }
 
-Matrix Matrix::Inverse() noexcept {
+Matrix Matrix::Inverse() const noexcept {
   float determinant = Determinant();
 
   assert(!IsEqualFloat(determinant, 0.0));
@@ -173,7 +178,7 @@ Matrix Matrix::Inverse() noexcept {
 
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < cols; ++col) {
-      inversed_matrix.Set(col, row, Cofactor(row, col) / determinant);
+      inversed_matrix[col * 4 + row] = Cofactor(row, col) / determinant;
     }
   }
 
@@ -207,27 +212,27 @@ Matrix Multiply(const Matrix& a, const Matrix& b) noexcept {
   return res;
 }
 
-Matrix Matrix::Translate(float x, float y, float z) noexcept {
+Matrix Matrix::Translate(float x, float y, float z) const noexcept {
   return ::Translate(x, y, z) * (*this);
 }
 
-Matrix Matrix::Scale(float x, float y, float z) noexcept {
+Matrix Matrix::Scale(float x, float y, float z) const noexcept {
   return ::Scale(x, y, z) * (*this);
 }
 
-Matrix Matrix::RotateX(float radians) noexcept {
+Matrix Matrix::RotateX(float radians) const noexcept {
   return ::RotateX(radians) * (*this);
 }
 
-Matrix Matrix::RotateY(float radians) noexcept {
+Matrix Matrix::RotateY(float radians) const noexcept {
   return ::RotateY(radians) * (*this);
 }
 
-Matrix Matrix::RotateZ(float radians) noexcept {
+Matrix Matrix::RotateZ(float radians) const noexcept {
   return ::RotateZ(radians) * (*this);
 }
 
-Matrix Matrix::Shear(ShearType shear_type) noexcept {
+Matrix Matrix::Shear(ShearType shear_type) const noexcept {
   return ::Shear(shear_type) * (*this);
 }
 
@@ -285,27 +290,27 @@ Matrix Shear(ShearType shear_type) noexcept {
 
   switch (shear_type) {
     case XY: {
-      matrix.m1 = 1.f;
+      matrix.m1 = 1.F;
       break;
     }
     case XZ: {
-      matrix.m2 = 1.f;
+      matrix.m2 = 1.F;
       break;
     }
     case YX: {
-      matrix.m4 = 1.f;
+      matrix.m4 = 1.F;
       break;
     }
     case YZ: {
-      matrix.m6 = 1.f;
+      matrix.m6 = 1.F;
       break;
     }
     case ZX: {
-      matrix.m8 = 1.f;
+      matrix.m8 = 1.F;
       break;
     }
     case ZY: {
-      matrix.m9 = 1.f;
+      matrix.m9 = 1.F;
       break;
     }
   }

@@ -45,47 +45,43 @@ struct Matrix {
   };
 
   Matrix() noexcept;
-  Matrix(const size_t rows, const size_t cols) noexcept;
-  Matrix(const __m128 row0, const __m128 row1, const __m128 row2,
-         const __m128 row3) noexcept;
+  Matrix(size_t rows, size_t cols) noexcept;
+  Matrix(__m128 row0, __m128 row1, __m128 row2, __m128 row3) noexcept;
   Matrix(const Matrix& other) noexcept;
   Matrix& operator=(const Matrix& other) noexcept;
 
-  constexpr float& operator[](const size_t index) noexcept;
-  constexpr const float& operator[](const size_t index) const noexcept;
-  constexpr __m128& Row(const size_t row_idx) noexcept;
-  constexpr void SetRow(const __m128 row, const size_t row_idx) noexcept;
+  constexpr float& operator[](size_t index) noexcept;
+  constexpr const float& operator[](size_t index) const noexcept;
+  constexpr __m128& Row(size_t row_idx) noexcept;
+  constexpr void SetRow(__m128 row, size_t row_idx) noexcept;
 
-  Matrix operator*(const Matrix& other) noexcept;
-  Vector operator*(const Vector& vector) noexcept;
+  Matrix operator*(const Matrix& other) const noexcept;
+  Vector operator*(const Vector& vector) const noexcept;
+  Point operator*(const Point& point) const noexcept;
+  Matrix operator/(float scalar) noexcept;
 
-  Point operator*(const Point& point) noexcept;
-
-  Matrix operator/(const float scalar) noexcept;
   bool operator==(const Matrix& other) const noexcept;
   bool operator!=(const Matrix& other) const noexcept;
 
   void Populate(float* elements, size_t element_count) noexcept;
-  constexpr bool IsValueInRange(const size_t row,
-                                const size_t col) const noexcept;
+  constexpr bool IsValueInRange(size_t row, size_t col) const noexcept;
   Matrix Transpose() noexcept;
-  float Determinant() noexcept;
-  Matrix SubMatrix(size_t excluded_row, size_t excluded_col) noexcept;
-  float Minor(size_t row, size_t col) noexcept;
-  float Cofactor(size_t row, size_t col) noexcept;
-  Matrix Inverse() noexcept;
+  float Determinant() const noexcept;
+  Matrix SubMatrix(size_t excluded_row, size_t excluded_col) const noexcept;
+  float Minor(size_t row, size_t col) const noexcept;
+  float Cofactor(size_t row, size_t col) const noexcept;
+  Matrix Inverse() const noexcept;
 
-  Matrix Translate(float x, float y, float z) noexcept;
-  Matrix Scale(float x, float y, float z) noexcept;
-  Matrix RotateX(float radians) noexcept;
-  Matrix RotateY(float radians) noexcept;
-  Matrix RotateZ(float radians) noexcept;
-  Matrix Shear(ShearType shear_type) noexcept;
+  Matrix Translate(float x, float y, float z) const noexcept;
+  Matrix Scale(float x, float y, float z) const noexcept;
+  Matrix RotateX(float radians) const noexcept;
+  Matrix RotateY(float radians) const noexcept;
+  Matrix RotateZ(float radians) const noexcept;
+  Matrix Shear(ShearType shear_type) const noexcept;
 
-  constexpr size_t Index(const size_t row, const size_t col) const noexcept;
-  constexpr float At(const size_t row, const size_t col) const noexcept;
-  constexpr void Set(const size_t row, const size_t col,
-                     const float value) noexcept;
+  static constexpr size_t Index(size_t row, size_t col) noexcept;
+  constexpr float At(size_t row, size_t col) const noexcept;
+  constexpr void Set(size_t row, size_t col, float value) noexcept;
 
   operator std::string() const noexcept;
 };
@@ -102,10 +98,8 @@ Matrix RotateY(float radians) noexcept;
 Matrix RotateZ(float radians) noexcept;
 Matrix Shear(ShearType shear_type) noexcept;
 Matrix Identity() noexcept;
-Matrix Translate(float x, float y, float z) noexcept;
 
-constexpr size_t Matrix::Index(const size_t row,
-                               const size_t col) const noexcept {
+constexpr size_t Matrix::Index(const size_t row, const size_t col) noexcept {
   return row * 4 + col;
 }
 

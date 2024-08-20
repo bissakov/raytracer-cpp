@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-void ErrorExit(const LPCTSTR function);
+void ErrorExit(LPCTSTR function);
 
 struct Path {
   size_t length;

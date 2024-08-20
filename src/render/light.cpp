@@ -42,13 +42,13 @@ Color Lighting(const Material &material, const PointLight &light,
   Color diffuse_color{0, 0, 0};
   Color specular_color{0, 0, 0};
 
-  if (light_dot_normal >= 0.f) {
+  if (light_dot_normal >= 0.F) {
     diffuse_color = effective_color * material.diffuse * light_dot_normal;
 
     Vector reflect_vector = -light_vector.Reflect(normal_vector);
     float reflect_dot_eye = DotProduct(reflect_vector, eye_vector);
 
-    if (reflect_dot_eye > 0.f) {
+    if (reflect_dot_eye > 0.F) {
       float factor = std::pow(reflect_dot_eye, material.shininess);
       specular_color = light.intensity * material.specular * factor;
     }

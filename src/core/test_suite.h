@@ -35,11 +35,11 @@ struct TestFramework {
 
   void Run(const char* name, const char* tag,
            std::function<bool()> test_function) noexcept;
-  void Summary() noexcept;
+  void Summary() const noexcept;
 };
 
-bool IsEqualDouble(const double a, const double b) noexcept;
-bool IsEqualFloat(const float a, const float b) noexcept;
+bool IsEqualDouble(double a, double b) noexcept;
+bool IsEqualFloat(float a, float b) noexcept;
 
 template <typename T>
 bool AssertEq(const T& actual, const T& expected, const char* actual_name,

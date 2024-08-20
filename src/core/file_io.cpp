@@ -23,13 +23,13 @@ FileResult ReadEntireFile(const char* file_path) noexcept {
 
   LARGE_INTEGER file_size;
 
-  if (!GetFileSizeEx(file_handle, &file_size)) {
+  if (GetFileSizeEx(file_handle, &file_size) == 0) {
     CloseHandle(file_handle);
     return result;
   }
 
   assert(file_size.QuadPart <= 0xFF'FF'FF'FF);
-  result.file_size = (uint32_t)(file_size.QuadPart);
+  result.file_size = static_cast<uint32_t>(file_size.QuadPart);
 
   result.content = std::make_unique<BYTE[]>(result.file_size);
 
@@ -39,9 +39,9 @@ FileResult ReadEntireFile(const char* file_path) noexcept {
   }
 
   DWORD bytes_read = 0;
-  if (!(ReadFile(file_handle, result.content.get(), result.file_size,
-                 &bytes_read, 0) &&
-        result.file_size == bytes_read)) {
+  if ((ReadFile(file_handle, result.content.get(), result.file_size,
+                &bytes_read, 0) == 0) ||
+      result.file_size != bytes_read) {
     CloseHandle(file_handle);
     return result;
   }
@@ -61,7 +61,7 @@ bool WriteEntireFile(const char* file_path, const uint32_t memory_size,
   }
 
   DWORD bytes_written = 0;
-  if (!WriteFile(file_handle, memory, memory_size, &bytes_written, 0)) {
+  if (WriteFile(file_handle, memory, memory_size, &bytes_written, 0) == 0) {
     CloseHandle(file_handle);
     return false;
   }
@@ -80,11 +80,11 @@ bool WriteFileText(const Path& file_path, const std::string text) noexcept {
     return false;
   }
 
-  DWORD bytes_to_write = (DWORD)text.size();
+  DWORD bytes_to_write = static_cast<DWORD>(text.size());
   DWORD bytes_written = 0;
 
-  if (!WriteFile(file_handle, text.c_str(), bytes_to_write, &bytes_written,
-                 0)) {
+  if (WriteFile(file_handle, text.c_str(), bytes_to_write, &bytes_written, 0) ==
+      0) {
     CloseHandle(file_handle);
     ErrorExit(TEXT("WriteFile"));
     return false;
@@ -97,10 +97,10 @@ bool WriteFileText(const Path& file_path, const std::string text) noexcept {
 }
 
 bool WriteLineToFile(HANDLE file_handle, const char* line) noexcept {
-  DWORD bytes_to_write = (DWORD)strlen(line);
+  DWORD bytes_to_write = static_cast<DWORD>(strlen(line));
   DWORD bytes_written;
 
-  if (!WriteFile(file_handle, line, bytes_to_write, &bytes_written, 0)) {
+  if (WriteFile(file_handle, line, bytes_to_write, &bytes_written, 0) == 0) {
     ErrorExit(TEXT("WriteFile"));
     return false;
   }
@@ -136,11 +136,12 @@ bool CompareFiles(const char* file_path1, const char* file_path2) noexcept {
   std::unique_ptr<BYTE[]> buffer1 = std::make_unique<BYTE[]>(file_size1);
   std::unique_ptr<BYTE[]> buffer2 = std::make_unique<BYTE[]>(file_size2);
 
-  DWORD bytes_read1, bytes_read2;
+  DWORD bytes_read1;
+  DWORD bytes_read2;
   BOOL read1 = ReadFile(h_file1, buffer1.get(), file_size1, &bytes_read1, NULL);
   BOOL read2 = ReadFile(h_file2, buffer2.get(), file_size2, &bytes_read2, NULL);
 
-  if (!read1 || !read2 || bytes_read1 != file_size1 ||
+  if ((read1 == 0) || (read2 == 0) || bytes_read1 != file_size1 ||
       bytes_read2 != file_size2) {
     CloseHandle(h_file1);
     CloseHandle(h_file2);

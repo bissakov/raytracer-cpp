@@ -16,9 +16,9 @@ struct Color {
   };
 
   Color() noexcept;
-  Color(const float r, const float g, const float b, const float a) noexcept;
-  Color(const float r, const float g, const float b) noexcept;
-  explicit Color(const __m128 vec) noexcept;
+  Color(float r, float g, float b, float a) noexcept;
+  Color(float r, float g, float b) noexcept;
+  explicit Color(__m128 vec) noexcept;
   Color(const Color& other) noexcept;
   Color& operator=(const Color& other) noexcept;
 
@@ -29,8 +29,8 @@ struct Color {
   bool operator==(const Color& other) const noexcept;
   bool operator!=(const Color& other) const noexcept;
 
-  Color operator*(const float scalar) const noexcept;
-  Color operator/(const float scalar) const noexcept;
+  Color operator*(float scalar) const noexcept;
+  Color operator/(float scalar) const noexcept;
 
   bool IsColorInRange() const noexcept;
   const char* ToHex() const noexcept;
@@ -52,7 +52,7 @@ struct ColorRGB {
   };
 
   ColorRGB() noexcept;
-  explicit ColorRGB(const __m128i vec) noexcept;
+  explicit ColorRGB(__m128i vec) noexcept;
 };
 
 #endif  // SRC_RENDER_COLOR_H_

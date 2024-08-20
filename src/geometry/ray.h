@@ -24,18 +24,17 @@ struct Sphere {
   float radius;
 
   Sphere() noexcept;
-  Sphere(const Point& origin, const Matrix& transform,
-         const float radius) noexcept;
-  Sphere(const Point& origin, const Matrix& transform, const float radius,
+  Sphere(const Point& origin, const Matrix& transform, float radius) noexcept;
+  Sphere(const Point& origin, const Matrix& transform, float radius,
          const Material& material) noexcept;
   explicit Sphere(const Material& material) noexcept;
   Sphere(const Sphere& other) noexcept;
   Sphere& operator=(const Sphere& other) noexcept;
 
-  bool operator==(const Sphere& other) const;
-  bool operator!=(const Sphere& other) const;
+  bool operator==(const Sphere& other) const noexcept;
+  bool operator!=(const Sphere& other) const noexcept;
 
-  Vector NormalAt(const Point& point) noexcept;
+  Vector NormalAt(const Point& point) const noexcept;
 
   operator std::string() const noexcept;
 };
@@ -68,12 +67,12 @@ struct Ray {
   Ray(const Ray& other) noexcept;
   Ray& operator=(const Ray& other) noexcept;
 
-  bool operator==(const Ray& other) const;
-  bool operator!=(const Ray& other) const;
+  bool operator==(const Ray& other) const noexcept;
+  bool operator!=(const Ray& other) const noexcept;
 
-  Point Position(float t) noexcept;
-  Hits Intersect(Sphere sphere) noexcept;
-  Ray Transform(Matrix transform) noexcept;
+  Point Position(float t) const noexcept;
+  Hits Intersect(Sphere sphere) const noexcept;
+  Ray Transform(Matrix transform) const noexcept;
 
   operator std::string() const noexcept;
 };
