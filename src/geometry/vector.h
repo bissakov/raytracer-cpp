@@ -17,21 +17,21 @@ struct Vector {
   };
 
   Vector() noexcept;
-  Vector(const float x, const float y, const float z) noexcept;
+  Vector(float x, float y, float z) noexcept;
   Vector(const Vector& other) noexcept;
-  explicit Vector(const __m128 vec) noexcept;
+  explicit Vector(__m128 vec) noexcept;
   Vector& operator=(const Vector& other) noexcept;
 
-  float& operator[](const size_t index) noexcept;
-  const float& operator[](const size_t index) const noexcept;
+  float& operator[](size_t index) noexcept;
+  const float& operator[](size_t index) const noexcept;
 
   bool operator==(const Vector& other) const noexcept;
   bool operator!=(const Vector& other) const noexcept;
 
   Vector operator+(const Vector& other) const noexcept;
   Vector operator-(const Vector& other) const noexcept;
-  Vector operator*(const float scalar) const noexcept;
-  Vector operator/(const float scalar) const noexcept;
+  Vector operator*(float scalar) const noexcept;
+  Vector operator/(float scalar) const noexcept;
   Vector operator-() const noexcept;
 
   float Magnitude() const noexcept;

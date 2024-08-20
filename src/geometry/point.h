@@ -17,13 +17,13 @@ struct Point {
   };
 
   Point() noexcept;
-  Point(const float x, const float y, const float z) noexcept;
+  Point(float x, float y, float z) noexcept;
   Point(const Point& other) noexcept;
-  explicit Point(const __m128 vec) noexcept;
+  explicit Point(__m128 vec) noexcept;
   Point& operator=(const Point& other) noexcept;
 
-  float& operator[](const size_t index);
-  const float& operator[](const size_t index) const;
+  float& operator[](size_t index);
+  const float& operator[](size_t index) const;
 
   Point operator+(const Vector& other) const;
   Point operator-(const Vector& other) const;

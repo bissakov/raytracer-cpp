@@ -29,7 +29,7 @@ static inline std::string GetColor(const std::string& tag) noexcept {
   return color;
 }
 
-void TestFramework::Summary() noexcept {
+void TestFramework::Summary() const noexcept {
   printf("\nTest summary: %s%s%zu/%zu%s tests passed.\n", UNDERLINE,
          (passed_tests == total_tests) ? GREEN : RED, passed_tests, total_tests,
          NORMAL);

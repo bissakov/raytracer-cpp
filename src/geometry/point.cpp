@@ -68,11 +68,11 @@ bool Point::operator==(const Point &other) const {
   __m128 tolerance = _mm_set1_ps(static_cast<float>(ABSOLUTE_TOLERANCE));
   __m128 cmp = _mm_cmp_ps(diff, tolerance, _CMP_LE_OQ);
 
-  return _mm_testc_ps(cmp, _mm_set1_ps(-1.0));
+  return _mm_testc_ps(cmp, _mm_set1_ps(-1.0)) != 0;
 }
 
-bool Point::operator!=(const Point &p) const {
-  return !(*this == p);
+bool Point::operator!=(const Point &other) const {
+  return !(*this == other);
 }
 
 Point::operator std::string() const noexcept {

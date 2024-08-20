@@ -54,12 +54,12 @@ const float &Vector::operator[](const size_t index) const noexcept {
 
 bool Vector::operator==(const Vector &other) const noexcept {
   __m128 diff = _mm_sub_ps(vec, other.vec);
-  diff = _mm_andnot_ps(_mm_set1_ps(-0.0), diff);
+  diff = _mm_andnot_ps(_mm_set1_ps(-0.F), diff);
 
   __m128 tolerance = _mm_set1_ps(static_cast<float>(ABSOLUTE_TOLERANCE));
   __m128 cmp = _mm_cmp_ps(diff, tolerance, _CMP_LE_OQ);
 
-  return _mm_testc_ps(cmp, _mm_set1_ps(-1.0));
+  return _mm_testc_ps(cmp, _mm_set1_ps(-1.F)) != 0;
 }
 
 bool Vector::operator!=(const Vector &other) const noexcept {
@@ -104,10 +104,10 @@ float Vector::DotProduct(const Vector &other) const noexcept {
 }
 
 Vector CrossProduct(const Vector &left, const Vector &right) noexcept {
-  __m128 left1 = _mm_set_ps(0.f, left.x, left.z, left.y);
-  __m128 left2 = _mm_set_ps(0.f, left.y, left.x, left.z);
-  __m128 right1 = _mm_set_ps(0.f, right.x, right.z, right.y);
-  __m128 right2 = _mm_set_ps(0.f, right.y, right.x, right.z);
+  __m128 left1 = _mm_set_ps(0.F, left.x, left.z, left.y);
+  __m128 left2 = _mm_set_ps(0.F, left.y, left.x, left.z);
+  __m128 right1 = _mm_set_ps(0.F, right.x, right.z, right.y);
+  __m128 right2 = _mm_set_ps(0.F, right.y, right.x, right.z);
 
   return Vector{
       _mm_sub_ps(_mm_mul_ps(left1, right2), _mm_mul_ps(left2, right1))};

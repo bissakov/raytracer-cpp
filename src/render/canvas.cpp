@@ -80,19 +80,19 @@ bool Canvas::SaveToPPM(const Path& file_path) noexcept {
   }
 
   const size_t buffer_size = width * (3 * 4 + 1);
-  char* buffer = new char[buffer_size];
+  auto buffer = std::make_unique<char[]>(buffer_size);
 
   for (size_t row = 0; row < height; ++row) {
     size_t buffer_pos = 0;
 
     for (size_t col = 0; col < width; ++col) {
       Color* color = &colors[row * width + col];
-      ColorRGB rgb{NormalizedToRGB(color)};
+      ColorRGB rgb{NormalizedToRGB(*color)};
 
-      int written = snprintf(buffer + buffer_pos, buffer_size - buffer_pos,
-                             "%d %d %d", rgb.r, rgb.g, rgb.b);
+      int written =
+          snprintf(buffer.get() + buffer_pos, buffer_size - buffer_pos,
+                   "%d %d %d", rgb.r, rgb.g, rgb.b);
       if (written < 0 || written >= buffer_size - buffer_pos) {
-        delete[] buffer;
         CloseHandle(file_handle);
         return false;
       }
@@ -105,20 +105,18 @@ bool Canvas::SaveToPPM(const Path& file_path) noexcept {
     buffer[buffer_pos++] = '\n';
     buffer[buffer_pos] = '\0';
 
-    if (!WriteLineToFile(file_handle, buffer)) {
-      delete[] buffer;
+    if (!WriteLineToFile(file_handle, buffer.get())) {
       CloseHandle(file_handle);
       return false;
     }
   }
 
-  delete[] buffer;
   CloseHandle(file_handle);
 
   return true;
 }
 
-static inline void AdvanceUntil(char* file_content, uint32_t* idx,
+static inline void AdvanceUntil(const char* file_content, uint32_t* idx,
                                 const char terminator) {
   while (file_content[*idx] != terminator) {
     (*idx)++;
@@ -200,9 +198,9 @@ bool Canvas::LoadFromPPM(const Path& file_path) noexcept {
         start = current;
 
         Color* current_pixel = &colors[row * width + col];
-        current_pixel->r = static_cast<float>(rgb_color.r) / 255.0f;
-        current_pixel->g = static_cast<float>(rgb_color.g) / 255.0f;
-        current_pixel->b = static_cast<float>(rgb_color.b) / 255.0f;
+        current_pixel->r = static_cast<float>(rgb_color.r) / 255.0F;
+        current_pixel->g = static_cast<float>(rgb_color.g) / 255.0F;
+        current_pixel->b = static_cast<float>(rgb_color.b) / 255.0F;
 
         col++;
         rgb_color = {};
@@ -219,4 +217,7 @@ Canvas::operator std::string() const noexcept {
   return std::format("Canvas(width={}, height={})", width, height);
 }
 
-std::ostream& operator<<(std::ostream& os, const Canvas& c);
+std::ostream& operator<<(std::ostream& os, const Canvas& c) {
+  os << std::string(c);
+  return os;
+}
