@@ -1,4 +1,5 @@
 #include <core/test_suite.h>
+#include <core/utils.h>
 #include <geometry/point.h>
 #include <geometry/ray.h>
 #include <geometry/vector.h>
@@ -273,7 +274,6 @@ static inline void DrawRegionUnshaded(
     }
   }
 }
-#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 void CastShapeUnshaded(Canvas* canvas, const Point& ray_origin,
                        const Sphere& shape, float wall_z,

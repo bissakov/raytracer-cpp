@@ -18,38 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\arr.cpp" />
-    <ClCompile Include="src\canvas.cpp" />
-    <ClCompile Include="src\color.cpp" />
-    <ClCompile Include="src\file_io.cpp" />
-    <ClCompile Include="src\light.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\material.cpp" />
-    <ClCompile Include="src\matrix.cpp" />
-    <ClCompile Include="src\point.cpp" />
-    <ClCompile Include="src\ray.cpp" />
-    <ClCompile Include="src\test_suite.cpp" />
-    <ClCompile Include="src\utils.cpp" />
-    <ClCompile Include="src\vector.cpp" />
-    <ClCompile Include="tests\tests.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\arr.h" />
-    <ClInclude Include="src\canvas.h" />
-    <ClInclude Include="src\color.h" />
-    <ClInclude Include="src\file_io.h" />
-    <ClInclude Include="src\light.h" />
-    <ClInclude Include="src\main.h" />
-    <ClInclude Include="src\material.h" />
-    <ClInclude Include="src\matrix.h" />
-    <ClInclude Include="src\point.h" />
-    <ClInclude Include="src\ray.h" />
-    <ClInclude Include="src\test_suite.h" />
-    <ClInclude Include="src\utils.h" />
-    <ClInclude Include="src\vector.h" />
-    <ClInclude Include="tests\tests.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{71342B71-A6E8-4A4F-93DD-0667413EEBBA}</ProjectGuid>

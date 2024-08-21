@@ -5,6 +5,36 @@ VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "raytracer-cpp", "raytracer-cpp.vcxproj", "{71342B71-A6E8-4A4F-93DD-0667413EEBBA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FAF19AF-19D5-4713-A827-EF5F45C812EC}"
+	ProjectSection(SolutionItems) = preProject
+		src\core\arr.cpp = src\core\arr.cpp
+		src\core\arr.h = src\core\arr.h
+		src\render\canvas.cpp = src\render\canvas.cpp
+		src\render\canvas.h = src\render\canvas.h
+		src\render\color.cpp = src\render\color.cpp
+		src\render\color.h = src\render\color.h
+		src\core\file_io.cpp = src\core\file_io.cpp
+		src\core\file_io.h = src\core\file_io.h
+		src\render\light.cpp = src\render\light.cpp
+		src\render\light.h = src\render\light.h
+		src\main.cpp = src\main.cpp
+		src\main.h = src\main.h
+		src\render\material.cpp = src\render\material.cpp
+		src\render\material.h = src\render\material.h
+		src\geometry\matrix.cpp = src\geometry\matrix.cpp
+		src\geometry\matrix.h = src\geometry\matrix.h
+		src\geometry\point.cpp = src\geometry\point.cpp
+		src\geometry\point.h = src\geometry\point.h
+		src\geometry\ray.cpp = src\geometry\ray.cpp
+		src\geometry\ray.h = src\geometry\ray.h
+		src\core\test_suite.cpp = src\core\test_suite.cpp
+		src\core\test_suite.h = src\core\test_suite.h
+		src\core\utils.cpp = src\core\utils.cpp
+		src\core\utils.h = src\core\utils.h
+		src\geometry\vector.cpp = src\geometry\vector.cpp
+		src\geometry\vector.h = src\geometry\vector.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
