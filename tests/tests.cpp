@@ -449,15 +449,13 @@ static inline void TestMatrix(TestFramework* fw) {
                         9, 10, 11, 12, 13.5, 14.5F, 15.5F, 16.5F};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_FLOAT(matrix.At(0, 0), 1) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(0, 3), 4) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(1, 0), 5.5) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(1, 2), 7.5) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(2, 2), 11) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(3, 0), 13.5) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(3, 2), 15.5);
-
-    return res;
+    return ASSERT_EQUAL_FLOAT(matrix.At(0, 0), 1) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(0, 3), 4) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(1, 0), 5.5) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(1, 2), 7.5) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(2, 2), 11) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(3, 0), 13.5) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(3, 2), 15.5);
   });
 
   fw->Run("Check 3x3 matrix values", "Matrix", []() -> bool {
@@ -465,11 +463,9 @@ static inline void TestMatrix(TestFramework* fw) {
     float elements[] = {-3, 5, 0, 1, -2, -7, 0, 1, 1};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_FLOAT(matrix.At(0, 0), -3) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(1, 1), -2) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(2, 2), 1);
-
-    return res;
+    return ASSERT_EQUAL_FLOAT(matrix.At(0, 0), -3) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(1, 1), -2) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(2, 2), 1);
   });
 
   fw->Run("Check 2x2 matrix values", "Matrix", []() -> bool {
@@ -477,12 +473,10 @@ static inline void TestMatrix(TestFramework* fw) {
     float elements[] = {-3, 5, 1, -2};
     matrix.Populate(elements, matrix.rows * matrix.cols);
 
-    bool res = ASSERT_EQUAL_FLOAT(matrix.At(0, 0), -3) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(0, 1), 5) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(1, 0), 1) &&
-               ASSERT_EQUAL_FLOAT(matrix.At(1, 1), -2);
-
-    return res;
+    return ASSERT_EQUAL_FLOAT(matrix.At(0, 0), -3) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(0, 1), 5) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(1, 0), 1) &&
+           ASSERT_EQUAL_FLOAT(matrix.At(1, 1), -2);
   });
 
   fw->Run("Compare two equal 4x4 matrices", "Matrix", []() -> bool {
@@ -518,8 +512,7 @@ static inline void TestMatrix(TestFramework* fw) {
     float elements2[] = {1, 2, 3, 4, 5, 6, 9, 8, 9, 8, 7, 6, 5, 4, 3, 2};
     matrix2.Populate(elements2, matrix2.rows * matrix2.cols);
 
-    bool res = matrix1 != matrix2;
-    return ASSERT_EQUAL(bool, res, true);
+    return ASSERT_NOT_EQUAL(Matrix, matrix1, matrix2);
   });
 
   fw->Run("Multiply two 4x4 matrices", "Matrix", []() -> bool {
