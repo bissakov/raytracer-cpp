@@ -95,19 +95,26 @@ bool Matrix::operator==(const Matrix& other) const noexcept {
 
   __m128 diff0 = _mm_sub_ps(row0, other.row0);
   __m128 cmp0 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff0), tolerance);
+  if (_mm_movemask_ps(cmp0) != 0xF) {
+    return false;
+  }
 
   __m128 diff1 = _mm_sub_ps(row1, other.row1);
   __m128 cmp1 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff1), tolerance);
+  if (_mm_movemask_ps(cmp1) != 0xF) {
+    return false;
+  }
 
   __m128 diff2 = _mm_sub_ps(row2, other.row2);
   __m128 cmp2 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff2), tolerance);
+  if (_mm_movemask_ps(cmp2) != 0xF) {
+    return false;
+  }
 
   __m128 diff3 = _mm_sub_ps(row3, other.row3);
   __m128 cmp3 = _mm_cmple_ps(_mm_andnot_ps(sign_mask, diff3), tolerance);
 
-  __m128 cmp = _mm_and_ps(_mm_and_ps(cmp0, cmp1), _mm_and_ps(cmp2, cmp3));
-
-  return _mm_movemask_ps(cmp) == 0xF;
+  return _mm_movemask_ps(cmp3) == 0xF;
 }
 
 bool Matrix::operator!=(const Matrix& other) const noexcept {
