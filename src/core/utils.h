@@ -14,6 +14,8 @@ struct Path {
 
 Path Join(const char* left, const char* right) noexcept;
 
+#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
+
 constexpr size_t Min(const size_t a, const size_t b) {
   return (a < b) ? a : b;
 }
